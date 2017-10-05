@@ -67,7 +67,7 @@ rule ALL_VMC_DMC:
 
 rule ALL_VMC_OPT_ENERGY:
     input:
-         expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
 
 rule ALL_VMC_OPT:
     input:

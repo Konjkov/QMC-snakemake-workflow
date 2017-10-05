@@ -246,8 +246,6 @@ rule VMC_PLOT:
     run:
         with open(output[0], 'w') as hf_vmc_energy:
             for molecule in MOLECULES:
-                if molecule == 'dioxirane':
-                    break
                 print('{:12} {:>13.6f} {:>13.6f} {:>13.6f}'.format(
                     molecule,
                     hf_energy(molecule, params.method, params.basis),
