@@ -1,0 +1,210 @@
+import os
+import multiprocessing
+from datetime import timedelta
+
+PROCS = multiprocessing.cpu_count()
+
+include: '../Snakefile'
+
+ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_linux_x86-64_shared',
+ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
+
+MOLECULES = {}
+MOLECULES.update(ATOMS)
+MOLECULES.update(W4_08)
+MOLECULES.update(W4_11)
+MOLECULES.update(ALKANES)
+
+METHODS = ('HF', 'B3LYP')
+
+
+def hf_energy(molecule, method, basis):
+    regexp = re.compile('FINAL SINGLE POINT ENERGY\s+(?P<energy>[-+]?\d+\.\d+)')
+    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as orca_out:
+        # we are only interested in the last occurrence
+        energy = float(re.findall(regexp, orca_out.read())[-1])
+    return energy
+
+def get_up_down(molecule, method, basis):
+    """Get up and down electron numbers from ORCA output file.
+    Number of up&down electrons required in CASINO input.
+    """
+
+    regexp1 = re.compile('Multiplicity           Mult            ....\s+(?P<mult>\d+)')
+    regexp2 = re.compile('Number of Electrons    NEL             ....\s+(?P<elec>\d+)')
+    with open('%s/%s/%s/%s' % (molecule, method, basis, 'mol.out'), 'r') as orca_out:
+        for line in orca_out:
+            m1 = re.search(regexp1, line)
+            if m1:
+                mult = int(m1.group('mult'))
+            m2 = re.search(regexp2, line)
+            if m2:
+                elec = int(m2.group('elec'))
+    neu = (elec + mult - 1)//2
+    ned = (elec - mult + 1)//2
+    return neu, ned
+
+def get_nelec(molecule, method, basis):
+    """Get total electron numbers from ORCA output file.
+    """
+    regexp = re.compile('Number of Electrons    NEL             ....\s+(?P<elec>\d+)')
+    with open('%s/%s/%s/%s' % (molecule, method, basis, 'mol.out'), 'r') as orca_out:
+        for line in orca_out:
+            m = re.search(regexp, line)
+            if m:
+                elec = int(m.group('elec'))
+    return elec
+
+rule ALL:
+    input:
+        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_VMC_DMC:
+    input:
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_VMC_OPT_ENERGY:
+    input:
+         expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_VMC_OPT:
+    input:
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/10000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_VMC:
+    input:
+        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_ORCA:
+    input:
+        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='cc-pCVQZ', method='MP2'),
+        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='cc-pCVQZ', method='DLPNO-CCSD_T'),
+        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='cc-pCVQZ', method='OO-RI-MP2'),
+
+#####################################################################################################################
+
+rule GWFN:
+    input:      '{molecule}/{method}/{basis}/mol.molden.input'
+    output:     '{molecule}/{method}/{basis}/gwfn.data'
+    run:
+        if wildcards.method.startswith('CASSCF'):
+            shell('molden2qmc.py 3 {input} {output} --multideterminant')
+        else:
+            shell('molden2qmc.py 3 {input} {output}')
+
+rule MOLDEN:
+    input:      '{molecule}/{method}/{basis}/mol.out'
+    output:     '{molecule}/{method}/{basis}/mol.molden.input'
+    run:
+        if wildcards.method == 'OO-RI-MP2':
+            shell("""export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
+                     export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
+                     cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} &&
+                     ln -s mol.mp2nat mol.mp2nat.gbw &&
+                     {ORCA_PATH}/orca_2mkl mol.mp2nat -molden &&
+                     ln -s mol.mp2nat.molden.input mol.molden.input""")
+        else:
+            shell("""export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
+                     export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
+                     cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} &&
+                     {ORCA_PATH}/orca_2mkl mol -molden""")
+
+rule ORCA_TIME:
+    output:     'orca_time.dat'
+    run:
+        regexp = re.compile('TOTAL RUN TIME: (?P<days>\d+) days (?P<hours>\d+) hours (?P<minutes>\d+) minutes (?P<seconds>\d+) seconds (?P<msec>\d+) msec')
+        result = []
+        for molecule, method, basis in zip(*glob_wildcards('{molecule}/{method}/{basis}/mol.out')):
+            total_seconds = 0.0
+            with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as orca_out:
+                for line in orca_out:
+                    m = re.search(regexp, line)
+                    if m:
+                        total_seconds = timedelta(days=int(m.group('days')), hours=int(m.group('hours')), minutes=int(m.group('minutes')), seconds=int(m.group('seconds')), milliseconds=int(m.group('msec'))).total_seconds()
+                        break
+            result.append((molecule, get_nelec(molecule, method, basis), method, basis, total_seconds))
+        result.sort(key=lambda x: (x[3], x[2], x[1]))
+        with open(output[0], 'w') as orca_time:
+            for x in result:
+                print('{:12} {:2} {:12} {:16} {:9.3f}'.format(*x), file=orca_time)
+
+rule ORCA_RUN:
+    input:      '{path}/mol.inp'
+    output:     '{path}/mol.out'
+    shell:    """export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
+                 export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
+                 cd {wildcards.path} && {ORCA_PATH}/orca mol.inp > mol.out"""
+
+extra_basis = (
+"""%basis
+  newGTO H
+    "cc-pVQZ"
+  end
+end""")
+
+rule ORCA_INPUT:
+    input:      '{molecule}/{method}/{basis}/.keep'
+    output:     '{molecule}/{method}/{basis}/mol.inp'
+    run:
+        for file_name in output:
+            with open(wildcards.molecule + '/mol.xyz', 'r') as xyz:
+                charge, multiplicity = xyz.readlines()[1].split()
+            with open(file_name, 'w') as f:
+                if wildcards.method.startswith('CASSCF'):
+                    f.write(open('orca_casscf.tmpl').read().format(
+                        basis=wildcards.basis,
+                        method='HF',
+                        charge=charge,
+                        multiplicity=multiplicity,
+                        nel=wildcards.method.split('_')[1],
+                        norb=wildcards.method.split('_')[2]
+                    ))
+                elif wildcards.method == 'DLPNO-CCSD_T':
+                    f.write(open('orca_dlpno_ccsdt.tmpl').read().format(
+                        basis=wildcards.basis,
+                        aux_basis='cc-pVQZ/C',
+                        extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
+                        extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
+                        method='DLPNO-CCSD(T)',
+                        charge=charge,
+                        multiplicity=multiplicity,
+                        procs='! PAL{}'.format(PROCS)
+                    ))
+                elif wildcards.method == 'OO-RI-MP2':
+                    f.write(open('orca_oo_mp2.tmpl').read().format(
+                        basis=wildcards.basis,
+                        aux_basis='cc-pVQZ/C',
+                        extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
+                        extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
+                        method='OO-RI-MP2',
+                        charge=charge,
+                        multiplicity=multiplicity,
+                        procs='! PAL{}'.format(PROCS)
+                    ))
+                else:
+                    if wildcards.molecule in ('c-hooo',) and wildcards.method == 'HF':
+                        method = 'ROHF'
+                    else:
+                        method = wildcards.method
+                    f.write(open('orca.tmpl').read().format(
+                        basis=wildcards.basis,
+                        extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
+                        extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
+                        method=method,
+                        charge=charge,
+                        multiplicity=multiplicity
+                    ))
+
+rule ORCA_DIRS:
+    input:      '{molecule}/mol.xyz'
+    output:     '{molecule}/{method}/{basis}/.keep'
+    shell:      'touch {output}'
+
+rule ORCA_XYZ:
+    input:      '../chem_database/{molecule}.in'
+    output:     '{molecule}/mol.xyz'
+    params:     pattern = '/%(pat1)s/,/%(pat2)s/{/%(pat1)s/!{/%(pat2)s/!p}}' % {'pat1': 'molecule', 'pat2': 'end'}
+    shell:      'touch {output} && grep -c "^ " {input} > {output} && sed -n "{params.pattern}" {input} >> {output}'

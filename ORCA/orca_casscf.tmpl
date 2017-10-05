@@ -1,0 +1,24 @@
+# ================================================================
+# Orca input file
+# ================================================================
+! {method} {basis} VeryTightSCF
+! PAL4
+
+%casscf
+  nel  {nel}
+  norb {norb}
+  PrintWF det
+end
+
+* xyzfile {charge} {multiplicity} ../../mol.xyz
+
+$new_job
+! {method} {basis} VeryTightSCF
+
+%casscf
+  nel  {nel}
+  norb {norb}
+  PrintWF csf
+end
+
+* xyzfile {charge} {multiplicity} ../../mol.xyz

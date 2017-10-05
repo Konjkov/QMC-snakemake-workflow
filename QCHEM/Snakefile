@@ -1,0 +1,112 @@
+import re
+
+include: '../Snakefile'
+
+MOLECULES = {}
+MOLECULES.update(ATOMS)
+MOLECULES.update(W4_08)
+MOLECULES.update(W4_11)
+MOLECULES.update(ALKANES)
+
+METHODS = ('HF', 'B3LYP')
+
+
+def hf_energy(molecule, method, basis):
+    regexp = re.compile(' Total energy in the final basis set = (?P<energy>[-+]?\d+\.\d+)')
+    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as orca_out:
+        # we are only interested in the last occurrence
+        energy = float(re.findall(regexp, orca_out.read())[-1])
+    return energy
+
+def get_up_down(molecule, method, basis):
+    """Get up and down electron numbers from QCHEM output file.
+     -152.984984803366 +/- 0.003461753729      Correlation time method
+    """
+
+    regexp = re.compile('There are\s+(?P<alpha>\d+) alpha and\s+(?P<beta>\d+) beta electrons')
+    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
+        for line in qchem_out:
+            m = re.search(regexp, line)
+            if m:
+                neu = int(m.group('alpha'))
+                ned = int(m.group('beta'))
+    return neu, ned
+
+rule ALL:
+    input:
+        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_VMC_DMC:
+    input:
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_VMC_OPT_ENERGY:
+    input:
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_VMC_OPT:
+    input:
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/10000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_VMC:
+    input:
+        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_QCHEM:
+    input:
+        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+###################################################################################################################
+
+rule GWFN:
+    input:      '{molecule}/{method}/{basis}/mol.molden'
+    output:     '{molecule}/{method}/{basis}/gwfn.data'
+    shell:      'molden2qmc.py 7 {input} {output}'
+
+pat1 = '======= MOLDEN-FORMATTED INPUT FILE FOLLOWS ======='
+pat2 = '======= END OF MOLDEN-FORMATTED INPUT FILE ======='
+
+rule MOLDEN:
+    input:      '{molecule}/{method}/{basis}/mol.out'
+    output:     '{molecule}/{method}/{basis}/mol.molden'
+    params:      pattern='/%(pat1)s/,/%(pat2)s/{/%(pat1)s/!{/%(pat2)s/!p}}' % {'pat1': pat1, 'pat2': pat2}
+    shell:      'sed -n "{params.pattern}" {input} > {output}'
+
+rule QCHEM_RUN:
+    input:      '{molecule}/{method}/{basis}/mol.in'
+    output:     '{molecule}/{method}/{basis}/mol.out'
+    shell:      'qchem -nt 16 {input} {output}'
+
+rule QCHEM_INPUT:
+    input:      '{molecule}/{method}/{basis}/.keep'
+    output:     '{molecule}/{method}/{basis}/mol.in'
+    run:
+        for file_name in output:
+            if wildcards.molecule in ('b', 'c', 'o', 'al', 'si', 'sih', 'sif') and wildcards.method in 'B3LYP':
+                algorithm = 'gdm'
+            else:
+                algorithm = 'diis'
+            if wildcards.molecule in ('h2cn', 'c-hooo') and wildcards.method == 'HF':
+                unrestricted = 'UNRESTRICTED          false'
+                stability_analysis = 'false'
+            else:
+                unrestricted = ''
+                stability_analysis = 'true'
+            if wildcards.molecule == 'h':
+                stability_analysis = 'false'
+            with open(file_name, 'w') as f:
+                f.write(open('qchem.tmpl').read().format(
+                    basis=wildcards.basis,
+                    method=wildcards.method,
+                    molecule=wildcards.molecule,
+                    algorithm=algorithm,
+                    unrestricted = unrestricted,
+                    stability_analysis = stability_analysis
+                ))
+
+rule QCHEM_DIRS:
+    input:      '../chem_database/{molecule}.in'
+    output:     '{molecule}/{method}/{basis}/.keep'
+    shell:      'touch {output}'

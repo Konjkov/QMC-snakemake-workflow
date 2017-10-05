@@ -1,0 +1,19 @@
+$comment0
+$end
+
+$rem
+SYMMETRY              true
+BASIS                 {basis}
+METHOD                {method}
+MAX_SCF_CYCLES        1000
+SCF_CONVERGENCE       8
+SCF_ALGORITHM         {algorithm}
+{unrestricted}
+STABILITY_ANALYSIS    {stability_analysis}
+SET_ITER              100
+MOLDEN_FORMAT         true
+PRINT_ORBITALS        2000
+$end
+
+$molecule
+READ                  ../chem_database/{molecule}.in

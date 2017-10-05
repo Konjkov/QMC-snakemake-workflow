@@ -1,0 +1,20 @@
+# ================================================================
+# Orca input file
+# ================================================================
+! {method} {basis} {aux_basis} VeryTightSCF UseSym
+{extra_params}
+{procs}
+
+%maxcore 4000
+
+# The density does not need to be requested separately in OO-RI-MP2 calculations because it is automatically calculated.
+# Also, there is no distinction between relaxed and unrelaxed densities because the OO-RI-MP2 energy is fully stationary
+# with respect to all wavefunction parameters and hence the unrelaxed and relaxed densities coincide.
+
+%mp2
+  NatOrbs true
+end
+
+{extra_basis}
+
+* xyzfile {charge} {multiplicity} ../../mol.xyz
