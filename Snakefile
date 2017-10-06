@@ -71,6 +71,15 @@ def get_max_Z(gwfn_file):
             line = gwfn.readline()
     return max(map(int, result.split()))
 
+def get_atom_list(molecule):
+    with open(os.path.join('..', 'chem_database', molecule+'.in'), 'r') as input_geometry:
+        result = dict.fromkeys(ATOMS, 0)
+        for line in input_geometry:
+            if line.startswith(' '):
+                atom_symbol = line.split()[0].lower()
+                result[atom_symbol] += 1
+        return result
+
 def vmc_energy(molecule, method, basis):
     """Get VMC energy without JASTROW optimisation.
      -152.988424660763 +/- 0.003047553900      Correlation time method
@@ -238,20 +247,58 @@ rule VMC_OPT_DIRS:
 
 ####################################################################################################################
 
+
+rule VMC_DMC_PLOT:
+    output:     'dmc_energy.dat'
+    params:
+        method = 'HF',
+        basis = 'cc-pVQZ',
+        atomic_energy = {'h': -0.5, 'be': -14.6622, 'b': -24.6462, 'c': -37.830180, 'n': -54.576547, 'o': -75.052262, 'f': -99.7171,
+                         'al': -242.326, 'si': -289.334, 'p':  -341.218, 's': -398.06, 'cl': -460.096}
+    run:
+        with open(output[0], 'w') as output_file:
+            print('# molecule\\atoms  H   Be  B   C   N   O   F   Al  Si  P   S   Cl  E(DMC)+TAE(au)  DMC_error(au)  TAE-TAE(DMC)(kcal/mol)', file=output_file)
+            for molecule in MOLECULES:
+                atom_list = get_atom_list(molecule)
+                try:
+                    energy, energy_error = dmc_energy(molecule, params.method, params.basis)
+                except FileNotFoundError:
+                    continue
+                print('{:12}    {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3}  {:>13.6f} {:>13.6f}      {:>13.6f}'.format(
+                    molecule,
+                    atom_list['h'],
+                    atom_list['be'],
+                    atom_list['b'],
+                    atom_list['c'],
+                    atom_list['n'],
+                    atom_list['o'],
+                    atom_list['f'],
+                    atom_list['al'],
+                    atom_list['si'],
+                    atom_list['p'],
+                    atom_list['s'],
+                    atom_list['cl'],
+                    energy + MOLECULES[molecule]/630.0,
+                    energy_error,
+                    630.0 * (energy - sum([atom_list[atom]*params.atomic_energy[atom] for atom in atom_list])) + MOLECULES[molecule]),
+                    file=output_file
+               )
+
+
 rule VMC_PLOT:
     output:     'hf_vmc_energy.dat'
     params:
         method = 'HF',
         basis = 'cc-pVQZ'
     run:
-        with open(output[0], 'w') as hf_vmc_energy:
+        with open(output[0], 'w') as output_file:
             for molecule in MOLECULES:
                 print('{:12} {:>13.6f} {:>13.6f} {:>13.6f}'.format(
                     molecule,
                     hf_energy(molecule, params.method, params.basis),
                     vmc_energy(molecule, params.method, params.basis)[0],
                     vmc_energy(molecule, params.method, params.basis)[1]),
-                    file=hf_vmc_energy
+                    file=output_file
                )
 
 rule VMC_RUN:
