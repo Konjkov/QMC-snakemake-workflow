@@ -139,7 +139,7 @@ rule VMC_DMC_INPUT:
     output:     '{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_{nconfig}_1/input'
     params:
         dt_relative_step = 2.0,
-        stderr = 0.0003,
+        stderr = 0.001,
         # roughly
         # nstep ~ 1.5 * (E(VMC) - E(DMC))/(nconfig*dtdmc*stderr*stderr)
         # (E(VMC) - E(DMC)) ~ 6 * (E(HF) - E(VMC))
