@@ -1,8 +1,6 @@
 #!/usr/bin/gnuplot -persist
 
-#f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12) = h*x1 + be*x2 + b*x3 + c*x4 + n*x5 + o*x6 + f*x7 + al*x8 + si*x9 + p*x10 + s*x11 + cl*x12
-
-f(x1, x3, x4, x5, x6, x7, x9) = h*x1 + b*x3 + c*x4 + n*x5 + o*x6 + f*x7 + si*x9
+f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12) = h*x1 + be*x2 + b*x3 + c*x4 + n*x5 + o*x6 + f*x7 + al*x8 + si*x9 + p*x10 + s*x11 + cl*x12
 
 # Initial values
 h  =  -0.5
@@ -19,7 +17,5 @@ s  = -398.1100
 cl = -460.1480
 
 # Fitting
-#set dummy x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12
-set dummy x1, x3, x4, x5, x6, x7, x9
-#fit f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12) "dmc_energy.dat" using 2:3:4:5:6:7:8:9:10:11:12:13:14 via be, b, c, n, o, f, al, si, p, s, cl
-fit f(x1, x3, x4, x5, x6, x7, x9) "dmc_energy.dat" using 2:4:5:6:7:8:10:14 via h, b, c, n, o, f, si
+set dummy x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12
+fit f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12) "dmc_energy.dat" using 2:3:4:5:6:7:8:9:10:11:12:13:14 via h, be, b, c, n, o, f, al, si, p, s, cl

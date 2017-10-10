@@ -110,9 +110,11 @@ def dmc_energy(molecule, method, basis):
           mean:   -153.795024411601 +/-       0.001346260888
     """
 
+    dir = os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')
+    open(os.path.join(dir, '.casino_finished'), 'r').close()
     regexp = re.compile('mean:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
     energy, energy_error = 0.0, 0.0
-    with open(os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1', 'out'), 'r') as dmc_out:
+    with open(os.path.join(dir, 'out'), 'r') as dmc_out:
         # we are only interested in the last occurrence
         energy, energy_error = map(float, re.findall(regexp, dmc_out.read())[-1])
     return energy, energy_error
