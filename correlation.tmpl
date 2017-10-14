@@ -2,7 +2,7 @@ START HEADER
   U: 8 CHI: 8 F: 3 3
 END HEADER
 
- START VERSION
+START VERSION
   1
 END VERSION
 
@@ -18,7 +18,7 @@ START JASTROW
  Spherical harmonic l,m
    0 0
  Expansion order
-   7
+   {u_term}
  Spin-dep params (0->uu=dd=ud; 1->uu=dd/=ud; 2->uu/=dd/=ud)
    1
  Cutoff (a.u.)     ;  Optimizable (0=NO; 1=YES)
@@ -39,7 +39,7 @@ START JASTROW
  Impose electron-nucleus cusp (0=NO; 1=YES)
    0
  Expansion order
-   7
+   {chi_term}
  Spin-dep params (0->u=d; 1->u/=d)
    0
  Cutoff (a.u.)     ;  Optimizable (0=NO; 1=YES)
@@ -60,9 +60,9 @@ START JASTROW
  Prevent duplication of chi term (0=NO; 1=YES)
    0
  Electron-nucleus expansion order
-   3
+   {f_term_1}
  Electron-electron expansion order
-   3
+   {f_term_2}
  Spin-dep params (0->uu=dd=ud; 1->uu=dd/=ud; 2->uu/=dd/=ud)
    1
  Cutoff (a.u.)     ;  Optimizable (0=NO; 1=YES)
