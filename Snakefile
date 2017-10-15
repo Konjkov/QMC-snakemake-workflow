@@ -457,9 +457,10 @@ rule VMC_OPT_BF_DATA_JASTROW:
     output:     '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/10000/correlation.data'
     run:
         for file_name in output:
+            jastrow = wildcards.jastrow_rank.split('_')
             with open(file_name, 'w') as f:
-                f.write(open('../correlation.tmpl').read().format())
-                f.write(open('../backflow.tmpl').read().format())
+                f.write(open('../correlation.tmpl').read().format(u_term=jastrow[0], chi_term=jastrow[1], f_term_1=jastrow[2][0], f_term_2=jastrow[2][1]))
+                f.write(open('../backflow.tmpl').read().format(eta_term=3, mu_term=3))
 
 rule VMC_OPT_BF_GWFN:
     input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/10000/.keep'

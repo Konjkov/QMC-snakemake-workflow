@@ -23,7 +23,7 @@ vmc_nconfig_write : {nconfig}         #*! Number of configs to write (Integer)
 vmc_decorr_period : 0              #*! VMC decorrelation period (0 - auto)
 
 # OPTIMIZATION
-opt_method        : emin           #*! Opt method (varmin/madmin/emin/...)
+opt_method        : {method}           #*! Opt method (varmin/madmin/emin/...)
 opt_cycles        : {cycles}              #*! Number of optimization cycles (Integer)
 opt_jastrow       : T              #*! Optimize Jastrow factor (Boolean)
 
