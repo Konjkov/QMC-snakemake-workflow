@@ -2,6 +2,10 @@ import os
 from math import sqrt
 from datetime import timedelta
 
+# 10.1103/PhysRevA.44.7071 (TABLE XI)
+exact_atomic_energy = {'h': -0.5, 'be': -14.66736, 'b': -24.65391, 'c': -37.8450, 'n': -54.5892, 'o': -75.0673, 'f': -99.7339,
+                       'al': -242.346, 'si': -289.359, 'p':  -341.259, 's': -398.110, 'cl': -460.148}
+
 ATOMS = {'h': 0.0, 'be': 0.0, 'b': 0.0, 'c': 0.0, 'n': 0.0, 'o': 0.0, 'f': 0.0, 'al': 0.0, 'si': 0.0, 'p': 0.0, 's': 0.0, 'cl': 0.0}
 
 # J. Phys. Chem. A, 2008, 112 (50), pp 12868–12886 DOI: 10.1021/jp801805p (TABLE 2 / TAEe^a)
@@ -87,11 +91,10 @@ def vmc_energy(molecule, method, basis):
     """
 
     regexp = re.compile(' (?P<energy>[-+]?\d+\.\d+) \+/- (?P<energy_error>[-+]?\d+\.\d+)      Correlation time method')
-    energy, energy_error = 0.0, 0.0
     with open(os.path.join(molecule, method, basis, 'VMC', '10000000', 'out'), 'r') as vmc_out:
         # we are only interested in the last occurrence
-        energy, energy_error = map(float, re.findall(regexp, vmc_out.read())[-1])
-    return energy, energy_error
+        value, error = map(float, re.findall(regexp, vmc_out.read())[-1])
+    return value, error
 
 def vmc_opt_energy(molecule, method, basis):
     """Get VMC energy with JASTROW optimisation.
@@ -99,11 +102,21 @@ def vmc_opt_energy(molecule, method, basis):
     """
 
     regexp = re.compile(' (?P<energy>[-+]?\d+\.\d+) \+/- (?P<energy_error>[-+]?\d+\.\d+)      Correlation time method')
-    energy, energy_error = 0.0, 0.0
     with open(os.path.join(molecule, method, basis, 'VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9', 'out'), 'r') as vmc_opt_out:
         # we are only interested in the last occurrence
-        energy, energy_error = map(float, re.findall(regexp, vmc_opt_out.read())[-1])
-    return energy, energy_error
+        value, error = map(float, re.findall(regexp, vmc_opt_out.read())[-1])
+    return value, error
+
+def vmc_opt_variance(molecule, method, basis):
+    """Get VMC variance with JASTROW optimisation.
+      Sample variance of E_L (au^2/sim.cell) : 3.169677109628 +- 0.034986257092
+    """
+
+    regexp = re.compile('Sample variance of E_L \(au\^2/sim.cell\) : (?P<variance>[-+]?\d+\.\d+) \+- (?P<variance_error>[-+]?\d+\.\d+)')
+    with open(os.path.join(molecule, method, basis, 'VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9', 'out'), 'r') as vmc_opt_out:
+        # we are only interested in the last occurrence
+        value, error = map(float, re.findall(regexp, vmc_opt_out.read())[-1])
+    return value, error
 
 def dmc_energy(molecule, method, basis):
     """Get DMC energy.
@@ -113,12 +126,63 @@ def dmc_energy(molecule, method, basis):
     dir = os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')
     open(os.path.join(dir, '.casino_finished'), 'r').close()
     regexp = re.compile('mean:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
-    energy, energy_error = 0.0, 0.0
     with open(os.path.join(dir, 'out'), 'r') as dmc_out:
         # we are only interested in the last occurrence
-        energy, energy_error = map(float, re.findall(regexp, dmc_out.read())[-1])
-    return energy, energy_error
+        value, error = map(float, re.findall(regexp, dmc_out.read())[-1])
+    return value, error
 
+def dmc_stderr(molecule, method, basis):
+    """Get DMC standard error.
+          stderr:      0.000906128433 +/-       0.000046917552
+    """
+
+    dir = os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')
+    open(os.path.join(dir, '.casino_finished'), 'r').close()
+    regexp = re.compile('stderr:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
+    with open(os.path.join(dir, 'out'), 'r') as dmc_out:
+        # we are only interested in the last occurrence
+        value, error = map(float, re.findall(regexp, dmc_out.read())[-1])
+    return value, error
+
+def dmc_ncorr(molecule, method, basis):
+    """Get DMC correlation N.
+          N_corr:      0.000906128433 +/-       0.000046917552
+    """
+
+    dir = os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')
+    open(os.path.join(dir, '.casino_finished'), 'r').close()
+    regexp = re.compile('N_corr:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
+    with open(os.path.join(dir, 'out'), 'r') as dmc_out:
+        # we are only interested in the last occurrence
+        value, error = map(float, re.findall(regexp, dmc_out.read())[-1])
+    return value, error
+
+def dmc_stats_nstep(molecule, method, basis):
+    """Get DMC statistic accumulation steps.
+          dmc_stats_nstep   : 96000
+    """
+
+    dir = os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')
+    regexp = re.compile('dmc_stats_nstep   :\s+(?P<nstep>\d+)')
+    with open(os.path.join(dir, 'input'), 'r') as dmc_input:
+        # we are only interested in the last occurrence
+        value = int(re.findall(regexp, dmc_input.read())[-1])
+    return value
+
+def TAE_energy(molecule, method, basis):
+    """Total atomization energy (kcal/mol)"""
+
+    atom_list = get_atom_list(molecule)
+    energy, energy_error = dmc_energy(molecule, method, basis)
+
+    tae_energy = 630.0 * (energy - sum([atom_list[atom]*dmc_energy(atom, method, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
+
+    if molecule in ATOMS:
+        tae_energy_error = 630.0 * energy_error
+    else:
+        tae_energy_error = 630.0 * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, method, basis)[1]**2 for atom in atom_list]))
+
+    return tae_energy, tae_energy_error
 
 wildcard_constraints:
     molecule='[-\w]+',
@@ -307,13 +371,34 @@ rule VMC_OPT_DIRS:
 
 ####################################################################################################################
 
+rule VMC_DMC_VARIANCE_PLOT:
+    output:     'vmc_dmc_variance.dat'
+    params:
+        method = 'HF',
+        basis = 'cc-pVQZ'
+    run:
+        with open(output[0], 'w') as output_file:
+            print('# molecule      VMC_variance VMC_var_error  DMC_variance  DMC_var_error', file=output_file)
+            for molecule in MOLECULES:
+                try:
+                    vmc_variance, vmc_variance_error = vmc_opt_variance(molecule, params.method, params.basis)
+                    dmc_energy_stderr, dmc_energy_stderr_error = dmc_stderr(molecule, params.method, params.basis)
+                    n_corr, n_corr_error = dmc_ncorr(molecule, params.method, params.basis)
+                    n_step = dmc_stats_nstep(molecule, params.method, params.basis)
+                except FileNotFoundError:
+                    continue
+                print('{:12} {:>13.6f} {:>13.6f} {:>13.6f} {:>13.6f}'.format(
+                    molecule,
+                    vmc_variance,
+                    vmc_variance_error,
+                    dmc_energy_stderr**2 * 1024 * n_step/n_corr,
+                    (2 * dmc_energy_stderr_error * dmc_energy_stderr/n_corr + dmc_energy_stderr**2 * n_corr_error/n_corr**2) * 1024 * n_step), file=output_file)
+
 rule VMC_DMC_PLOT:
     output:     'dmc_energy.dat'
     params:
         method = 'HF',
-        basis = 'cc-pVQZ',
-        atomic_energy = {'h': -0.5, 'be': -14.6622, 'b': -24.6462, 'c': -37.83467, 'n': -54.57604, 'o': -75.05204, 'f': -99.7171,
-                         'al': -242.326, 'si': -289.334, 'p':  -341.218, 's': -398.06, 'cl': -460.096}
+        basis = 'cc-pVQZ'
     run:
         with open(output[0], 'w') as output_file:
             print('# molecule\\atoms  H   Be  B   C   N   O   F   Al  Si  P   S   Cl  E(DMC)+TAE(au)  DMC_error(au)  TAE-TAE(DMC)(kcal/mol) TAE(DMC)_error(kcal/mol)', file=output_file)
@@ -321,6 +406,7 @@ rule VMC_DMC_PLOT:
                 atom_list = get_atom_list(molecule)
                 try:
                     energy, energy_error = dmc_energy(molecule, params.method, params.basis)
+                    tae_energy, tae_energy_error = TAE_energy(molecule, params.method, params.basis)
                 except FileNotFoundError:
                     continue
                 print('{:12}    {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3}  {:>13.6f} {:>13.6f}      {:>13.6f}          {:>13.6f}'.format(
@@ -339,9 +425,8 @@ rule VMC_DMC_PLOT:
                     atom_list['cl'],
                     energy + MOLECULES[molecule]/630.0,
                     energy_error,
-                    630.0 * (energy - sum([atom_list[atom]*dmc_energy(atom, params.method, params.basis)[0] for atom in atom_list])) + MOLECULES[molecule],
-#                    630.0 * (energy - sum([atom_list[atom]*params.atomic_energy[atom] for atom in atom_list])) + MOLECULES[molecule],
-                    630.0 * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, params.method, params.basis)[1]**2 for atom in atom_list]))),
+                    tae_energy,
+                    tae_energy_error),
                     file=output_file
                )
 
