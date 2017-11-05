@@ -1,5 +1,6 @@
 import os
 from math import sqrt
+from operator import itemgetter
 from datetime import timedelta
 
 # 10.1103/PhysRevA.44.7071 (TABLE XI)
@@ -402,6 +403,7 @@ rule VMC_DMC_PLOT:
     run:
         with open(output[0], 'w') as output_file:
             print('# molecule\\atoms  H   Be  B   C   N   O   F   Al  Si  P   S   Cl  E(DMC)+TAE(au)  DMC_error(au)  TAE-TAE(DMC)(kcal/mol) TAE(DMC)_error(kcal/mol)', file=output_file)
+            dmc = []
             for molecule in MOLECULES:
                 atom_list = get_atom_list(molecule)
                 try:
@@ -409,26 +411,21 @@ rule VMC_DMC_PLOT:
                     tae_energy, tae_energy_error = TAE_energy(molecule, params.method, params.basis)
                 except FileNotFoundError:
                     continue
-                print('{:12}    {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3} {:3}  {:>13.6f} {:>13.6f}      {:>13.6f}          {:>13.6f}'.format(
-                    molecule,
-                    atom_list['h'],
-                    atom_list['be'],
-                    atom_list['b'],
-                    atom_list['c'],
-                    atom_list['n'],
-                    atom_list['o'],
-                    atom_list['f'],
-                    atom_list['al'],
-                    atom_list['si'],
-                    atom_list['p'],
-                    atom_list['s'],
-                    atom_list['cl'],
-                    energy + MOLECULES[molecule]/630.0,
-                    energy_error,
-                    tae_energy,
-                    tae_energy_error),
-                    file=output_file
-               )
+                result = {
+                    'molecule': molecule,
+                    'energy': energy + MOLECULES[molecule]/630.0,
+                    'energy_error': energy_error,
+                    'tae_energy': tae_energy,
+                    'tae_energy_error': tae_energy_error
+                }
+                result.update(atom_list)
+                dmc.append(result)
+            dmc = sorted(dmc, key=itemgetter('tae_energy'))
+            for item in dmc:
+                print(
+                    '{molecule:12}    {h:3} {be:3} {b:3} {c:3} {n:3} {o:3} {f:3} {al:3} {si:3} {p:3} {s:3} {cl:3}  '
+                    '{energy:>13.6f} {energy_error:>13.6f}      {tae_energy:>13.6f}          {tae_energy_error:>13.6f}'.format(**item), file=output_file
+                )
 
 rule VMC_PLOT:
     output:     'hf_vmc_energy.dat'

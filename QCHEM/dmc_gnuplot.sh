@@ -19,3 +19,6 @@ cl = -460.1480
 # Fitting
 set dummy x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12
 fit f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12) "dmc_energy.dat" using 2:3:4:5:6:7:8:9:10:11:12:13:14 via h, be, b, c, n, o, f, al, si, p, s, cl
+
+plot "dmc_energy.dat" using :16 with points notitle, \
+     "dmc_energy.dat" using :16:1 with labels offset -2.0,-0.5 font "arial,8" notitle
