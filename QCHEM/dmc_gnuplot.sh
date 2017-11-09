@@ -26,6 +26,12 @@ n = 18 # the number of bins
 binwidth = (Max-Min)/n # binwidth
 bin(x) = binwidth*(floor((x-Min)/binwidth)+0.5) + Min
 
+set xlabel "TAE(literature)-TAE(calculated)(kcal/mol)"
+set ylabel "molecules"
+
 set boxwidth binwidth
+
+#set term png
+#set output "dmc_energy.png"
 
 plot 'dmc_energy.dat' using (bin($16)):(1.0) smooth freq with boxes notitle
