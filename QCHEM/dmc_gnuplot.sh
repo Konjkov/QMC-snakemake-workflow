@@ -20,5 +20,12 @@ cl = -460.1480
 set dummy x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12
 fit f(x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12) "dmc_energy.dat" using 2:3:4:5:6:7:8:9:10:11:12:13:14 via h, be, b, c, n, o, f, al, si, p, s, cl
 
-plot "dmc_energy.dat" using :16 with points notitle, \
-     "dmc_energy.dat" using :16:1 with labels offset -2.0,-0.5 font "arial,8" notitle
+Min = -10.0 # where binning starts
+Max =  35.0 # where binning ends
+n = 18 # the number of bins
+binwidth = (Max-Min)/n # binwidth
+bin(x) = binwidth*(floor((x-Min)/binwidth)+0.5) + Min
+
+set boxwidth binwidth
+
+plot 'dmc_energy.dat' using (bin($16)):(1.0) smooth freq with boxes notitle
