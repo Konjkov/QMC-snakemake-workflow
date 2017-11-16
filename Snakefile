@@ -130,20 +130,6 @@ def dmc_energy(molecule, method, basis):
     with open(os.path.join(dir, 'out'), 'r') as dmc_out:
         # we are only interested in the last occurrence
         value, error = map(float, re.findall(regexp, dmc_out.read())[-1])
-    if molecule == 'be':
-        return -14.667336805296, 0.0
-    if molecule == 'b':
-        return -24.648042741821, 0.0
-    if molecule == 'c':
-        return -37.834677195661, 0.0
-    if molecule == 'al':
-        return -242.325209174234, 0.0
-    if molecule == 'o3':
-        return -225.344663124894, 0.001225828454
-        return -225.358988006893, 0.000955799407
-    if molecule == 'c2':
-        return -75.861798256427, 0.002091583480
-        return -75.870748379319, 0.000748479150
     return value, error
 
 def dmc_stderr(molecule, method, basis):
