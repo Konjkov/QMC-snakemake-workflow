@@ -106,6 +106,13 @@ rule MOLDEN:
                      ln -s mol.mp2nat mol.mp2nat.gbw &&
                      {ORCA_PATH}/orca_2mkl mol.mp2nat -molden &&
                      ln -s mol.mp2nat.molden.input mol.molden.input""")
+        if wildcards.method == 'OOCCD':
+            shell("""export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
+                     export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
+                     cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} &&
+                     ln -s mol.mdci.optorb mol.mdci.gbw &&
+                     {ORCA_PATH}/orca_2mkl mol.mdci -molden &&
+                     ln -s mol.mp2nat.molden.input mol.molden.input""")
         else:
             shell("""export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
                      export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
@@ -180,6 +187,17 @@ rule ORCA_INPUT:
                         extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
                         extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
                         method='OO-RI-MP2',
+                        charge=charge,
+                        multiplicity=multiplicity,
+                        procs='! PAL{}'.format(PROCS)
+                    ))
+                elif wildcards.method == 'OOCCD':
+                    f.write(open('orca_oo_ccd.tmpl').read().format(
+                        basis=wildcards.basis,
+                        aux_basis='cc-pVQZ/C',
+                        extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
+                        extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
+                        method='OOCCD',
                         charge=charge,
                         multiplicity=multiplicity,
                         procs='! PAL{}'.format(PROCS)
