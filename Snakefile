@@ -86,6 +86,29 @@ def get_atom_list(molecule):
                 result[atom_symbol] += 1
         return result
 
+def get_ae_cutoffs(molecule):
+    with open(os.path.join('..', 'chem_database', molecule+'.in'), 'r') as input_geometry:
+        i = 0
+        result = []
+        for line in input_geometry:
+            if line.startswith(' '):
+                i += 1
+                result.append('{i}         {i}         0.7                          1'.format(i=i))
+        return '\n  '.join(result)
+
+def get_atom_labels(molecule):
+    """Returns number of atoms in a set and list of labels for this set.
+    Used for generic JASTROW format.
+    """
+    with open(os.path.join('..', 'chem_database', molecule+'.in'), 'r') as input_geometry:
+        i = 0
+        result = []
+        for line in input_geometry:
+            if line.startswith(' '):
+                i += 1
+                result.append('{i}'.format(i=i))
+        return i, ' '.join(result)
+
 def vmc_energy(molecule, method, basis):
     """Get VMC energy without JASTROW optimisation.
      -152.988424660763 +/- 0.003047553900      Correlation time method
@@ -97,13 +120,13 @@ def vmc_energy(molecule, method, basis):
         value, error = map(float, re.findall(regexp, vmc_out.read())[-1])
     return value, error
 
-def vmc_opt_energy(molecule, method, basis):
+def vmc_opt_energy(molecule, method, basis, opt_method):
     """Get VMC energy with JASTROW optimisation.
      -153.693436512511 +/- 0.003006326588      Correlation time method
     """
 
     regexp = re.compile(' (?P<energy>[-+]?\d+\.\d+) \+/- (?P<energy_error>[-+]?\d+\.\d+)      Correlation time method')
-    with open(os.path.join(molecule, method, basis, 'VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9', 'out'), 'r') as vmc_opt_out:
+    with open(os.path.join(molecule, method, basis, opt_method, 'emin', 'casl', '8_8_44', '1000000_9', 'out'), 'r') as vmc_opt_out:
         # we are only interested in the last occurrence
         value, error = map(float, re.findall(regexp, vmc_opt_out.read())[-1])
     return value, error
@@ -195,14 +218,7 @@ wildcard_constraints:
 
 ####################################################################################################################
 
-rule VMC_DMC_DATA_RUN:
-    input:      '{path}/VMC_DMC/{jastrow_opt_method}/data/{jastrow_rank}/tmax_2_{nconfig}_1/input',
-                '{path}/VMC_DMC/{jastrow_opt_method}/data/{jastrow_rank}/tmax_2_{nconfig}_1/gwfn.data',
-                '{path}/VMC_DMC/{jastrow_opt_method}/data/{jastrow_rank}/tmax_2_{nconfig}_1/correlation.data',
-    output:     '{path}/VMC_DMC/{jastrow_opt_method}/data/{jastrow_rank}/tmax_2_{nconfig}_1/out'
-    shell:      'cd {wildcards.path}/VMC_DMC/{wildcards.jastrow_opt_method}/data/{wildcards.jastrow_rank}/tmax_2_1024_1 && runqmc'
-
-rule VMC_DMC_CASL_RUN:
+rule VMC_DMC_RUN:
     input:      '{path}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/input',
                 '{path}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/gwfn.data',
                 '{path}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/parameters.casl',
@@ -211,10 +227,10 @@ rule VMC_DMC_CASL_RUN:
 
 
 rule VMC_DMC_INPUT:
-    input:      '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/tmax_2_{nconfig}_1/.keep',
-                '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/out',
+    input:      '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep',
+                '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/out',
                 '{molecule}/{method}/{basis}/VMC/10000000/out'
-    output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/tmax_2_{nconfig}_1/input'
+    output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/input'
     params:
         dt_relative_step = 2.0,
         stderr = 0.001,
@@ -224,30 +240,19 @@ rule VMC_DMC_INPUT:
         magic_const = 1.5/6.0
     run:
         for file_name in output:
-            if wildcards.jastrow_type == 'casl':
-                gjastrow = 'T'
-            elif wildcards.jastrow_type == 'data':
-                gjastrow = 'F'
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
             gwfn_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'gwfn.data')
             hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis)
-            vmc, _ = vmc_opt_energy(wildcards.molecule, wildcards.method, wildcards.basis)
+            vmc, _ = vmc_opt_energy(wildcards.molecule, wildcards.method, wildcards.basis, 'VMC_OPT')
             dtdmc = 1.0/(get_max_Z(gwfn_file)**2 * 3.0 * params.dt_relative_step)
             nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
             nstep=max(50000, int(round(nstep, -3)))
             with open(file_name, 'w') as f:
                 f.write(open('../vmc_dmc.tmpl').read().format(
-                    neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep,
-                    nblock=nstep // 1000, gjastrow=gjastrow
+                    neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000
                 ))
 
-rule VMC_DMC_DATA_JASTROW:
-    input:      '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/10000/out',
-                '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/data/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
-    output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/data/{jastrow_rank}/tmax_2_{nconfig}_1/correlation.data'
-    shell:      'ln -s ../../../../../VMC_OPT/{wildcards.jastrow_opt_method}/data/{wildcards.jastrow_rank}/10000/correlation.out.9 {output}'
-
-rule VMC_DMC_CASL_JASTROW:
+rule VMC_DMC_JASTROW:
     input:      '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/out',
                 '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
     output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/parameters.casl'
@@ -255,25 +260,18 @@ rule VMC_DMC_CASL_JASTROW:
 
 rule VMC_DMC_GWFN:
     input:      '{molecule}/{method}/{basis}/gwfn.data',
-                '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
-    output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/tmax_2_{nconfig}_1/gwfn.data'
+                '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/gwfn.data'
     shell:      'ln -s ../../../../../gwfn.data {output}'
 
 rule VMC_DMC_DIRS:
     input:      '{molecule}/{method}/{basis}/gwfn.data'
-    output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
     shell:      'touch {output}'
 
 ####################################################################################################################
 
-rule VMC_OPT_DATA_ENERGY_RUN:
-    input:      '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/input',
-                '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/gwfn.data',
-                '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/correlation.data'
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/out'
-    shell:      'cd {wildcards.path}/VMC_OPT/{wildcards.jastrow_opt_method}/data/{wildcards.jastrow_rank}/1000000_9 && runqmc'
-
-rule VMC_OPT_CASL_ENERGY_RUN:
+rule VMC_OPT_ENERGY_RUN:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/input',
                 '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/gwfn.data',
                 '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/parameters.casl'
@@ -281,48 +279,32 @@ rule VMC_OPT_CASL_ENERGY_RUN:
     shell:      'cd {wildcards.path}/VMC_OPT/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/1000000_9 && runqmc'
 
 rule VMC_OPT_ENERGY_INPUT:
-    input:      '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/.keep'
-    output:     '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/input'
+    input:      '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/input'
     run:
         for file_name in output:
-            if wildcards.jastrow_type == 'casl':
-                gjastrow = 'T'
-            elif wildcards.jastrow_type == 'data':
-                gjastrow = 'F'
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
             with open(file_name, 'w') as f:
-                f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, gjastrow=gjastrow))
+                f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule))
 
-rule VMC_OPT_DATA_ENERGY_JASTROW:
-    input:      '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/10000/out'
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/correlation.data'
-    shell:      'ln -s ../10000/correlation.out.9 {output}'
-
-rule VMC_OPT_CASL_ENERGY_JASTROW:
+rule VMC_OPT_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/out'
     output:     '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/parameters.casl'
     shell:      'ln -s ../10000/parameters.9.casl {output}'
 
 rule VMC_OPT_ENERGY_GWFN:
-    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/.keep'
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/gwfn.data'
+    input:      '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/.keep'
+    output:     '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/gwfn.data'
     shell:      'ln -s ../../../../../gwfn.data {output}'
 
 rule VMC_OPT_ENERGY_DIRS:
     input:      '{path}/gwfn.data'
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/.keep'
+    output:     '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/.keep'
     shell:      'touch {output}'
 
 ####################################################################################################################
 
-rule VMC_OPT_DATA_RUN:
-    input:      '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/10000/input',
-                '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/10000/gwfn.data',
-                '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/10000/correlation.data',
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/10000/out'
-    shell:      'cd {wildcards.path}/VMC_OPT/{wildcards.jastrow_opt_method}/data/{wildcards.jastrow_rank}/10000 && runqmc'
-
-rule VMC_OPT_CASL_RUN:
+rule VMC_OPT_RUN:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/input',
                 '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/gwfn.data',
                 '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/parameters.casl',
@@ -342,16 +324,7 @@ rule VMC_OPT_INPUT:
             with open(file_name, 'w') as f:
                 f.write(open('../vmc_opt.tmpl').read().format(neu=neu, ned=ned, nconfig=10000, method=wildcards.jastrow_opt_method, cycles=9, molecule=wildcards.molecule, gjastrow=gjastrow))
 
-rule VMC_OPT_DATA_JASTROW:
-    input:      '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/10000/.keep'
-    output:     '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/data/{jastrow_rank}/10000/correlation.data'
-    run:
-        for file_name in output:
-            jastrow = wildcards.jastrow_rank.split('_')
-            with open(file_name, 'w') as f:
-                f.write(open('../correlation.tmpl').read().format(u_term=jastrow[0], chi_term=jastrow[1], f_term_1=jastrow[2][0], f_term_2=jastrow[2][1]))
-
-rule VMC_OPT_CASL_JASTROW:
+rule VMC_OPT_JASTROW:
     input:      '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/.keep'
     output:     '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/parameters.casl'
     run:
@@ -469,36 +442,86 @@ rule VMC_DIRS:
 
 ####################################################################################################################
 
-rule VMC_OPT_BF_DATA_ENERGY_RUN:
-    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/input',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/gwfn.data',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/correlation.data'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/out'
-    shell:      'cd {wildcards.path}/VMC_OPT_BF/{wildcards.jastrow_opt_method}/data/{wildcards.jastrow_rank}/1000000_9 && runqmc'
+rule VMC_DMC_BF_RUN:
+    input:      '{path}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/input',
+                '{path}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/gwfn.data',
+                '{path}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/correlation.data',
+                '{path}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/parameters.casl',
+    output:     '{path}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/out'
+    shell:      'cd {wildcards.path}/VMC_DMC_BF/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/tmax_2_1024_1 && runqmc'
 
-rule VMC_OPT_BF_CASL_ENERGY_RUN:
+rule VMC_DMC_BF_INPUT:
+    input:      '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep',
+                '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/out',
+                '{molecule}/{method}/{basis}/VMC/10000000/out'
+    output:     '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/input'
+    params:
+        dt_relative_step = 2.0,
+        stderr = 0.001,
+        # roughly
+        # nstep ~ 1.5 * (E(VMC) - E(DMC))/(nconfig*dtdmc*stderr*stderr)
+        # (E(VMC) - E(DMC)) ~ 6 * (E(HF) - E(VMC))
+        magic_const = 1.5/6.0
+    run:
+        for file_name in output:
+            neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
+            gwfn_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'gwfn.data')
+            hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis)
+            vmc, _ = vmc_opt_energy(wildcards.molecule, wildcards.method, wildcards.basis, 'VMC_OPT_BF')
+            dtdmc = 1.0/(get_max_Z(gwfn_file)**2 * 3.0 * params.dt_relative_step)
+            nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
+            nstep=max(50000, int(round(nstep, -3)))
+            with open(file_name, 'w') as f:
+                f.write(open('../vmc_dmc_bf.tmpl').read().format(
+                    neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000
+                ))
+
+rule VMC_DMC_BF_DATA_JASTROW:
+    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/out',
+                '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/correlation.data'
+    shell:      'ln -s ../../../../../VMC_OPT_BF/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/10000/correlation.out.9 {output}'
+
+rule VMC_DMC_BF_CASL_JASTROW:
+    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/out',
+                '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/parameters.casl'
+    shell:      'ln -s ../../../../../VMC_OPT_BF/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/10000/parameters.9.casl {output}'
+
+rule VMC_DMC_BF_GWFN:
+    input:      '{molecule}/{method}/{basis}/gwfn.data',
+                '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/gwfn.data'
+    shell:      'ln -s ../../../../../gwfn.data {output}'
+
+rule VMC_DMC_BF_DIRS:
+    input:      '{molecule}/{method}/{basis}/gwfn.data'
+    output:     '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
+    shell:      'touch {output}'
+
+####################################################################################################################
+
+
+rule VMC_OPT_BF_ENERGY_RUN:
     input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/input',
                 '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/gwfn.data',
+                '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/correlation.data',
                 '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/parameters.casl'
     output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/out'
     shell:      'cd {wildcards.path}/VMC_OPT_BF/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/1000000_9 && runqmc'
 
 rule VMC_OPT_BF_ENERGY_INPUT:
-    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/.keep'
-    output:     '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/input'
+    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/input'
     run:
         for file_name in output:
-            if wildcards.jastrow_type == 'casl':
-                gjastrow = 'T'
-            elif wildcards.jastrow_type == 'data':
-                gjastrow = 'F'
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
             with open(file_name, 'w') as f:
-                f.write(open('../vmc_opt_energy_bf.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, gjastrow=gjastrow))
+                f.write(open('../vmc_opt_energy_bf.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule))
 
 rule VMC_OPT_BF_DATA_ENERGY_JASTROW:
-    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/10000/out'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/1000000_9/correlation.data'
+    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/out'
+    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/correlation.data'
     shell:      'ln -s ../10000/correlation.out.9 {output}'
 
 rule VMC_OPT_BF_CASL_ENERGY_JASTROW:
@@ -507,23 +530,16 @@ rule VMC_OPT_BF_CASL_ENERGY_JASTROW:
     shell:      'ln -s ../10000/parameters.9.casl {output}'
 
 rule VMC_OPT_BF_ENERGY_GWFN:
-    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/.keep'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/gwfn.data'
+    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/.keep'
+    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/gwfn.data'
     shell:      'ln -s ../../../../../gwfn.data {output}'
 
 rule VMC_OPT_BF_ENERGY_DIRS:
     input:      '{path}/gwfn.data'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/1000000_9/.keep'
+    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/.keep'
     shell:      'touch {output}'
 
 ####################################################################################################################
-
-rule VMC_OPT_BF_DATA_RUN:
-    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/10000/input',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/10000/gwfn.data',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/10000/correlation.data',
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/data/{jastrow_rank}/10000/out'
-    shell:      'cd {wildcards.path}/VMC_OPT_BF/{wildcards.jastrow_opt_method}/data/{wildcards.jastrow_rank}/10000 && runqmc'
 
 rule VMC_OPT_BF_CASL_RUN:
     input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/input',
@@ -534,41 +550,35 @@ rule VMC_OPT_BF_CASL_RUN:
     shell:      'cd {wildcards.path}/VMC_OPT_BF/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/10000 && runqmc'
 
 rule VMC_OPT_BF_INPUT:
-    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/10000/.keep'
-    output:     '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/10000/input'
+    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/input'
     run:
         for file_name in output:
-            if wildcards.jastrow_type == 'casl':
-                gjastrow = 'T'
-            elif wildcards.jastrow_type == 'data':
-                gjastrow = 'F'
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
             with open(file_name, 'w') as f:
-                f.write(open('../vmc_opt_bf.tmpl').read().format(neu=neu, ned=ned, nconfig=10000, method=wildcards.jastrow_opt_method, cycles=9, molecule=wildcards.molecule, gjastrow=gjastrow))
+                f.write(open('../vmc_opt_bf.tmpl').read().format(
+                    neu=neu, ned=ned, nconfig=10000,
+                    method=wildcards.jastrow_opt_method, cycles=9, molecule=wildcards.molecule))
 
 rule VMC_OPT_BF_DATA_JASTROW:
-    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/10000/.keep'
-    output:     '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/10000/correlation.data'
+    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/correlation.data'
     run:
         for file_name in output:
             jastrow = wildcards.jastrow_rank.split('_')
             with open(file_name, 'w') as f:
-                if wildcards.jastrow_type == 'data':
-                    f.write(open('../correlation.tmpl').read().format(u_term=jastrow[0], chi_term=jastrow[1], f_term_1=jastrow[2][0], f_term_2=jastrow[2][1]))
-                ae_cutoffs = (
-                    '1         1         0.7                          1',
-                    '2         2         0.7                          1'
-                )
+                ae_cutoffs = get_ae_cutoffs(wildcards.molecule)
+                number, labels = get_atom_labels(wildcards.molecule)
                 f.write(open('../backflow.tmpl').read().format(
-                    eta_term=2,
-                    mu_number_of_atoms=2, mu_atoms_labels='1 2', mu_term=2,
-                    phi_number_of_atoms=2, phi_atoms_labels='1 2', phi_term_eN=2, phi_term_ee=2,
-                    ae_cutoffs='\n  '.join(ae_cutoffs)))
+                    eta_term=3,
+                    mu_number_of_atoms=number, mu_atom_labels=labels, mu_term=3,
+                    phi_number_of_atoms=number, phi_atom_labels=labels, phi_term_eN=2, phi_term_ee=2,
+                    ae_cutoffs=ae_cutoffs))
 
 
 rule VMC_OPT_BF_CASL_JASTROW:
-    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/10000/.keep'
-    output:     '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/10000/parameters.casl'
+    input:      '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/.keep'
+    output:     '{molecule}/{method}/{basis}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/parameters.casl'
     run:
         for file_name in output:
             jastrow = wildcards.jastrow_rank.split('_')
@@ -577,11 +587,11 @@ rule VMC_OPT_BF_CASL_JASTROW:
 
 
 rule VMC_OPT_BF_GWFN:
-    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/10000/.keep'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/10000/gwfn.data'
+    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/.keep'
+    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/gwfn.data'
     shell:      'ln -s ../../../../../gwfn.data {output}'
 
 rule VMC_OPT_BF_DIRS:
     input:      '{path}/gwfn.data'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_type}/{jastrow_rank}/10000/.keep'
+    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}/10000/.keep'
     shell:      'touch {output}'
