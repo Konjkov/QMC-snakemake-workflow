@@ -112,7 +112,7 @@ rule MOLDEN:
                      cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} &&
                      ln -s mol.mdci.optorb mol.mdci.gbw &&
                      {ORCA_PATH}/orca_2mkl mol.mdci -molden &&
-                     ln -s mol.mp2nat.molden.input mol.molden.input""")
+                     ln -s mol.mdci.molden.input mol.molden.input""")
         else:
             shell("""export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
                      export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
