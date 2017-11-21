@@ -99,7 +99,7 @@ rule MOLDEN:
     input:      '{molecule}/{method}/{basis}/mol.out'
     output:     '{molecule}/{method}/{basis}/mol.molden.input'
     run:
-        if wildcards.method == 'OO-RI-MP2':
+        if wildcards.method == 'OO-RI-MP2' and wildcards.molecule != 'h':
             shell("""export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
                      export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
                      cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} &&
