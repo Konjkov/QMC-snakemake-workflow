@@ -8,7 +8,7 @@ MOLECULES.update(W4_08)
 MOLECULES.update(W4_11)
 MOLECULES.update(ALKANES)
 
-METHODS = ('HF',) # 'B3LYP')
+METHODS = ('HF', 'B3LYP')
 
 
 def hf_energy(molecule, method, basis):
@@ -37,6 +37,10 @@ rule ALL:
         expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
         expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
         expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+
+rule ALL_VMC_DMC_PLOT:
+    input:
+        expand('{method}_dmc_energy.dat', method=('HF', 'B3LYP')),
 
 rule ALL_VMC_DMC:
     input:

@@ -366,9 +366,8 @@ rule VMC_DMC_VARIANCE_PLOT:
                     (2 * dmc_energy_stderr_error * dmc_energy_stderr/n_corr + dmc_energy_stderr**2 * n_corr_error/n_corr**2) * 1024 * n_step), file=output_file)
 
 rule VMC_DMC_PLOT:
-    output:     'dmc_energy.dat'
+    output:     '{method}_dmc_energy.dat'
     params:
-        method = 'HF',
         basis = 'cc-pVQZ'
     run:
         with open(output[0], 'w') as output_file:
@@ -377,8 +376,8 @@ rule VMC_DMC_PLOT:
             for molecule in MOLECULES:
                 atom_list = get_atom_list(molecule)
                 try:
-                    energy, energy_error = dmc_energy(molecule, params.method, params.basis)
-                    tae_energy, tae_energy_error = TAE_energy(molecule, params.method, params.basis)
+                    energy, energy_error = dmc_energy(molecule, wildcards.method, params.basis)
+                    tae_energy, tae_energy_error = TAE_energy(molecule, wildcards.method, params.basis)
                 except FileNotFoundError:
                     continue
                 result = {
