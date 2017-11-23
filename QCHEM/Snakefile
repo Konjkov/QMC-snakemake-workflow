@@ -88,22 +88,18 @@ rule QCHEM_INPUT:
     output:     '{molecule}/{method}/{basis}/mol.in'
     run:
         for file_name in output:
+            algorithm = 'diis'
+            correlation = ''
+            stability_analysis = 'true'
+
             if wildcards.method == 'CCSD':
                 correlation = 'CORRELATION           CCSD'
             elif wildcards.method == 'CCSD_T':
                 correlation = 'CORRELATION           CCSD(T)'
-            else:
-                correlation = ''
             if wildcards.molecule in ('b', 'c', 'o', 'al', 'si', 'sih', 'sif') and wildcards.method in 'B3LYP':
                 algorithm = 'gdm'
-            else:
-                algorithm = 'diis'
-            if wildcards.molecule in ('h2cn', 'c-hooo') and wildcards.method in ('HF', 'CCSD', 'CCSD_T'):
-                unrestricted = 'UNRESTRICTED          false'
-                stability_analysis = 'false'
-            else:
-                unrestricted = ''
-                stability_analysis = 'true'
+            if wildcards.molecule in ('h2cn', 'c-hooo') and wildcards.method in ('HF', 'VOD', 'CCSD', 'CCSD_T'):
+                algorithm = 'gdm'
             if wildcards.molecule == 'h':
                 stability_analysis = 'false'
             with open(file_name, 'w') as f:
@@ -112,7 +108,7 @@ rule QCHEM_INPUT:
                     method=wildcards.method,
                     molecule=wildcards.molecule,
                     algorithm=algorithm,
-                    unrestricted = unrestricted,
+                    unrestricted = '',
                     correlation=correlation,
                     stability_analysis = stability_analysis
                 ))
