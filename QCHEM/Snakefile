@@ -89,26 +89,33 @@ rule QCHEM_INPUT:
     run:
         for file_name in output:
             algorithm = 'diis'
+            method = wildcards.method
             correlation = ''
+            unrestricted = ''
             stability_analysis = 'true'
 
-            if wildcards.method == 'CCSD':
-                correlation = 'CORRELATION           CCSD'
+            if wildcards.method in ('CCSD', 'VOD'):
+                correlation = 'CORRELATION           {}'.format(wildcards.method)
             elif wildcards.method == 'CCSD_T':
+                method = 'CCSD(T)'
                 correlation = 'CORRELATION           CCSD(T)'
-            if wildcards.molecule in ('b', 'c', 'o', 'al', 'si', 'sih', 'sif') and wildcards.method in 'B3LYP':
+            elif wildcards.method == 'VOD_2':
+                method = 'VOD(2)'
+                correlation = 'CORRELATION           VOD(2)'
+            # Set method
+            if wildcards.molecule in ('b', 'c', 'o', 'al', 'si', 'sih', 'sif') and method in 'B3LYP':
                 algorithm = 'gdm'
-            if wildcards.molecule in ('h2cn', 'c-hooo') and wildcards.method in ('HF', 'VOD', 'CCSD', 'CCSD_T'):
+            if wildcards.molecule in ('h2cn', 'c-hooo') and method in ('HF', 'VOD', 'VOD(2)', 'CCSD', 'CCSD(T)'):
                 algorithm = 'gdm'
             if wildcards.molecule == 'h':
                 stability_analysis = 'false'
             with open(file_name, 'w') as f:
                 f.write(open('qchem.tmpl').read().format(
                     basis=wildcards.basis,
-                    method=wildcards.method,
+                    method=method,
                     molecule=wildcards.molecule,
                     algorithm=algorithm,
-                    unrestricted = '',
+                    unrestricted = unrestricted,
                     correlation=correlation,
                     stability_analysis = stability_analysis
                 ))
