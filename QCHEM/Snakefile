@@ -20,7 +20,7 @@ def hf_energy(molecule, method, basis):
 
 def get_up_down(molecule, method, basis):
     """Get up and down electron numbers from QCHEM output file.
-     -152.984984803366 +/- 0.003461753729      Correlation time method
+     There are        2 alpha and        2 beta electrons
     """
 
     regexp = re.compile('There are\s+(?P<alpha>\d+) alpha and\s+(?P<beta>\d+) beta electrons')
