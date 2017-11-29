@@ -40,7 +40,7 @@ rule ALL:
 
 rule ALL_VMC_DMC_PLOT:
     input:
-        expand('{method}_dmc_energy.dat', method=('HF', 'B3LYP')),
+        expand('{method}_dmc_energy.dat', method=('HF', 'B3LYP', 'VOD')),
 
 rule ALL_VMC_DMC:
     input:
@@ -67,7 +67,11 @@ rule ALL_QCHEM:
 rule GWFN:
     input:      '{molecule}/{method}/{basis}/mol.molden'
     output:     '{molecule}/{method}/{basis}/gwfn.data'
-    shell:      'molden2qmc.py 7 {input} {output}'
+    shell:      """if [ "{wildcards.method}" == "VOD" ]
+                     then molden2qmc.py 7 {input} {output} --multideterminant
+                     else molden2qmc.py 7 {input} {output}
+                   fi
+                """
 
 pat1 = '======= MOLDEN-FORMATTED INPUT FILE FOLLOWS ======='
 pat2 = '======= END OF MOLDEN-FORMATTED INPUT FILE ======='
