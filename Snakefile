@@ -142,6 +142,19 @@ def vmc_opt_variance(molecule, method, basis):
         value, error = map(float, re.findall(regexp, vmc_opt_out.read())[-1])
     return value, error
 
+def best_dmc_energy(molecule, basis):
+    """Get best DMC energy
+    """
+    result = 0.0, 0.0
+    for method in next(os.walk(molecule))[1]:
+        try:
+            value, error = dmc_energy(molecule, method, basis)
+            if abs(value) > abs(result[0]):
+                result = value, error
+        except FileNotFoundError:
+            continue
+    return result
+
 def dmc_energy(molecule, method, basis):
     """Get DMC energy.
           mean:   -153.795024411601 +/-       0.001346260888
@@ -199,7 +212,7 @@ def TAE_energy(molecule, method, basis):
     atom_list = get_atom_list(molecule)
     energy, energy_error = dmc_energy(molecule, method, basis)
 
-    tae_energy = 630.0 * (energy - sum([atom_list[atom]*dmc_energy(atom, method, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy = 630.0 * (energy - sum([atom_list[atom]*best_dmc_energy(atom, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
 
     if molecule in ATOMS:
         tae_energy_error = 630.0 * energy_error
@@ -370,26 +383,28 @@ rule VMC_DMC_PLOT:
     params:
         basis = 'cc-pVQZ'
     run:
+        dmc = []
+        # get data
+        for molecule in MOLECULES:
+            atom_list = get_atom_list(molecule)
+            try:
+                energy, energy_error = dmc_energy(molecule, wildcards.method, params.basis)
+                tae_energy, tae_energy_error = TAE_energy(molecule, wildcards.method, params.basis)
+            except FileNotFoundError:
+                continue
+            result = {
+                'molecule': molecule,
+                'energy': energy + MOLECULES[molecule]/630.0,
+                'energy_error': energy_error,
+                'tae_energy': tae_energy,
+                'tae_energy_error': tae_energy_error
+            }
+            result.update(atom_list)
+            dmc.append(result)
+        dmc = sorted(dmc, key=itemgetter('tae_energy'))
+        # print to file
         with open(output[0], 'w') as output_file:
             print('# molecule\\atoms  H   Be  B   C   N   O   F   Al  Si  P   S   Cl  E(DMC)+TAE(au)  DMC_error(au)  TAE-TAE(DMC)(kcal/mol) TAE(DMC)_error(kcal/mol)', file=output_file)
-            dmc = []
-            for molecule in MOLECULES:
-                atom_list = get_atom_list(molecule)
-                try:
-                    energy, energy_error = dmc_energy(molecule, wildcards.method, params.basis)
-                    tae_energy, tae_energy_error = TAE_energy(molecule, wildcards.method, params.basis)
-                except FileNotFoundError:
-                    continue
-                result = {
-                    'molecule': molecule,
-                    'energy': energy + MOLECULES[molecule]/630.0,
-                    'energy_error': energy_error,
-                    'tae_energy': tae_energy,
-                    'tae_energy_error': tae_energy_error
-                }
-                result.update(atom_list)
-                dmc.append(result)
-            dmc = sorted(dmc, key=itemgetter('tae_energy'))
             for item in dmc:
                 print(
                     '{molecule:12}    {h:3} {be:3} {b:3} {c:3} {n:3} {o:3} {f:3} {al:3} {si:3} {p:3} {s:3} {cl:3}  '
