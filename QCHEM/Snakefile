@@ -67,7 +67,7 @@ rule ALL_QCHEM:
 rule GWFN:
     input:      '{molecule}/{method}/{basis}/mol.molden'
     output:     '{molecule}/{method}/{basis}/gwfn.data'
-    shell:      """if [ "{wildcards.method}" == "VOD" ]
+    shell:      """if [[ "{wildcards.method}" =~ ^(VOD|VQCCD)$ ]]
                      then molden2qmc.py 7 {input} {output} --multideterminant
                      else molden2qmc.py 7 {input} {output}
                    fi
