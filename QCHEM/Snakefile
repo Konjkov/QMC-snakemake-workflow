@@ -112,8 +112,12 @@ rule QCHEM_INPUT:
                 algorithm = 'gdm'
             if wildcards.molecule == 'h':
                 stability_analysis = 'false'
+            if wildcards.molecule in ('be', 'be2', 'b2', 'o3') and method in ('HF',):
+                template = 'qchem_unstable.tmpl'
+            else:
+                template = 'qchem.tmpl'
             with open(file_name, 'w') as f:
-                f.write(open('qchem.tmpl').read().format(
+                f.write(open(template).read().format(
                     basis=wildcards.basis,
                     method=method,
                     molecule=wildcards.molecule,
