@@ -212,7 +212,7 @@ def TAE_energy(molecule, method, basis):
     atom_list = get_atom_list(molecule)
     energy, energy_error = dmc_energy(molecule, method, basis)
 
-    tae_energy = 630.0 * (energy - sum([atom_list[atom]*best_dmc_energy(atom, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy = 630.0 * (energy - sum([atom_list[atom]*dmc_energy(molecule, method, basis) for atom in atom_list])) + MOLECULES[molecule]
 
     if molecule in ATOMS:
         tae_energy_error = 630.0 * energy_error
@@ -220,6 +220,19 @@ def TAE_energy(molecule, method, basis):
         tae_energy_error = 630.0 * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, method, basis)[1]**2 for atom in atom_list]))
 
     return tae_energy, tae_energy_error
+
+
+def exact_TAE_energy(molecule, method, basis):
+    """Total atomization energy (kcal/mol) from exact atomic energy"""
+
+    atom_list = get_atom_list(molecule)
+    energy, energy_error = dmc_energy(molecule, method, basis)
+
+    tae_energy = 630.0 * (energy - sum([atom_list[atom]*exact_atomic_energy[atom] for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy_error = 630.0 * energy_error
+
+    return tae_energy, tae_energy_error
+
 
 wildcard_constraints:
     molecule='[-\w]+',
@@ -389,7 +402,8 @@ rule VMC_DMC_PLOT:
             atom_list = get_atom_list(molecule)
             try:
                 energy, energy_error = dmc_energy(molecule, wildcards.method, params.basis)
-                tae_energy, tae_energy_error = TAE_energy(molecule, wildcards.method, params.basis)
+                # tae_energy, tae_energy_error = TAE_energy(molecule, wildcards.method, params.basis)
+                tae_energy, tae_energy_error = exact_TAE_energy(molecule, wildcards.method, params.basis)
             except FileNotFoundError:
                 continue
             result = {
