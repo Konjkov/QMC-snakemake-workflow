@@ -8,13 +8,29 @@ METHOD                {method}
 MAX_SCF_CYCLES        1000
 SCF_CONVERGENCE       8
 SCF_ALGORITHM         {algorithm}
-{unrestricted}
-{correlation}
+UNRESTRICTED          true
 STABILITY_ANALYSIS    true
-SET_ITER              100
+$end
+
+$molecule
+READ                  ../chem_database/{molecule}.in
+$end
+
+@@@
+
+$rem
+BASIS                 {basis}
+METHOD                {method}
+MAX_SCF_CYCLES        1000
+SCF_CONVERGENCE       8
+SCF_ALGORITHM         gdm
+SCF_GUESS             read
+UNRESTRICTED          true
+STABILITY_ANALYSIS    true
 MOLDEN_FORMAT         true
 PRINT_ORBITALS        2000
 $end
 
 $molecule
 READ                  ../chem_database/{molecule}.in
+$end

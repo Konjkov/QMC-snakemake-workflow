@@ -95,7 +95,6 @@ rule QCHEM_INPUT:
             algorithm = 'diis'
             method = wildcards.method
             correlation = ''
-            unrestricted = ''
             stability_analysis = 'true'
 
             if wildcards.method in ('CCSD', 'VOD'):
@@ -119,9 +118,7 @@ rule QCHEM_INPUT:
                     method=method,
                     molecule=wildcards.molecule,
                     algorithm=algorithm,
-                    unrestricted = unrestricted,
                     correlation=correlation,
-                    stability_analysis = stability_analysis
                 ))
 
 rule QCHEM_DIRS:
