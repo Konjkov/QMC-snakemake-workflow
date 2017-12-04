@@ -212,7 +212,7 @@ def TAE_energy(molecule, method, basis):
     atom_list = get_atom_list(molecule)
     energy, energy_error = dmc_energy(molecule, method, basis)
 
-    tae_energy = 630.0 * (energy - sum([atom_list[atom]*dmc_energy(molecule, method, basis) for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy = 630.0 * (energy - sum([atom_list[atom]*dmc_energy(molecule, method, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
 
     if molecule in ATOMS:
         tae_energy_error = 630.0 * energy_error
