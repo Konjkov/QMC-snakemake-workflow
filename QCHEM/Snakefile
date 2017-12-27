@@ -67,12 +67,15 @@ rule ALL_QCHEM:
 
 rule GWFN:
     input:      '{molecule}/{method}/{basis}/mol.molden'
-    output:     '{molecule}/{method}/{basis}/gwfn.data'
-    shell:      """if [[ "{wildcards.method}" =~ ^(OD|VOD|QCCD|VQCCD)$ ]]
-                     then molden2qmc.py 7 {input} {output} --multideterminant
-                     else molden2qmc.py 7 {input} {output}
-                   fi
-                """
+    output:     '{molecule}/{method}{order}/{basis}/gwfn.data'
+    run:
+        method = wildcards.method
+        if method in ('OD', 'VOD', 'QCCD', 'VQCCD') and wildcards.order:
+            order = wildcards.order[1:]
+            shell('ln -s ../../{wildcards.method}/{wildcards.basis}/mol.out {wildcards.molecule}/{wildcards.method}{wildcards.order}/{wildcards.basis}/mol.out')
+            shell('molden2qmc.py 7 {input} {output} --multideterminant --truncate {order}')
+        else:
+            shell('molden2qmc.py 7 {input} {output}')
 
 pat1 = '======= MOLDEN-FORMATTED INPUT FILE FOLLOWS ======='
 pat2 = '======= END OF MOLDEN-FORMATTED INPUT FILE ======='
@@ -94,22 +97,23 @@ rule QCHEM_INPUT:
     run:
         for file_name in output:
             algorithm = 'diis'
-            method = wildcards.method
+            method = wildcards.method.split('_')[0]
             stability_analysis = 'true'
 
-            if wildcards.method == 'CCSD_T':
+            if method == 'CCSD_T':
                 method = 'CCSD(T)'
-            elif wildcards.method == 'VOD_2':
+            elif method == 'VOD_2':
                 method = 'VOD(2)'
-            # Set method
+            # set method
             if wildcards.molecule in ('b', 'c', 'o', 'al', 'si', 'sih', 'sif') and method == 'B3LYP':
                 algorithm = 'gdm'
             if wildcards.molecule in ('h2cn', 'c-hooo') and method in ('HF', 'VOD', 'VOD(2)', 'CCSD', 'CCSD(T)'):
                 algorithm = 'gdm'
             if wildcards.molecule == 'h':
                 stability_analysis = 'false'
-            if False:
-                template = 'qchem_unstable.tmpl'
+            # set template
+            if method in ('OD', 'VOD', 'QCCD', 'VQCCD'):
+                template = 'qchem_multideterminant.tmpl'
             else:
                 template = 'qchem.tmpl'
             with open(file_name, 'w') as f:

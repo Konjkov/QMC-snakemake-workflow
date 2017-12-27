@@ -241,7 +241,8 @@ wildcard_constraints:
     jastrow_type='[_\w]+',
     jastrow_rank='[_\w]+',
     backflow_rank='[_\w]+',
-    jastrow_opt_method='\w+'
+    jastrow_opt_method='\w+',
+    order='_\d+'
 
 ####################################################################################################################
 
