@@ -417,8 +417,14 @@ rule VMC_DMC_PLOT:
             result.update(atom_list)
             dmc.append(result)
         dmc = sorted(dmc, key=itemgetter('tae_energy'))
+        count_tae_energy = sum(1 for item in dmc if item['molecule'] not in ATOMS)
+        sum_tae_energy = sum(item['tae_energy'] for item in dmc if item['molecule'] not in ATOMS)
+        mean_tae_energy = sum_tae_energy / count_tae_energy
+        mad_tae_energy = sum(abs(mean_tae_energy - item['tae_energy']) for item in dmc if item['molecule'] not in ATOMS) / count_tae_energy
         # print to file
         with open(output[0], 'w') as output_file:
+            print('# mean_tae_energy = {}'.format(mean_tae_energy), file=output_file)
+            print('# mad_tae_energy = {}'.format(mad_tae_energy), file=output_file)
             print('# molecule\\atoms  H   Be  B   C   N   O   F   Al  Si  P   S   Cl  E(DMC)+TAE(au)  DMC_error(au)  TAE-TAE(DMC)(kcal/mol) TAE(DMC)_error(kcal/mol)', file=output_file)
             for item in dmc:
                 print(
