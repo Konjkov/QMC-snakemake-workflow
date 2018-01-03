@@ -107,7 +107,9 @@ rule QCHEM_INPUT:
             # set method
             if wildcards.molecule in ('b', 'c', 'o', 'al', 'si', 'sih', 'sif') and method == 'B3LYP':
                 algorithm = 'gdm'
-            if wildcards.molecule in ('h2cn', 'c-hooo') and method in ('HF', 'VOD', 'VOD(2)', 'CCSD', 'CCSD(T)'):
+            if wildcards.molecule in ('h2cn', 'c-hooo') and method in ('HF', 'OD', 'VOD', 'VOD(2)', 'CCSD', 'CCSD(T)') and wildcards.basis == 'cc-pVQZ':
+                algorithm = 'gdm'
+            if wildcards.molecule in ('sih', 'c-hooo') and method in ('HF', 'OD', 'VOD', 'VOD(2)', 'CCSD', 'CCSD(T)') and wildcards.basis == 'cc-pVTZ':
                 algorithm = 'gdm'
             if wildcards.molecule == 'h':
                 stability_analysis = 'false'
