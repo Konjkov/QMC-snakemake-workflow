@@ -403,8 +403,8 @@ rule VMC_DMC_PLOT:
             atom_list = get_atom_list(molecule)
             try:
                 energy, energy_error = dmc_energy(molecule, wildcards.method, params.basis)
-                # tae_energy, tae_energy_error = TAE_energy(molecule, wildcards.method, params.basis)
-                tae_energy, tae_energy_error = exact_TAE_energy(molecule, wildcards.method, params.basis)
+                tae_energy, tae_energy_error = TAE_energy(molecule, wildcards.method, params.basis)
+                # tae_energy, tae_energy_error = exact_TAE_energy(molecule, wildcards.method, params.basis)
             except FileNotFoundError:
                 continue
             result = {
