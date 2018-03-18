@@ -212,12 +212,12 @@ def TAE_energy(molecule, method, basis):
     atom_list = get_atom_list(molecule)
     energy, energy_error = dmc_energy(molecule, method, basis)
 
-    tae_energy = 630.0 * (energy - sum([atom_list[atom]*dmc_energy(atom, method, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy = 627.509 * (energy - sum([atom_list[atom]*dmc_energy(atom, method, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
 
     if molecule in ATOMS:
-        tae_energy_error = 630.0 * energy_error
+        tae_energy_error = 627.509 * energy_error
     else:
-        tae_energy_error = 630.0 * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, method, basis)[1]**2 for atom in atom_list]))
+        tae_energy_error = 627.509 * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, method, basis)[1]**2 for atom in atom_list]))
 
     return tae_energy, tae_energy_error
 
@@ -228,8 +228,8 @@ def exact_TAE_energy(molecule, method, basis):
     atom_list = get_atom_list(molecule)
     energy, energy_error = dmc_energy(molecule, method, basis)
 
-    tae_energy = 630.0 * (energy - sum([atom_list[atom]*exact_atomic_energy[atom] for atom in atom_list])) + MOLECULES[molecule]
-    tae_energy_error = 630.0 * energy_error
+    tae_energy = 627.509 * (energy - sum([atom_list[atom]*exact_atomic_energy[atom] for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy_error = 627.509 * energy_error
 
     return tae_energy, tae_energy_error
 
@@ -409,7 +409,7 @@ rule VMC_DMC_PLOT:
                 continue
             result = {
                 'molecule': molecule,
-                'energy': energy + MOLECULES[molecule]/630.0,
+                'energy': energy + MOLECULES[molecule]/627.509,
                 'energy_error': energy_error,
                 'tae_energy': tae_energy,
                 'tae_energy_error': tae_energy_error
