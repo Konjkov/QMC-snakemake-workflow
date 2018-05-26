@@ -236,7 +236,7 @@ def exact_TAE_energy(molecule, method, basis):
 
 wildcard_constraints:
     molecule='[-\w]+',
-    method='[-\w]+',
+    method='[-\w()]+',
     basis='[-\w]+',
     jastrow_type='[_\w]+',
     jastrow_rank='[_\w]+',
@@ -603,7 +603,8 @@ rule VMC_OPT_BF_DATA_JASTROW:
                 backflow = wildcards.backflow_rank.split('_')
                 ae_cutoffs = get_ae_cutoffs(wildcards.molecule)
                 number, labels = get_atom_labels(wildcards.molecule)
-                f.write(open('../backflow.tmpl').read().format(
+                template = '../backflow.tmpl' if backflow[2] == '00' else '../backflow.all'
+                f.write(open(template).read().format(
                     eta_term=backflow[0],
                     mu_number_of_atoms=number, mu_atom_labels=labels, mu_term=backflow[1],
                     phi_number_of_atoms=number, phi_atom_labels=labels, phi_term_eN=backflow[2][0], phi_term_ee=backflow[2][1],
