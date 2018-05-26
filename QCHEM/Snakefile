@@ -8,8 +8,9 @@ MOLECULES.update(W4_08)
 MOLECULES.update(W4_11)
 MOLECULES.update(ALKANES)
 
-METHODS = ('HF', 'B3LYP')
+METHODS = ['HF', 'B3LYP']
 
+BASES = ['cc-pVQZ']
 
 def hf_energy(molecule, method, basis):
     regexp = re.compile(' Total energy in the final basis set = (?P<energy>[-+]?\d+\.\d+)')
@@ -34,33 +35,33 @@ def get_up_down(molecule, method, basis):
 
 rule ALL:
     input:
-        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_VMC_DMC_PLOT:
     input:
-        expand('{method}_dmc_energy.dat', method=('HF', 'B3LYP', 'VOD')),
+        expand('{method}_dmc_energy.dat', method=METHODS),
 
 rule ALL_VMC_DMC:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_VMC_OPT:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/10000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_VMC:
     input:
-        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_QCHEM:
     input:
-        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 ###################################################################################################################
 
