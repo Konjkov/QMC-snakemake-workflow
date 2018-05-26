@@ -13,9 +13,9 @@ METHODS = ('HF', 'B3LYP')
 
 def hf_energy(molecule, method, basis):
     regexp = re.compile(' Total energy in the final basis set = (?P<energy>[-+]?\d+\.\d+)')
-    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as orca_out:
+    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
         # we are only interested in the last occurrence
-        energy = float(re.findall(regexp, orca_out.read())[-1])
+        energy = float(re.findall(regexp, qchem_out.read())[-1])
     return energy
 
 def get_up_down(molecule, method, basis):
@@ -45,7 +45,6 @@ rule ALL_VMC_DMC_PLOT:
 rule ALL_VMC_DMC:
     input:
         expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=('n2', 'no', 'co', 'nh3', 'h2o', 'hf', 'bh3', 'hcn', 'c2h2'), basis='cc-pVQZ', method='VOD'),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
@@ -67,15 +66,9 @@ rule ALL_QCHEM:
 
 rule GWFN:
     input:      '{molecule}/{method}/{basis}/mol.molden'
-    output:     '{molecule}/{method}{order}/{basis}/gwfn.data'
+    output:     '{molecule}/{method}/{basis}/gwfn.data'
     run:
-        method = wildcards.method
-        if method in ('OD', 'VOD', 'QCCD', 'VQCCD') and wildcards.order:
-            order = wildcards.order[1:]
-            shell('ln -s ../../{wildcards.method}/{wildcards.basis}/mol.out {wildcards.molecule}/{wildcards.method}{wildcards.order}/{wildcards.basis}/mol.out')
-            shell('molden2qmc.py 7 {input} {output} --multideterminant --truncate {order}')
-        else:
-            shell('molden2qmc.py 7 {input} {output}')
+        shell('molden2qmc.py 7 "{input}" "{output}"')
 
 pat1 = '======= MOLDEN-FORMATTED INPUT FILE FOLLOWS ======='
 pat2 = '======= END OF MOLDEN-FORMATTED INPUT FILE ======='
@@ -84,41 +77,22 @@ rule MOLDEN:
     input:      '{molecule}/{method}/{basis}/mol.out'
     output:     '{molecule}/{method}/{basis}/mol.molden'
     params:      pattern='/%(pat1)s/,/%(pat2)s/{/%(pat1)s/!{/%(pat2)s/!p}}' % {'pat1': pat1, 'pat2': pat2}
-    shell:      'sed -n "{params.pattern}" {input} > {output}'
+    shell:      'sed -n "{params.pattern}" "{input}" > "{output}"'
 
 rule QCHEM_RUN:
-    input:      '{molecule}/{method}/{basis}/mol.in'
+    input:      '../chem_database/{molecule}.in'
     output:     '{molecule}/{method}/{basis}/mol.out'
-    shell:      'qchem -nt 16 {input} {output}'
-
-rule QCHEM_INPUT:
-    input:      '{molecule}/{method}/{basis}/.keep'
-    output:     '{molecule}/{method}/{basis}/mol.in'
     run:
-        for file_name in output:
-            algorithm = 'diis'
+        stability_analysis = 'true'
+        input_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.in')
+        for algorithm in ('diis', 'gdm'):
             method = wildcards.method.split('_')[0]
-            stability_analysis = 'true'
-
-            if method == 'CCSD_T':
-                method = 'CCSD(T)'
-            elif method == 'VOD_2':
-                method = 'VOD(2)'
-            # set method
-            if wildcards.molecule in ('b', 'c', 'o', 'al', 'si', 'sih', 'sif') and method == 'B3LYP':
-                algorithm = 'gdm'
-            if wildcards.molecule in ('h2cn', 'c-hooo') and method in ('HF', 'OD', 'VOD', 'VOD(2)', 'CCSD', 'CCSD(T)') and wildcards.basis == 'cc-pVQZ':
-                algorithm = 'gdm'
-            if wildcards.molecule in ('sih', 'c-hooo') and method in ('HF', 'OD', 'VOD', 'VOD(2)', 'CCSD', 'CCSD(T)') and wildcards.basis == 'cc-pVTZ':
-                algorithm = 'gdm'
-            if wildcards.molecule == 'h':
-                stability_analysis = 'false'
             # set template
-            if method in ('OD', 'VOD', 'QCCD', 'VQCCD'):
+            if method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
                 template = 'qchem_multideterminant.tmpl'
             else:
                 template = 'qchem.tmpl'
-            with open(file_name, 'w') as f:
+            with open(input_file, 'w') as f:
                 f.write(open(template).read().format(
                     basis=wildcards.basis,
                     method=method,
@@ -126,8 +100,6 @@ rule QCHEM_INPUT:
                     algorithm=algorithm,
                     stability_analysis = stability_analysis
                 ))
-
-rule QCHEM_DIRS:
-    input:      '../chem_database/{molecule}.in'
-    output:     '{molecule}/{method}/{basis}/.keep'
-    shell:      'touch {output}'
+            shell('qchem -nt 4 "{input_file}" "{output}"')
+            if 'Convergence criterion met' in open(output[0]).read():
+                break
