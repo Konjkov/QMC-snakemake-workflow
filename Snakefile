@@ -421,6 +421,7 @@ rule VMC_DMC_PLOT:
         sum_tae_energy = sum(item['tae_energy'] for item in dmc if item['molecule'] not in ATOMS)
         mean_tae_energy = sum_tae_energy / count_tae_energy
         mad_tae_energy = sum(abs(mean_tae_energy - item['tae_energy']) for item in dmc if item['molecule'] not in ATOMS) / count_tae_energy
+        # mad_tae_energy = sum(abs(item['tae_energy']) for item in dmc if item['molecule'] not in ATOMS) / count_tae_energy
         # print to file
         with open(output[0], 'w') as output_file:
             print('# mean_tae_energy = {}'.format(mean_tae_energy), file=output_file)
