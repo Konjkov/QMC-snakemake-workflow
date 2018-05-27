@@ -5,13 +5,11 @@ from datetime import timedelta
 
 # 10.1103/PhysRevA.44.7071 (TABLE XI)
 
-exact_atomic_energy = {
+ATOMS = {
     'h': -0.5, 'he': -2.903724,
     'li': -7.47806, 'be': -14.66736, 'b': -24.65391, 'c': -37.8450, 'n': -54.5892, 'o': -75.0673, 'f': -99.7339, 'ne': -128.9376,
     'na': -162.2546 , 'mg': -200.0530, 'al': -242.346, 'si': -289.359, 'p':  -341.259, 's': -398.110, 'cl': -460.148, 'ar': -527.54
 }
-
-ATOMS = exact_atomic_energy.keys()
 
 # J. Phys. Chem. A, 2008, 112 (50), pp 12868–12886 DOI: 10.1021/jp801805p (TABLE 2 / TAEe^a)
 # Zero-point exclusive, nonrelativistic, clamped-nuclei total atomization energies. (kcal/mol)
