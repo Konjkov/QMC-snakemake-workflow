@@ -3,55 +3,13 @@ from math import sqrt
 from operator import itemgetter
 from datetime import timedelta
 
+
+kcal = 627.509
+
+
 # 10.1103/PhysRevA.44.7071 (TABLE XI)
 exact_atomic_energy = {'h': -0.5, 'be': -14.66736, 'b': -24.65391, 'c': -37.8450, 'n': -54.5892, 'o': -75.0673, 'f': -99.7339,
                        'al': -242.346, 'si': -289.359, 'p':  -341.259, 's': -398.110, 'cl': -460.148}
-
-ATOMS = {'h': 0.0, 'be': 0.0, 'b': 0.0, 'c': 0.0, 'n': 0.0, 'o': 0.0, 'f': 0.0, 'al': 0.0, 'si': 0.0, 'p': 0.0, 's': 0.0, 'cl': 0.0}
-
-# J. Phys. Chem. A, 2008, 112 (50), pp 12868–12886 DOI: 10.1021/jp801805p (TABLE 2 / TAEe^a)
-# Zero-point exclusive, nonrelativistic, clamped-nuclei total atomization energies. (kcal/mol)
-W4_08_W4 = {'b2h6': 607.02, 'bhf2': 410.97, 'bf3': 470.97, 'c2h6': 713.08, 'h2cn': 343.75, 'nccn': 502.04, 'ch2nh2': 482.28, 'ch3nh': 474.63,
-            'ch3nh2': 582.30, 'cf2': 258.78, 'n2h': 224.86, 't-n2h2': 296.53, 'n2h4': 438.28, 'fo2': 134.72, 'foof': 152.37, 'alf3': 430.97,
-            'si2h6': 535.89, 'p4': 290.58, 'so2': 260.62, 'so3': 346.94, 'ocs': 335.75, 'cs2': 280.78, 's2o': 208.78, 's3': 168.36,
-            's4-c2v': 234.35, 'becl2': 225.27, 'ccl2': 177.36, 'alcl3': 312.65, 'clcn': 285.45, 'oclo': 128.12, 'cloo': 126.39, 'cl2o': 101.46}
-W4_08_W44 = {'h2': 109.49, 'oh': 107.21, 'hf': 141.64, 'h2o': 232.97, 'ch': 84.22,  'ch2-trip': 190.74, 'ch3': 307.87, 'ch4': 420.42,
-             'cch': 266.16, 'c2h2': 405.52, 'nh3': 298.02, 'c2': 147.02, 'n2': 228.48, 'co': 259.73, 'cn': 181.35, 'no': 152.75,
-             'o2': 120.82, 'of': 53.08, 'f2': 39.04, 'ph3': 242.27, 'hs': 87.73, 'h2s': 183.91, 'hcl': 107.50, 'so': 126.47,
-             'clo': 65.45, 'clf': 62.80, 'p2': 117.59, 's2': 104.25, 'cl2': 59.75}
-W4_08_W43 = {'be2': 2.67, 'b2': 67.46, 'bh': 84.99, 'bh3': 281.29, 'bn': 105.24, 'bf': 182.52, 'nh': 83.10, 'nh2': 182.59, 'hcn': 313.42,
-             'hof': 158.65, 'alh': 73.57, 'alh3': 213.17, 'alf': 163.78, 'alcl': 122.62, 'sih': 73.92, 'sih4': 324.95, 'sio': 193.05,
-             'sif': 142.71, 'cs': 172.22}
-W4_08_W42 = {'bn3pi': 105.82, 'cf': 132.72, 'bef2': 309.10, 'ch2c': 359.93, 'ch2ch': 446.08, 'c2h4': 564.10, 'ch2nh': 439.44, 'hco': 279.42,
-             'h2co': 374.66, 'co2': 390.14, 'hno': 205.89, 'no2': 227.88, 'n2o': 270.85, 'o3': 147.43, 'hoo': 175.53, 'hooh': 269.09,
-             'f2o': 93.78, 'hocl': 166.23, 'ssh': 165.13}
-
-W4_08 = {}  #  99 total
-W4_08.update(W4_08_W4)
-W4_08.update(W4_08_W44)
-W4_08.update(W4_08_W43)
-W4_08.update(W4_08_W42)
-
-# J. Phys. Chem. A, 2009, 113 (29), pp 8434–8447   DOI: 10.1021/jp904369h (TABLE 1 / TAEe - relativ. - spin orbit - DBOC) (kcal/mol)
-ALKANES = {'propane': 1007.15 + 0.58 + 0.25 - 0.20 , 'propene': 860.89 + 0.52 + 0.25 - 0.18,
-           'propyne': 704.97 + 0.48 + 0.25 - 0.17, 'allene': 703.45 + 0.47 + 0.25 - 0.15}
-
-# Chemical Physics Letters 510 (2011) 165–178      DOI: 10.1016/j.cplett.2011.05.007 (TABLE 4 / TAEe - relativ. - spin orbit - DBOC) (kcal/mol)
-W4_11 = {'oxirene': 455.33 + 0.46 + 0.39 - 0.11, 'oxirane': 650.70 + 0.56 + 0.39 - 0.13, 'dioxirane': 409.17 + 0.40 + 0.53 - 0.07,
-         'ketene': 532.70 + 0.47 + 0.39 - 0.11, 'acetaldehyde': 677.07 + 0.53 + 0.39 - 0.12,
-         'formic': 500.90 + 0.59 + 0.53 - 0.13, 'acetic': 802.82 + 0.79 + 0.62 - 0.21,
-         'methanol': 512.86 + 0.46 + 0.31 - 0.13, 'ethanol': 810.39 + 0.65 + 0.39 - 0.19, 'glyoxal': 633.91 + 0.65 + 0.62 - 0.07,
-         't-hcoh': 321.87 + 0.33 + 0.31 - 0.04, 'c-hcoh': 317.04 + 0.32 + 0.31 - 0.02,
-         'hcnh': 335.90 + 0.32 + 0.08 - 0.05, 'hocn': 409.36 + 0.52 + 0.31 - 0.12,
-         'honc': 349.45 + 0.50 + 0.31 - 0.11, 'hnco': 434.00 + 0.54 + 0.31 - 0.11, 'hcno': 364.20 + 0.57 + 0.31 - 0.10,
-         'c-n2h2': 290.85 + 0.31 + 0.00 - 0.03, 'hnnn': 331.35 + 0.50 + 0.00 - 0.07, 'hnc': 297.95 + 0.26 + 0.08 - 0.09,
-         't-hono': 311.87 + 0.42 + 0.45 - 0.08, 'c-hono': 311.44 + 0.42 + 0.45 - 0.08,
-         'nh2cl': 246.92 + 0.39 + 0.84 - 0.09, 't-hooo': 232.38 + 0.31 + 0.67 - 0.06, 'c-hooo': 232.18 + 0.31 + 0.67 - 0.06,
-         'ch3f': 422.19 + 0.38 + 0.47 - 0.08, 'ch2f2': 436.34 + 0.54 + 0.85 - 0.07,
-         'cf4': 476.36 + 0.85 + 1.63 - 0.07, 'sih3f': 381.00 + 0.95 + 0.81 - 0.01, 'sif4': 573.96 + 1.90 + 1.97 - 0.05,
-         'c2h3f': 572.95 + 0.51 + 0.55 - 0.12, 'c2h5f': 720.53 + 0.56 + 0.55 - 0.14, 'fccf': 384.50 + 0.72 + 0.94 - 0.08,
-         'hccf': 397.53 + 0.49 + 0.55 - 0.10, 'hcof': 402.62 + 0.49 + 0.69 - 0.06, 'f2co': 418.95 + 0.67 + 1.08 - 0.06,
-         'ch2-sing': 181.18 + 0.09 + 0.08 + 0.10}
 
 
 def atom_charge(symbol):
@@ -212,12 +170,12 @@ def TAE_energy(molecule, method, basis):
     atom_list = get_atom_list(molecule)
     energy, energy_error = dmc_energy(molecule, method, basis)
 
-    tae_energy = 627.509 * (energy - sum([atom_list[atom]*dmc_energy(atom, method, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy = kcal * (energy - sum([atom_list[atom]*dmc_energy(atom, method, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
 
     if molecule in ATOMS:
-        tae_energy_error = 627.509 * energy_error
+        tae_energy_error = kcal * energy_error
     else:
-        tae_energy_error = 627.509 * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, method, basis)[1]**2 for atom in atom_list]))
+        tae_energy_error = kcal * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, method, basis)[1]**2 for atom in atom_list]))
 
     return tae_energy, tae_energy_error
 
@@ -228,8 +186,8 @@ def exact_TAE_energy(molecule, method, basis):
     atom_list = get_atom_list(molecule)
     energy, energy_error = dmc_energy(molecule, method, basis)
 
-    tae_energy = 627.509 * (energy - sum([atom_list[atom]*exact_atomic_energy[atom] for atom in atom_list])) + MOLECULES[molecule]
-    tae_energy_error = 627.509 * energy_error
+    tae_energy = kcal * (energy - sum([atom_list[atom]*exact_atomic_energy[atom] for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy_error = kcal * energy_error
 
     return tae_energy, tae_energy_error
 
@@ -409,7 +367,7 @@ rule VMC_DMC_PLOT:
                 continue
             result = {
                 'molecule': molecule,
-                'energy': energy + MOLECULES[molecule]/627.509,
+                'energy': energy + MOLECULES[molecule]/kcal,
                 'energy_error': energy_error,
                 'tae_energy': tae_energy,
                 'tae_energy_error': tae_energy_error
