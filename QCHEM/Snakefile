@@ -2,14 +2,8 @@ import re
 
 include: '../Snakefile'
 
-MOLECULES = {}
-MOLECULES.update(ATOMS)
-MOLECULES.update(W4_08)
-MOLECULES.update(W4_11)
-MOLECULES.update(ALKANES)
-
+MOLECULES = get_all_inputs()
 METHODS = ['HF', 'B3LYP']
-
 BASES = ['cc-pVQZ']
 
 def hf_energy(molecule, method, basis):

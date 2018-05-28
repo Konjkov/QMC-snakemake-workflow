@@ -6,6 +6,8 @@ from datetime import timedelta
 
 kcal = 627.509
 
+INPUTS_DIR = 'chem_database'
+
 # 10.1103/PhysRevA.44.7071 (TABLE XI)
 ATOMS = {
     'h': -0.5, 'he': -2.903724,
@@ -192,6 +194,11 @@ def exact_TAE_energy(molecule, method, basis):
     tae_energy_error = kcal * energy_error
 
     return tae_energy, tae_energy_error
+
+
+def get_all_inputs():
+    "get file names of all input files"
+    return [os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR)]
 
 
 wildcard_constraints:
