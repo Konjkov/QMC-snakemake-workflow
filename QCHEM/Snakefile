@@ -1,8 +1,10 @@
 import re
+import csv
 
 include: '../Snakefile'
 
 MOLECULES = get_all_inputs()
+ENERGIES = get_reference_energy()
 METHODS = ['HF', 'B3LYP']
 BASES = ['cc-pVQZ']
 

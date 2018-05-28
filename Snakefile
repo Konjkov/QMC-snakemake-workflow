@@ -172,14 +172,15 @@ def TAE_energy(molecule, method, basis):
     """Total atomization energy (kcal/mol)"""
 
     atom_list = get_atom_list(molecule)
+
     energy, energy_error = dmc_energy(molecule, method, basis)
 
-    tae_energy = kcal * (energy - sum([atom_list[atom]*dmc_energy(atom, method, basis)[0] for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy = kcal * (energy - sum([atom_list[atom]*dmc_energy(atom, method, basis)[0] for atom in atom_list if atom_list[atom] > 0])) + ENERGIES[molecule]
 
     if molecule in ATOMS:
         tae_energy_error = kcal * energy_error
     else:
-        tae_energy_error = kcal * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, method, basis)[1]**2 for atom in atom_list]))
+        tae_energy_error = kcal * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, method, basis)[1]**2 for atom in atom_list if atom_list[atom] > 0]))
 
     return tae_energy, tae_energy_error
 
@@ -190,11 +191,16 @@ def exact_TAE_energy(molecule, method, basis):
     atom_list = get_atom_list(molecule)
     energy, energy_error = dmc_energy(molecule, method, basis)
 
-    tae_energy = kcal * (energy - sum([atom_list[atom]*exact_atomic_energy[atom] for atom in atom_list])) + MOLECULES[molecule]
+    tae_energy = kcal * (energy - sum([atom_list[atom]*exact_atomic_energy[atom] for atom in atom_list])) + ENERGIES[molecule]
     tae_energy_error = kcal * energy_error
 
     return tae_energy, tae_energy_error
 
+def get_reference_energy():
+    "get reference energies"
+    with open('../energy.csv', newline='') as Energy:
+        energies = csv.reader(Energy)
+        return {row[0]: float(row[1]) for row in energies}
 
 def get_all_inputs():
     "get file names of all input files"
@@ -351,6 +357,7 @@ rule VMC_DMC_VARIANCE_PLOT:
                     n_corr, n_corr_error = dmc_ncorr(molecule, params.method, params.basis)
                     n_step = dmc_stats_nstep(molecule, params.method, params.basis)
                 except FileNotFoundError:
+
                     continue
                 print('{:12} {:>13.6f} {:>13.6f} {:>13.6f} {:>13.6f}'.format(
                     molecule,
@@ -366,17 +373,17 @@ rule VMC_DMC_PLOT:
     run:
         dmc = []
         # get data
-        for molecule in MOLECULES:
+        for molecule, ref_energy in ENERGIES.items():
             atom_list = get_atom_list(molecule)
             try:
                 energy, energy_error = dmc_energy(molecule, wildcards.method, params.basis)
                 tae_energy, tae_energy_error = TAE_energy(molecule, wildcards.method, params.basis)
                 # tae_energy, tae_energy_error = exact_TAE_energy(molecule, wildcards.method, params.basis)
-            except FileNotFoundError:
-                continue
+            except FileNotFoundError as e:
+                print(e)
             result = {
                 'molecule': molecule,
-                'energy': energy + MOLECULES[molecule]/kcal,
+                'energy': energy + ref_energy/kcal,
                 'energy_error': energy_error,
                 'tae_energy': tae_energy,
                 'tae_energy_error': tae_energy_error
