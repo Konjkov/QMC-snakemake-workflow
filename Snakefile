@@ -6,7 +6,7 @@ from datetime import timedelta
 
 kcal = 627.509
 
-INPUTS_DIR = 'chem_database'
+INPUTS_DIR = '../chem_database'
 
 # 10.1103/PhysRevA.44.7071 (TABLE XI)
 ATOMS = {

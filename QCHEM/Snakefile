@@ -78,7 +78,7 @@ rule QCHEM_RUN:
     input:      '../chem_database/{molecule}.in'
     output:     '{molecule}/{method}/{basis}/mol.out'
     run:
-        stability_analysis = 'true'
+        stability_analysis = 'false'
         input_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.in')
         for algorithm in ('diis', 'gdm'):
             method = wildcards.method.split('_')[0]
