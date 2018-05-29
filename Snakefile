@@ -148,7 +148,7 @@ def dmc_stats_nstep(molecule, method, basis):
 
 def get_all_inputs():
     "get file names of all *.in input files"
-    return [os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR) if os.path.splitext(filename)[1] == 'xyz']
+    return [os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR) if os.path.splitext(filename)[1] == '.xyz']
 
 
 wildcard_constraints:

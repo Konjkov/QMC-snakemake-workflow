@@ -4,10 +4,9 @@ import csv
 include: '../Snakefile'
 
 MOLECULES = get_all_inputs()
-ENERGIES = get_reference_energy()
-METHODS = ['HF', 'B3LYP']
-BASES = ['cc-pVQZ']
-STABILITY_ANALYSIS = false
+METHODS = ['HF']
+BASES = ['cc-pVDZ']
+STABILITY_ANALYSIS = 'false'
 
 def hf_energy(molecule, method, basis):
     regexp = re.compile(' Total energy in the final basis set = (?P<energy>[-+]?\d+\.\d+)')
