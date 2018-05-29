@@ -4,17 +4,7 @@ from operator import itemgetter
 from datetime import timedelta
 
 
-kcal = 627.509
-
 INPUTS_DIR = '../chem_database'
-
-# 10.1103/PhysRevA.44.7071 (TABLE XI)
-ATOMS = {
-    'h': -0.5, 'he': -2.903724,
-    'li': -7.47806, 'be': -14.66736, 'b': -24.65391, 'c': -37.8450, 'n': -54.5892, 'o': -75.0673, 'f': -99.7339, 'ne': -128.9376,
-    'na': -162.2546 , 'mg': -200.0530, 'al': -242.346, 'si': -289.359, 'p':  -341.259, 's': -398.110, 'cl': -460.148, 'ar': -527.54
-}
-
 
 def atom_charge(symbol):
     periodic = ('X', 'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne')
@@ -40,7 +30,7 @@ def get_max_Z(gwfn_file):
     return max(map(int, result.split()))
 
 def get_atom_list(molecule):
-    with open(os.path.join('..', 'chem_database', molecule+'.in'), 'r') as input_geometry:
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
         result = dict.fromkeys(ATOMS, 0)
         for line in input_geometry:
             if line.startswith(' '):
@@ -49,7 +39,7 @@ def get_atom_list(molecule):
         return result
 
 def get_ae_cutoffs(molecule):
-    with open(os.path.join('..', 'chem_database', molecule+'.in'), 'r') as input_geometry:
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
         i = 0
         result = []
         for line in input_geometry:
@@ -62,7 +52,7 @@ def get_atom_labels(molecule):
     """Returns number of atoms in a set and list of labels for this set.
     Used for generic JASTROW format.
     """
-    with open(os.path.join('..', 'chem_database', molecule+'.in'), 'r') as input_geometry:
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
         i = 0
         result = []
         for line in input_geometry:
@@ -104,18 +94,6 @@ def vmc_opt_variance(molecule, method, basis):
         value, error = map(float, re.findall(regexp, vmc_opt_out.read())[-1])
     return value, error
 
-def best_dmc_energy(molecule, basis):
-    """Get best DMC energy
-    """
-    result = 0.0, 0.0
-    for method in next(os.walk(molecule))[1]:
-        try:
-            value, error = dmc_energy(molecule, method, basis)
-            if abs(value) > abs(result[0]):
-                result = value, error
-        except FileNotFoundError:
-            continue
-    return result
 
 def dmc_energy(molecule, method, basis):
     """Get DMC energy.
@@ -168,43 +146,9 @@ def dmc_stats_nstep(molecule, method, basis):
         value = int(re.findall(regexp, dmc_input.read())[-1])
     return value
 
-def TAE_energy(molecule, method, basis):
-    """Total atomization energy (kcal/mol)"""
-
-    atom_list = get_atom_list(molecule)
-
-    energy, energy_error = dmc_energy(molecule, method, basis)
-
-    tae_energy = kcal * (energy - sum([atom_list[atom]*dmc_energy(atom, method, basis)[0] for atom in atom_list if atom_list[atom] > 0])) + ENERGIES[molecule]
-
-    if molecule in ATOMS:
-        tae_energy_error = kcal * energy_error
-    else:
-        tae_energy_error = kcal * sqrt(energy_error**2 + sum([atom_list[atom]*dmc_energy(atom, method, basis)[1]**2 for atom in atom_list if atom_list[atom] > 0]))
-
-    return tae_energy, tae_energy_error
-
-
-def exact_TAE_energy(molecule, method, basis):
-    """Total atomization energy (kcal/mol) from exact atomic energy"""
-
-    atom_list = get_atom_list(molecule)
-    energy, energy_error = dmc_energy(molecule, method, basis)
-
-    tae_energy = kcal * (energy - sum([atom_list[atom]*exact_atomic_energy[atom] for atom in atom_list])) + ENERGIES[molecule]
-    tae_energy_error = kcal * energy_error
-
-    return tae_energy, tae_energy_error
-
-def get_reference_energy():
-    "get reference energies"
-    with open('../energy.csv', newline='') as Energy:
-        energies = csv.reader(Energy)
-        return {row[0]: float(row[1]) for row in energies}
-
 def get_all_inputs():
-    "get file names of all input files"
-    return [os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR)]
+    "get file names of all *.in input files"
+    return [os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR) if os.path.splitext(filename)[1] == 'xyz']
 
 
 wildcard_constraints:
@@ -342,86 +286,6 @@ rule VMC_OPT_DIRS:
 
 ####################################################################################################################
 
-rule VMC_DMC_VARIANCE_PLOT:
-    output:     'vmc_dmc_variance.dat'
-    params:
-        method = 'HF',
-        basis = 'cc-pVQZ'
-    run:
-        with open(output[0], 'w') as output_file:
-            print('# molecule      VMC_variance VMC_var_error  DMC_variance  DMC_var_error', file=output_file)
-            for molecule in MOLECULES:
-                try:
-                    vmc_variance, vmc_variance_error = vmc_opt_variance(molecule, params.method, params.basis)
-                    dmc_energy_stderr, dmc_energy_stderr_error = dmc_stderr(molecule, params.method, params.basis)
-                    n_corr, n_corr_error = dmc_ncorr(molecule, params.method, params.basis)
-                    n_step = dmc_stats_nstep(molecule, params.method, params.basis)
-                except FileNotFoundError:
-
-                    continue
-                print('{:12} {:>13.6f} {:>13.6f} {:>13.6f} {:>13.6f}'.format(
-                    molecule,
-                    vmc_variance,
-                    vmc_variance_error,
-                    dmc_energy_stderr**2 * 1024 * n_step/n_corr,
-                    (2 * dmc_energy_stderr_error * dmc_energy_stderr/n_corr + dmc_energy_stderr**2 * n_corr_error/n_corr**2) * 1024 * n_step), file=output_file)
-
-rule VMC_DMC_PLOT:
-    output:     '{method}_dmc_energy.dat'
-    params:
-        basis = 'cc-pVQZ'
-    run:
-        dmc = []
-        # get data
-        for molecule, ref_energy in ENERGIES.items():
-            atom_list = get_atom_list(molecule)
-            try:
-                energy, energy_error = dmc_energy(molecule, wildcards.method, params.basis)
-                tae_energy, tae_energy_error = TAE_energy(molecule, wildcards.method, params.basis)
-                # tae_energy, tae_energy_error = exact_TAE_energy(molecule, wildcards.method, params.basis)
-            except FileNotFoundError as e:
-                print(e)
-            result = {
-                'molecule': molecule,
-                'energy': energy + ref_energy/kcal,
-                'energy_error': energy_error,
-                'tae_energy': tae_energy,
-                'tae_energy_error': tae_energy_error
-            }
-            result.update(atom_list)
-            dmc.append(result)
-        dmc = sorted(dmc, key=itemgetter('tae_energy'))
-        count_tae_energy = sum(1 for item in dmc if item['molecule'] not in ATOMS)
-        sum_tae_energy = sum(item['tae_energy'] for item in dmc if item['molecule'] not in ATOMS)
-        mean_tae_energy = sum_tae_energy / count_tae_energy
-        mad_tae_energy = sum(abs(mean_tae_energy - item['tae_energy']) for item in dmc if item['molecule'] not in ATOMS) / count_tae_energy
-        # mad_tae_energy = sum(abs(item['tae_energy']) for item in dmc if item['molecule'] not in ATOMS) / count_tae_energy
-        # print to file
-        with open(output[0], 'w') as output_file:
-            print('# mean_tae_energy = {}'.format(mean_tae_energy), file=output_file)
-            print('# mad_tae_energy = {}'.format(mad_tae_energy), file=output_file)
-            print('# molecule\\atoms  H   Be  B   C   N   O   F   Al  Si  P   S   Cl  E(DMC)+TAE(au)  DMC_error(au)  TAE-TAE(DMC)(kcal/mol) TAE(DMC)_error(kcal/mol)', file=output_file)
-            for item in dmc:
-                print(
-                    '{molecule:12}    {h:3} {be:3} {b:3} {c:3} {n:3} {o:3} {f:3} {al:3} {si:3} {p:3} {s:3} {cl:3}  '
-                    '{energy:>13.6f} {energy_error:>13.6f}      {tae_energy:>13.6f}          {tae_energy_error:>13.6f}'.format(**item), file=output_file
-                )
-
-rule VMC_PLOT:
-    output:     'hf_vmc_energy.dat'
-    params:
-        method = 'HF',
-        basis = 'cc-pVQZ'
-    run:
-        with open(output[0], 'w') as output_file:
-            for molecule in MOLECULES:
-                print('{:12} {:>13.6f} {:>13.6f} {:>13.6f}'.format(
-                    molecule,
-                    hf_energy(molecule, params.method, params.basis),
-                    vmc_energy(molecule, params.method, params.basis)[0],
-                    vmc_energy(molecule, params.method, params.basis)[1]),
-                    file=output_file
-               )
 
 rule VMC_RUN:
     input:      '{path}/VMC/10000000/input'

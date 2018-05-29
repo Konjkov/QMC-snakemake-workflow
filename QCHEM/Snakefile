@@ -7,6 +7,7 @@ MOLECULES = get_all_inputs()
 ENERGIES = get_reference_energy()
 METHODS = ['HF', 'B3LYP']
 BASES = ['cc-pVQZ']
+STABILITY_ANALYSIS = false
 
 def hf_energy(molecule, method, basis):
     regexp = re.compile(' Total energy in the final basis set = (?P<energy>[-+]?\d+\.\d+)')
@@ -80,7 +81,7 @@ rule QCHEM_RUN:
     input:      '../chem_database/{molecule}.in'
     output:     '{molecule}/{method}/{basis}/mol.out'
     run:
-        stability_analysis = 'false'
+        stability_analysis = STABILITY_ANALYSIS
         input_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.in')
         for algorithm in ('diis', 'gdm'):
             method = wildcards.method.split('_')[0]
@@ -89,13 +90,16 @@ rule QCHEM_RUN:
                 template = 'qchem_multideterminant.tmpl'
             else:
                 template = 'qchem.tmpl'
+            with open(INPUTS_DIR + '/{molecule}.xyz'.format(molecule=wildcards.molecule), 'r') as f:
+                f.readline()                   # skip first line
+                molecule_data = f.read()[:-1]  # skip last NL
             with open(input_file, 'w') as f:
                 f.write(open(template).read().format(
                     basis=wildcards.basis,
                     method=method,
-                    molecule=wildcards.molecule,
+                    molecule_data=molecule_data,
                     algorithm=algorithm,
-                    stability_analysis = stability_analysis
+                    stability_analysis=stability_analysis
                 ))
             shell('qchem -nt 4 "{input_file}" "{output}"')
             if 'Convergence criterion met' in open(output[0]).read():
