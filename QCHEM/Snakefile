@@ -1,16 +1,12 @@
 import re
+import csv
 
 include: '../Snakefile'
 
-MOLECULES = {}
-MOLECULES.update(ATOMS)
-MOLECULES.update(W4_08)
-MOLECULES.update(W4_11)
-MOLECULES.update(ALKANES)
-
-METHODS = ['HF', 'B3LYP']
-
-BASES = ['cc-pVQZ']
+MOLECULES = get_all_inputs()
+METHODS = ['HF']
+BASES = ['cc-pVDZ']
+STABILITY_ANALYSIS = 'false'
 
 def hf_energy(molecule, method, basis):
     regexp = re.compile(' Total energy in the final basis set = (?P<energy>[-+]?\d+\.\d+)')
@@ -39,9 +35,18 @@ rule ALL:
         expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
         expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
-rule ALL_VMC_DMC_PLOT:
-    input:
-        expand('{method}_dmc_energy.dat', method=METHODS),
+rule RESULTS:
+    output: 'results.csv'
+    run:
+        with open(output[0], 'w', newline='') as result_file:
+            energy_data = csv.writer(result_file, dialect=csv.unix_dialect, quoting=csv.QUOTE_NONE)
+            for molecule in MOLECULES:
+                for method in METHODS:
+                    for basis in BASES:
+                        try:
+                            energy_data.writerow((molecule, method, basis, hf_energy(molecule, method, basis)))
+                        except FileNotFoundError as e:
+                            print(e)
 
 rule ALL_VMC_DMC:
     input:
@@ -84,7 +89,7 @@ rule QCHEM_RUN:
     input:      '../chem_database/{molecule}.in'
     output:     '{molecule}/{method}/{basis}/mol.out'
     run:
-        stability_analysis = 'true'
+        stability_analysis = STABILITY_ANALYSIS
         input_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.in')
         for algorithm in ('diis', 'gdm'):
             method = wildcards.method.split('_')[0]
@@ -93,13 +98,16 @@ rule QCHEM_RUN:
                 template = 'qchem_multideterminant.tmpl'
             else:
                 template = 'qchem.tmpl'
+            with open(INPUTS_DIR + '/{molecule}.xyz'.format(molecule=wildcards.molecule), 'r') as f:
+                f.readline()                   # skip first line
+                molecule_data = f.read()[:-1]  # skip last NL
             with open(input_file, 'w') as f:
                 f.write(open(template).read().format(
                     basis=wildcards.basis,
                     method=method,
-                    molecule=wildcards.molecule,
+                    molecule_data=molecule_data,
                     algorithm=algorithm,
-                    stability_analysis = stability_analysis
+                    stability_analysis=stability_analysis
                 ))
             shell('qchem -nt 4 "{input_file}" "{output}"')
             if 'Convergence criterion met' in open(output[0]).read():

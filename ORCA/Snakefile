@@ -9,13 +9,9 @@ include: '../Snakefile'
 ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi202',
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 
-MOLECULES = {}
-MOLECULES.update(ATOMS)
-MOLECULES.update(W4_08)
-MOLECULES.update(W4_11)
-MOLECULES.update(ALKANES)
-
-METHODS = ('HF', 'B3LYP')
+MOLECULES = get_all_inputs()
+METHODS = ['HF', 'B3LYP']
+BASES = ['cc-pVQZ']
 
 
 def hf_energy(molecule, method, basis):
@@ -57,33 +53,25 @@ def get_nelec(molecule, method, basis):
 
 rule ALL:
     input:
-        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_VMC_DMC:
     input:
-#        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
-#        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/emin/casl/8_8_44__9_9_00/tmax_2_1024_1/out', molecule='Be', basis='ano-pVDZ', method='CASSCF_2_4'),
-        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/emin/casl/8_8_44__9_9_33/tmax_2_1024_1/out', molecule='be', basis='ano-pVDZ', method='CASSCF_2_4'),
-#        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/emin/casl/8_8_44__9_9_00/tmax_2_1024_1/out', molecule='B', basis='ano-pVDZ', method='CASSCF_3_4'),
-#        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/emin/casl/8_8_44__9_9_33/tmax_2_1024_1/out', molecule='B', basis='ano-pVDZ', method='CASSCF_3_4'),
-#        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/emin/casl/8_8_44__9_9_44/tmax_2_1024_1/out', molecule='B', basis='ano-pVDZ', method='CASSCF_3_4'),
-#        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/emin/casl/8_8_44__9_9_00/tmax_2_1024_1/out', molecule='C', basis='ano-pVDZ', method='CASSCF_4_4'),
-#        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/emin/casl/8_8_44__9_9_33/tmax_2_1024_1/out', molecule='C', basis='ano-pVDZ', method='CASSCF_4_4'),
-#        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/emin/casl/8_8_44__9_9_00/tmax_2_1024_1/out', molecule='N', basis='ano-pVDZ', method='B3LYP'),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_VMC_OPT:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/10000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_VMC:
     input:
-        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis='cc-pVQZ', method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_ORCA:
     input:
