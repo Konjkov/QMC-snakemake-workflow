@@ -45,7 +45,7 @@ def get_ae_cutoffs(molecule):
         for line in input_geometry:
             if line.startswith(' '):
                 i += 1
-                result.append('{i}         {i}         1.3                          0'.format(i=i))
+                result.append('{i}         {i}         0.2                          1'.format(i=i))
         return '\n  '.join(result)
 
 def get_atom_labels(molecule):
@@ -273,6 +273,11 @@ rule VMC_OPT_JASTROW:
             jastrow = wildcards.jastrow_rank.split('_')
             with open(file_name, 'w') as f:
                 f.write(open('../casl.tmpl').read().format(term_2_0=jastrow[0], term_1_1=jastrow[1], term_2_1_1=jastrow[2][0], term_2_1_2=jastrow[2][1]))
+            # workaround in multireference case
+            source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'correlation.data')
+            target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
+            shell('[[ -e {source_path} ]] && ln -s ../../../../../correlation.data {target_path}')
+
 
 rule VMC_OPT_GWFN:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/.keep'
@@ -300,6 +305,10 @@ rule VMC_INPUT:
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
             with open(file_name, 'w') as f:
                 f.write(open('../vmc.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule))
+            # workaround in multireference case
+            source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'correlation.data')
+            target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
+            shell('[[ -e {source_path} ]] && ln -s ../../correlation.data {target_path}')
 
 rule VMC_GWFN:
     input:      '{path}/gwfn.data'
@@ -447,7 +456,8 @@ rule VMC_OPT_BF_DATA_JASTROW:
                     mu_number_of_atoms=number, mu_atom_labels=labels, mu_term=backflow[1],
                     phi_number_of_atoms=number, phi_atom_labels=labels, phi_term_eN=backflow[2][0], phi_term_ee=backflow[2][1],
                     ae_cutoffs=ae_cutoffs))
-            shell('[[ -e {molecule}/{method}/{basis}/correlation.data ]] && cat {molecule}/{method}/{basis}/correlation.data >> {file_name}')
+            source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'correlation.data')
+            shell('[[ -e {source_path} ]] && cat {source_path} >> {file_name}')
 
 
 rule VMC_OPT_BF_CASL_JASTROW:
