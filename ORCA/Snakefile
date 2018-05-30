@@ -21,6 +21,21 @@ def hf_energy(molecule, method, basis):
         energy = float(re.findall(regexp, orca_out.read())[-1])
     return energy
 
+def hf_time(molecule, method, basis):
+    regexp = re.compile('TOTAL RUN TIME: (?P<days>\d+) days (?P<hours>\d+) hours (?P<minutes>\d+) minutes (?P<seconds>\d+) seconds (?P<msec>\d+) msec')
+    total_seconds = 0.0
+    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as orca_out:
+        m = re.findall(regexp, orca_out.read())
+        if m:
+            total_seconds = timedelta(
+                days=int(m.group('days')),
+                hours=int(m.group('hours')),
+                minutes=int(m.group('minutes')),
+                seconds=int(m.group('seconds')),
+                milliseconds=int(m.group('msec'))
+            ).total_seconds()
+    return total_seconds
+
 def get_up_down(molecule, method, basis):
     """Get up and down electron numbers from ORCA output file.
     Number of up&down electrons required in CASINO input.
