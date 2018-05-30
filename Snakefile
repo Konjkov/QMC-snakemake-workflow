@@ -447,6 +447,7 @@ rule VMC_OPT_BF_DATA_JASTROW:
                     mu_number_of_atoms=number, mu_atom_labels=labels, mu_term=backflow[1],
                     phi_number_of_atoms=number, phi_atom_labels=labels, phi_term_eN=backflow[2][0], phi_term_ee=backflow[2][1],
                     ae_cutoffs=ae_cutoffs))
+            shell('[[ -e {molecule}/{method}/{basis}/correlation.data ]] && cat {molecule}/{method}/{basis}/correlation.data >> {file_name}')
 
 
 rule VMC_OPT_BF_CASL_JASTROW:
