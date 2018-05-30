@@ -3,12 +3,12 @@
 # ================================================================
 ! {method} {basis} VeryTightSCF UseSym
 {extra_params}
-! PAL16
+! PAL4
 
-#%scf
-#  STABPerform true
-#end
+%scf
+  STABPerform true
+end
 
 {extra_basis}
 
-* xyzfile {charge} {multiplicity} ../../mol.xyz
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz

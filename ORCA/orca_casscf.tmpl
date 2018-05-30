@@ -2,7 +2,7 @@
 # Orca input file
 # ================================================================
 ! {method} {basis} VeryTightSCF
-! PAL16
+! PAL4
 
 %casscf
   nel  {nel}
@@ -10,7 +10,7 @@
   PrintWF det
 end
 
-* xyzfile {charge} {multiplicity} ../../mol.xyz
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
 
 $new_job
 ! {method} {basis} VeryTightSCF
@@ -21,4 +21,4 @@ $new_job
   PrintWF csf
 end
 
-* xyzfile {charge} {multiplicity} ../../mol.xyz
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz

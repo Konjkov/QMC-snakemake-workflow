@@ -45,7 +45,7 @@ def get_ae_cutoffs(molecule):
         for line in input_geometry:
             if line.startswith(' '):
                 i += 1
-                result.append('{i}         {i}         0.7                          1'.format(i=i))
+                result.append('{i}         {i}         1.3                          0'.format(i=i))
         return '\n  '.join(result)
 
 def get_atom_labels(molecule):
