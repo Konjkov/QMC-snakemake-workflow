@@ -74,7 +74,11 @@ rule GWFN:
     input:      '{molecule}/{method}/{basis}/mol.molden'
     output:     '{molecule}/{method}/{basis}/gwfn.data'
     run:
-        shell('molden2qmc.py 7 "{input}" "{output}"')
+        shell('molden2qmc.py 7 {input} {output}')
+        # workaround in multireference case
+        method = wildcards.method.split('_')[0]
+        if method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
+            shell('cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} && multideterminant.py 7 mol.out')
 
 pat1 = '======= MOLDEN-FORMATTED INPUT FILE FOLLOWS ======='
 pat2 = '======= END OF MOLDEN-FORMATTED INPUT FILE ======='
