@@ -204,7 +204,13 @@ rule VMC_DMC_JASTROW:
     input:      '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/out',
                 '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/.keep'
     output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/parameters.casl'
-    shell:      'ln -s ../../../../../VMC_OPT/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/10000/parameters.9.casl {output}'
+    run:
+        for file_name in output:
+            shell('ln -s ../../../../../VMC_OPT/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/10000/parameters.9.casl {file_name}')
+            # workaround in multireference case
+            source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'VMC_OPT', wildcards.jastrow_opt_method, 'casl', wildcards.jastrow_rank, '10000', 'correlation.out.9')
+            target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
+            shell('[[ -e {source_path} ]] && ln -s ../../../../../VMC_OPT/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/10000/correlation.out.9 {target_path}')
 
 rule VMC_DMC_GWFN:
     input:      '{molecule}/{method}/{basis}/gwfn.data',
@@ -238,7 +244,13 @@ rule VMC_OPT_ENERGY_INPUT:
 rule VMC_OPT_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/out'
     output:     '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/parameters.casl'
-    shell:      'ln -s ../10000/parameters.9.casl {output}'
+    run:
+        for file_name in output:
+            shell('ln -s ../10000/parameters.9.casl {file_name}')
+            # workaround in multireference case
+            source_path = os.path.join(wildcards.path, 'VMC_OPT', wildcards.jastrow_opt_method, 'casl', wildcards.jastrow_rank, '10000', 'correlation.out.9')
+            target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
+            shell('[[ -e {source_path} ]] && ln -s ../10000/correlation.out.9 {target_path}')
 
 rule VMC_OPT_ENERGY_GWFN:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/.keep'
