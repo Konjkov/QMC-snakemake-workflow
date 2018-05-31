@@ -32,20 +32,22 @@ def get_max_Z(gwfn_file):
 def get_atom_list(molecule):
     with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
         result = dict.fromkeys(ATOMS, 0)
+        input_geometry.readline()  # skip first line
+        input_geometry.readline()  # skip second line
         for line in input_geometry:
-            if line.startswith(' '):
-                atom_symbol = line.split()[0].lower()
-                result[atom_symbol] += 1
+            atom_symbol = line.split()[0].lower()
+            result[atom_symbol] += 1
         return result
 
 def get_ae_cutoffs(molecule):
     with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
         i = 0
         result = []
+        input_geometry.readline()  # skip first line
+        input_geometry.readline()  # skip second line
         for line in input_geometry:
-            if line.startswith(' '):
-                i += 1
-                result.append('{i}         {i}         0.2                          1'.format(i=i))
+            i += 1
+            result.append('{i}         {i}         0.2                          1'.format(i=i))
         return '\n  '.join(result)
 
 def get_atom_labels(molecule):
@@ -55,10 +57,11 @@ def get_atom_labels(molecule):
     with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
         i = 0
         result = []
+        input_geometry.readline()  # skip first line
+        input_geometry.readline()  # skip second line
         for line in input_geometry:
-            if line.startswith(' '):
-                i += 1
-                result.append('{i}'.format(i=i))
+            i += 1
+            result.append('{i}'.format(i=i))
         return i, ' '.join(result)
 
 def vmc_energy(molecule, method, basis):
