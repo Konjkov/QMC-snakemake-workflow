@@ -74,14 +74,17 @@ rule ALL_QCHEM:
 
 ###################################################################################################################
 
+ruleorder:
+    MULTIDETERMINENT_GWFN > GWFN
+
 rule MULTIDETERMINENT_GWFN:
     input:      '{molecule}/{multideterminant_method}/{basis}/gwfn.data'
     output:     '{molecule}/{multideterminant_method}_{order}/{basis}/gwfn.data'
     shell:
         """
-        ln -s "{input}" "{output}";
         cd "{wildcards.molecule}/{wildcards.multideterminant_method}_{wildcards.order}/{wildcards.basis}" &&
-        ln -s "{wildcards.molecule}/{wildcards.multideterminant_method}/{wildcards.basis}/mol.out" &&
+        ln -s "../../{wildcards.multideterminant_method}/{wildcards.basis}/gwfn.data" &&
+        ln -s "../../{wildcards.multideterminant_method}/{wildcards.basis}/mol.out" &&
         multideterminant.py 7 mol.out --truncate {wildcards.order}
         """
 
