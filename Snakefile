@@ -11,58 +11,39 @@ def atom_charge(symbol):
     periodic += ('Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar')
     periodic += ('K', 'Ca', 'Sc', 'Ti', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr')
     periodic += ('Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe')
-    atoms = {v:i for i,v in enumerate(periodic)}
-    return atoms[symbol]
+    atoms = {v.lower():i for i,v in enumerate(periodic)}
+    return atoms[symbol.lower()]
 
-def get_max_Z(gwfn_file):
-    """Get maximal Z for atoms in molecule."""
-    with open(gwfn_file, "r") as gwfn:
-        result = ''
-        line = gwfn.readline()
-        while line and not line.startswith('Atomic numbers for each atom:'):
-            line = gwfn.readline()
-        if not line:
-            raise Exception
-        line = gwfn.readline()
-        while line and not line.startswith('Valence charges for each atom:'):
-            result += line
-            line = gwfn.readline()
-    return max(map(int, result.split()))
-
-def get_atom_list(molecule):
+def get_XYZ(molecule):
+    """Load XYZ-geometry from file."""
     with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
-        result = dict.fromkeys(ATOMS, 0)
-        input_geometry.readline()  # skip first line
-        input_geometry.readline()  # skip second line
-        for line in input_geometry:
-            atom_symbol = line.split()[0].lower()
-            result[atom_symbol] += 1
-        return result
+        natoms = int(input_geometry.readline())
+        charge, mult = map(int, input_geometry.readline().split())
+        geometry = []
+        for atom in range(natoms):
+            symbol, x, y, z = input_geometry.readline().split()
+            geometry.append((atom_charge(symbol), map(float, (x, y, z))))
+    return geometry
+
+def get_max_Z(molecule):
+    """Get maximal Z for atoms in molecule."""
+    return max(Z for Z, _ in get_XYZ(molecule))
 
 def get_ae_cutoffs(molecule):
-    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
-        i = 0
-        result = []
-        input_geometry.readline()  # skip first line
-        input_geometry.readline()  # skip second line
-        for line in input_geometry:
-            i += 1
-            result.append('{i}         {i}         0.2                          1'.format(i=i))
-        return '\n  '.join(result)
+    """Create AE_cutoff initial values.
+    Used for Backflow format.
+    """
+    for i, _ in enumerate(get_XYZ(molecule)):
+        result.append('{i}         {i}         0.2                          1'.format(i=i+1))
+    return '\n  '.join(result)
 
 def get_atom_labels(molecule):
     """Returns number of atoms in a set and list of labels for this set.
     Used for generic JASTROW format.
     """
-    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
-        i = 0
-        result = []
-        input_geometry.readline()  # skip first line
-        input_geometry.readline()  # skip second line
-        for line in input_geometry:
-            i += 1
-            result.append('{i}'.format(i=i))
-        return i, ' '.join(result)
+    for i, _ in enumerate(get_XYZ(molecule)):
+        result.append('{i}'.format(i=i+1))
+    return i, ' '.join(result)
 
 def vmc_energy(molecule, method, basis):
     """Get VMC energy without JASTROW optimisation.
@@ -188,10 +169,9 @@ rule VMC_DMC_INPUT:
     run:
         for file_name in output:
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
-            gwfn_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'gwfn.data')
             hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis)
             vmc, _ = vmc_opt_energy(wildcards.molecule, wildcards.method, wildcards.basis, 'VMC_OPT', wildcards.jastrow_rank)
-            dtdmc = 1.0/(get_max_Z(gwfn_file)**2 * 3.0 * params.dt_relative_step)
+            dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
             nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
             nstep=max(50000, int(round(nstep, -3)))
             with open(file_name, 'w') as f:
