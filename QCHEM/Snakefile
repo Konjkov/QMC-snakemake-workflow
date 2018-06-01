@@ -29,6 +29,10 @@ def get_up_down(molecule, method, basis):
                 ned = int(m.group('beta'))
     return neu, ned
 
+wildcard_constraints:
+    multideterminant_method='OD|OD(2)|VOD|VOD(2)|QCCD|QCCD(2)|VQCCD',
+    order='\d+'
+
 rule ALL:
     input:
         expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
@@ -70,15 +74,22 @@ rule ALL_QCHEM:
 
 ###################################################################################################################
 
+rule MULTIDETERMINENT_GWFN:
+    input:      '{molecule}/{multideterminant_method}/{basis}/gwfn.data'
+    output:     '{molecule}/{multideterminant_method}_{order}/{basis}/gwfn.data'
+    shell:
+        """
+        ln -s "{input}" "{output}";
+        cd "{wildcards.molecule}/{wildcards.multideterminant_method}_{wildcards.order}/{wildcards.basis}" &&
+        ln -s "{wildcards.molecule}/{wildcards.multideterminant_method}/{wildcards.basis}/mol.out" &&
+        multideterminant.py 7 mol.out --truncate {wildcards.order}
+        """
+
 rule GWFN:
     input:      '{molecule}/{method}/{basis}/mol.molden'
     output:     '{molecule}/{method}/{basis}/gwfn.data'
     run:
         shell('molden2qmc.py 7 {input} {output}')
-        # workaround in multireference case
-        method = wildcards.method.split('_')[0]
-        if method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
-            shell('cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} && multideterminant.py 7 mol.out')
 
 pat1 = '======= MOLDEN-FORMATTED INPUT FILE FOLLOWS ======='
 pat2 = '======= END OF MOLDEN-FORMATTED INPUT FILE ======='
