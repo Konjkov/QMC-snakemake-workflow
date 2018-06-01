@@ -30,7 +30,7 @@ def get_up_down(molecule, method, basis):
     return neu, ned
 
 wildcard_constraints:
-    multideterminant_method='OD|OD(2)|VOD|VOD(2)|QCCD|QCCD(2)|VQCCD',
+    multideterminant_method='OD|OD\(2\)|VOD|VOD\(2\)|QCCD|QCCD\(2\)|VQCCD',
     order='\d+'
 
 rule ALL:
@@ -85,14 +85,14 @@ rule MULTIDETERMINENT_GWFN:
         cd "{wildcards.molecule}/{wildcards.multideterminant_method}_{wildcards.order}/{wildcards.basis}" &&
         ln -s "../../{wildcards.multideterminant_method}/{wildcards.basis}/gwfn.data" &&
         ln -s "../../{wildcards.multideterminant_method}/{wildcards.basis}/mol.out" &&
-        multideterminant.py 7 mol.out --truncate {wildcards.order}
+        multideterminant.py 7 mol.out --truncate "{wildcards.order}"
         """
 
 rule GWFN:
     input:      '{molecule}/{method}/{basis}/mol.molden'
     output:     '{molecule}/{method}/{basis}/gwfn.data'
     run:
-        shell('molden2qmc.py 7 {input} {output}')
+        shell('molden2qmc.py 7 "{input}" "{output}"')
 
 pat1 = '======= MOLDEN-FORMATTED INPUT FILE FOLLOWS ======='
 pat2 = '======= END OF MOLDEN-FORMATTED INPUT FILE ======='
@@ -110,9 +110,8 @@ rule QCHEM_RUN:
         stability_analysis = STABILITY_ANALYSIS
         input_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.in')
         for algorithm in ('diis', 'gdm'):
-            method = wildcards.method.split('_')[0]
             # set template
-            if method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
+            if wildcards.method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
                 template = 'qchem_multideterminant.tmpl'
             else:
                 template = 'qchem.tmpl'
@@ -122,7 +121,7 @@ rule QCHEM_RUN:
             with open(input_file, 'w') as f:
                 f.write(open(template).read().format(
                     basis=wildcards.basis,
-                    method=method,
+                    method=wildcards.method,
                     molecule_data=molecule_data,
                     algorithm=algorithm,
                     stability_analysis=stability_analysis
