@@ -210,7 +210,7 @@ rule VMC_DMC_JASTROW:
             # workaround in multireference case
             source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'VMC_OPT', wildcards.jastrow_opt_method, 'casl', wildcards.jastrow_rank, '10000', 'correlation.out.9')
             target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
-            shell('[[ -e {source_path} ]] && ln -s ../../../../../VMC_OPT/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/10000/correlation.out.9 {target_path}')
+            shell('[[ -e {source_path} ]] && ln -s ../../../../../VMC_OPT/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/10000/correlation.out.9 {target_path}; exit 0')
 
 rule VMC_DMC_GWFN:
     input:      '{molecule}/{method}/{basis}/gwfn.data',
@@ -250,7 +250,7 @@ rule VMC_OPT_ENERGY_JASTROW:
             # workaround in multireference case
             source_path = os.path.join(wildcards.path, 'VMC_OPT', wildcards.jastrow_opt_method, 'casl', wildcards.jastrow_rank, '10000', 'correlation.out.9')
             target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
-            shell('[[ -e {source_path} ]] && ln -s ../10000/correlation.out.9 {target_path}')
+            shell('[[ -e {source_path} ]] && ln -s ../10000/correlation.out.9 {target_path}; exit 0')
 
 rule VMC_OPT_ENERGY_GWFN:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/.keep'
@@ -291,7 +291,7 @@ rule VMC_OPT_JASTROW:
             # workaround in multireference case
             source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'correlation.data')
             target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
-            shell('[[ -e {source_path} ]] && ln -s ../../../../../correlation.data {target_path}')
+            shell('[[ -e {source_path} ]] && ln -s ../../../../../correlation.data {target_path}; exit 0')
 
 
 rule VMC_OPT_GWFN:
@@ -323,7 +323,7 @@ rule VMC_INPUT:
             # workaround in multireference case
             source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'correlation.data')
             target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
-            shell('[[ -e {source_path} ]] && ln -s ../../correlation.data {target_path}')
+            shell('[[ -e {source_path} ]] && ln -s ../../correlation.data {target_path}; exit 0')
 
 rule VMC_GWFN:
     input:      '{path}/gwfn.data'
@@ -472,7 +472,7 @@ rule VMC_OPT_BF_DATA_JASTROW:
                     phi_number_of_atoms=number, phi_atom_labels=labels, phi_term_eN=backflow[2][0], phi_term_ee=backflow[2][1],
                     ae_cutoffs=ae_cutoffs))
             source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'correlation.data')
-            shell('[[ -e {source_path} ]] && cat {source_path} >> {file_name}')
+            shell('[[ -e {source_path} ]] && cat {source_path} >> {file_name}; exit 0')
 
 
 rule VMC_OPT_BF_CASL_JASTROW:
