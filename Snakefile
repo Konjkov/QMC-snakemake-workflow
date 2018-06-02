@@ -192,7 +192,7 @@ rule VMC_DMC_INPUT:
     run:
         for file_name in output:
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
-            hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis)
+            hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC', '10000000'))
             vmc, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC_OPT', 'emin', 'casl', wildcards.jastrow_rank, '1000000_9'))
             dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
             nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
@@ -362,7 +362,7 @@ rule VMC_DMC_BF_INPUT:
     run:
         for file_name in output:
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
-            hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis)
+            hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC', '10000000'))
             vmc, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC_OPT_BF', 'emin', 'casl', wildcards.jastrow_rank + '__' + wildcards.backflow_rank, '1000000_9'))
             dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
             nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
