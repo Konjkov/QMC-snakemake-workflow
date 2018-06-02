@@ -1,4 +1,5 @@
 import os
+import csv
 from math import sqrt
 from operator import itemgetter
 from datetime import timedelta
@@ -33,17 +34,19 @@ def get_ae_cutoffs(molecule):
     """Create AE_cutoff initial values.
     Used for Backflow format.
     """
+    result = []
     for i, _ in enumerate(get_XYZ(molecule)):
-        result.append('{i}         {i}         0.2                          1'.format(i=i+1))
+        result.append('{i}         {i}         0.5                          1'.format(i=i+1))
     return '\n  '.join(result)
 
 def get_atom_labels(molecule):
     """Returns number of atoms in a set and list of labels for this set.
     Used for generic JASTROW format.
     """
+    result = []
     for i, _ in enumerate(get_XYZ(molecule)):
         result.append('{i}'.format(i=i+1))
-    return i, ' '.join(result)
+    return i+1, ' '.join(result)
 
 def vmc_energy(molecule, method, basis):
     """Get VMC energy without JASTROW optimisation.
@@ -145,6 +148,19 @@ wildcard_constraints:
     jastrow_opt_method='\w+',
 
 ####################################################################################################################
+
+rule RESULTS:
+    output: 'results.csv'
+    run:
+        with open(output[0], 'w', newline='') as result_file:
+            energy_data = csv.writer(result_file, dialect=csv.unix_dialect, quoting=csv.QUOTE_NONE)
+            for molecule in MOLECULES:
+                for method in METHODS:
+                    for basis in BASES:
+                        try:
+                            energy_data.writerow((molecule, method, basis, hf_energy(molecule, method, basis)))
+                        except FileNotFoundError as e:
+                            print(e)
 
 rule VMC_DMC_RUN:
     input:      '{path}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/input',
@@ -339,10 +355,9 @@ rule VMC_DMC_BF_INPUT:
     run:
         for file_name in output:
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
-            gwfn_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'gwfn.data')
             hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis)
             vmc, _ = vmc_opt_energy(wildcards.molecule, wildcards.method, wildcards.basis, 'VMC_OPT_BF', wildcards.jastrow_rank + '__' + wildcards.backflow_rank)
-            dtdmc = 1.0/(get_max_Z(gwfn_file)**2 * 3.0 * params.dt_relative_step)
+            dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
             nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
             nstep=max(50000, int(round(nstep, -3)))
             with open(file_name, 'w') as f:
