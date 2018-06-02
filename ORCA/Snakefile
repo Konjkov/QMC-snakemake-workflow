@@ -15,6 +15,7 @@ BASES = ['cc-pVQZ']
 
 
 def hf_energy(molecule, method, basis):
+    """Get ORCA output energy."""
     regexp = re.compile('FINAL SINGLE POINT ENERGY\s+(?P<energy>[-+]?\d+\.\d+)')
     with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as orca_out:
         # we are only interested in the last occurrence
@@ -22,18 +23,13 @@ def hf_energy(molecule, method, basis):
     return energy
 
 def hf_time(molecule, method, basis):
+    """Get ORCA time."""
     regexp = re.compile('TOTAL RUN TIME: (?P<days>\d+) days (?P<hours>\d+) hours (?P<minutes>\d+) minutes (?P<seconds>\d+) seconds (?P<msec>\d+) msec')
     total_seconds = 0.0
     with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as orca_out:
-        m = re.findall(regexp, orca_out.read())
+        m = list(map(int, re.findall(regexp, orca_out.read())[-1]))
         if m:
-            total_seconds = timedelta(
-                days=int(m.group('days')),
-                hours=int(m.group('hours')),
-                minutes=int(m.group('minutes')),
-                seconds=int(m.group('seconds')),
-                milliseconds=int(m.group('msec'))
-            ).total_seconds()
+            total_seconds = timedelta(days=m[0], hours=m[1], minutes=m[2], seconds=m[3], milliseconds=m[4]).total_seconds()
     return total_seconds
 
 def get_up_down(molecule, method, basis):

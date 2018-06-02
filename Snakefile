@@ -1,4 +1,5 @@
 import os
+import csv
 from math import sqrt
 from operator import itemgetter
 from datetime import timedelta
@@ -11,143 +12,117 @@ def atom_charge(symbol):
     periodic += ('Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar')
     periodic += ('K', 'Ca', 'Sc', 'Ti', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr')
     periodic += ('Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe')
-    atoms = {v:i for i,v in enumerate(periodic)}
-    return atoms[symbol]
+    atoms = {v.lower():i for i,v in enumerate(periodic)}
+    return atoms[symbol.lower()]
 
-def get_max_Z(gwfn_file):
-    """Get maximal Z for atoms in molecule."""
-    with open(gwfn_file, "r") as gwfn:
-        result = ''
-        line = gwfn.readline()
-        while line and not line.startswith('Atomic numbers for each atom:'):
-            line = gwfn.readline()
-        if not line:
-            raise Exception
-        line = gwfn.readline()
-        while line and not line.startswith('Valence charges for each atom:'):
-            result += line
-            line = gwfn.readline()
-    return max(map(int, result.split()))
-
-def get_atom_list(molecule):
+def get_XYZ(molecule):
+    """Load XYZ-geometry from file."""
     with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
-        result = dict.fromkeys(ATOMS, 0)
-        input_geometry.readline()  # skip first line
-        input_geometry.readline()  # skip second line
-        for line in input_geometry:
-            atom_symbol = line.split()[0].lower()
-            result[atom_symbol] += 1
-        return result
+        natoms = int(input_geometry.readline())
+        charge, mult = map(int, input_geometry.readline().split())
+        geometry = []
+        for atom in range(natoms):
+            symbol, x, y, z = input_geometry.readline().split()
+            geometry.append((atom_charge(symbol), map(float, (x, y, z))))
+    return geometry
+
+def get_max_Z(molecule):
+    """Get maximal Z for atoms in molecule."""
+    return max(Z for Z, _ in get_XYZ(molecule))
 
 def get_ae_cutoffs(molecule):
-    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
-        i = 0
-        result = []
-        input_geometry.readline()  # skip first line
-        input_geometry.readline()  # skip second line
-        for line in input_geometry:
-            i += 1
-            result.append('{i}         {i}         0.2                          1'.format(i=i))
-        return '\n  '.join(result)
+    """Create AE_cutoff initial values.
+    Used for Backflow format.
+    """
+    result = []
+    for i, _ in enumerate(get_XYZ(molecule)):
+        result.append('{i}         {i}         0.5                          1'.format(i=i+1))
+    return '\n  '.join(result)
 
 def get_atom_labels(molecule):
     """Returns number of atoms in a set and list of labels for this set.
     Used for generic JASTROW format.
     """
-    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
-        i = 0
-        result = []
-        input_geometry.readline()  # skip first line
-        input_geometry.readline()  # skip second line
-        for line in input_geometry:
-            i += 1
-            result.append('{i}'.format(i=i))
-        return i, ' '.join(result)
+    result = []
+    for i, _ in enumerate(get_XYZ(molecule)):
+        result.append('{i}'.format(i=i+1))
+    return i+1, ' '.join(result)
 
-def vmc_energy(molecule, method, basis):
+def  casino_time(molecule, method, basis, *path_spec):
+    """Get CASINO time.
+     Total CASINO CPU time  : : :      378.0500
+    """
+    regexp = re.compile(' Total CASINO CPU time  : : :\s+(?P<energy_error>\d+\.\d+)')
+    with open(os.path.join(molecule, method, basis, *path_spec, 'out'), 'r') as casino_out:
+        # we are only interested in the last occurrence
+        return float(re.findall(regexp, casino_out.read())[-1])
+
+def vmc_energy(molecule, method, basis, *path_spec):
     """Get VMC energy without JASTROW optimisation.
      -152.988424660763 +/- 0.003047553900      Correlation time method
     """
 
     regexp = re.compile(' (?P<energy>[-+]?\d+\.\d+) \+/- (?P<energy_error>[-+]?\d+\.\d+)      Correlation time method')
-    with open(os.path.join(molecule, method, basis, 'VMC', '10000000', 'out'), 'r') as vmc_out:
+    with open(os.path.join(molecule, method, basis, *path_spec, 'out'), 'r') as vmc_out:
         # we are only interested in the last occurrence
-        value, error = map(float, re.findall(regexp, vmc_out.read())[-1])
-    return value, error
+        return map(float, re.findall(regexp, vmc_out.read())[-1])
 
-def vmc_opt_energy(molecule, method, basis, opt_method, rank):
-    """Get VMC energy with JASTROW optimisation.
-     -153.693436512511 +/- 0.003006326588      Correlation time method
-    """
-
-    regexp = re.compile(' (?P<energy>[-+]?\d+\.\d+) \+/- (?P<energy_error>[-+]?\d+\.\d+)      Correlation time method')
-    with open(os.path.join(molecule, method, basis, opt_method, 'emin', 'casl', rank, '1000000_9', 'out'), 'r') as vmc_opt_out:
-        # we are only interested in the last occurrence
-        value, error = map(float, re.findall(regexp, vmc_opt_out.read())[-1])
-    return value, error
-
-def vmc_opt_variance(molecule, method, basis):
+def vmc_variance(molecule, method, basis, *path_spec):
     """Get VMC variance with JASTROW optimisation.
       Sample variance of E_L (au^2/sim.cell) : 3.169677109628 +- 0.034986257092
     """
 
     regexp = re.compile('Sample variance of E_L \(au\^2/sim.cell\) : (?P<variance>[-+]?\d+\.\d+) \+- (?P<variance_error>[-+]?\d+\.\d+)')
-    with open(os.path.join(molecule, method, basis, 'VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9', 'out'), 'r') as vmc_opt_out:
+    with open(os.path.join(molecule, method, basis, *path_spec, 'out'), 'r') as vmc_opt_out:
         # we are only interested in the last occurrence
-        value, error = map(float, re.findall(regexp, vmc_opt_out.read())[-1])
-    return value, error
+        return map(float, re.findall(regexp, vmc_opt_out.read())[-1])
 
-
-def dmc_energy(molecule, method, basis):
+def dmc_energy(molecule, method, basis, *path_spec):
     """Get DMC energy.
           mean:   -153.795024411601 +/-       0.001346260888
     """
 
-    dir = os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')
+    dir = os.path.join(molecule, method, basis, *path_spec)
     open(os.path.join(dir, '.casino_finished'), 'r').close()
     regexp = re.compile('mean:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
     with open(os.path.join(dir, 'out'), 'r') as dmc_out:
         # we are only interested in the last occurrence
-        value, error = map(float, re.findall(regexp, dmc_out.read())[-1])
-    return value, error
+        return map(float, re.findall(regexp, dmc_out.read())[-1])
 
-def dmc_stderr(molecule, method, basis):
+def dmc_stderr(molecule, method, basis, *path_spec):
     """Get DMC standard error.
           stderr:      0.000906128433 +/-       0.000046917552
     """
 
-    dir = os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')
+    dir = os.path.join(molecule, method, basis, *path_spec)
     open(os.path.join(dir, '.casino_finished'), 'r').close()
     regexp = re.compile('stderr:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
     with open(os.path.join(dir, 'out'), 'r') as dmc_out:
         # we are only interested in the last occurrence
-        value, error = map(float, re.findall(regexp, dmc_out.read())[-1])
-    return value, error
+        return map(float, re.findall(regexp, dmc_out.read())[-1])
 
-def dmc_ncorr(molecule, method, basis):
+def dmc_ncorr(molecule, method, basis, *path_spec):
     """Get DMC correlation N.
           N_corr:      0.000906128433 +/-       0.000046917552
     """
 
-    dir = os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')
+    dir = os.path.join(molecule, method, basis, *path_spec)
     open(os.path.join(dir, '.casino_finished'), 'r').close()
     regexp = re.compile('N_corr:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
     with open(os.path.join(dir, 'out'), 'r') as dmc_out:
         # we are only interested in the last occurrence
-        value, error = map(float, re.findall(regexp, dmc_out.read())[-1])
-    return value, error
+        return map(float, re.findall(regexp, dmc_out.read())[-1])
 
-def dmc_stats_nstep(molecule, method, basis):
+def dmc_stats_nstep(molecule, method, basis, *path_spec):
     """Get DMC statistic accumulation steps.
           dmc_stats_nstep   : 96000
     """
 
-    dir = os.path.join(molecule, method, basis, 'VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')
+    dir = os.path.join(molecule, method, basis, *path_spec)
     regexp = re.compile('dmc_stats_nstep   :\s+(?P<nstep>\d+)')
     with open(os.path.join(dir, 'input'), 'r') as dmc_input:
         # we are only interested in the last occurrence
-        value = int(re.findall(regexp, dmc_input.read())[-1])
-    return value
+        return int(re.findall(regexp, dmc_input.read())[-1])
 
 def get_all_inputs():
     "get file names of all *.in input files"
@@ -164,6 +139,35 @@ wildcard_constraints:
     jastrow_opt_method='\w+',
 
 ####################################################################################################################
+
+rule RESULTS:
+    output: 'results.csv'
+    run:
+        with open(output[0], 'w', newline='') as result_file:
+            energy_data = csv.writer(result_file, dialect=csv.unix_dialect, quoting=csv.QUOTE_NONE)
+            for molecule in MOLECULES:
+                for method in METHODS:
+                    for basis in BASES:
+                        try:
+                            energy_data.writerow((
+                                molecule,
+                                method,
+                                basis,
+                                hf_energy(molecule, method, basis),
+                                hf_time(molecule, method, basis),
+                                *vmc_energy(molecule, method, basis, *('VMC', '10000000')),
+                                *vmc_variance(molecule, method, basis, *('VMC', '10000000')),
+                                casino_time(molecule, method, basis, *('VMC', '10000000')),
+                                *vmc_energy(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9')),
+                                *vmc_variance(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9')),
+                                casino_time(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9')),
+                                *dmc_energy(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
+                                *dmc_stderr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
+                                *dmc_ncorr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
+                                casino_time(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
+                            ))
+                        except FileNotFoundError as e:
+                            print(e)
 
 rule VMC_DMC_RUN:
     input:      '{path}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/input',
@@ -188,10 +192,9 @@ rule VMC_DMC_INPUT:
     run:
         for file_name in output:
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
-            gwfn_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'gwfn.data')
-            hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis)
-            vmc, _ = vmc_opt_energy(wildcards.molecule, wildcards.method, wildcards.basis, 'VMC_OPT', wildcards.jastrow_rank)
-            dtdmc = 1.0/(get_max_Z(gwfn_file)**2 * 3.0 * params.dt_relative_step)
+            hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC', '10000000'))
+            vmc, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC_OPT', 'emin', 'casl', wildcards.jastrow_rank, '1000000_9'))
+            dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
             nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
             nstep=max(50000, int(round(nstep, -3)))
             with open(file_name, 'w') as f:
@@ -359,10 +362,9 @@ rule VMC_DMC_BF_INPUT:
     run:
         for file_name in output:
             neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
-            gwfn_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'gwfn.data')
-            hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis)
-            vmc, _ = vmc_opt_energy(wildcards.molecule, wildcards.method, wildcards.basis, 'VMC_OPT_BF', wildcards.jastrow_rank + '__' + wildcards.backflow_rank)
-            dtdmc = 1.0/(get_max_Z(gwfn_file)**2 * 3.0 * params.dt_relative_step)
+            hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC', '10000000'))
+            vmc, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC_OPT_BF', 'emin', 'casl', wildcards.jastrow_rank + '__' + wildcards.backflow_rank, '1000000_9'))
+            dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
             nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
             nstep=max(50000, int(round(nstep, -3)))
             with open(file_name, 'w') as f:

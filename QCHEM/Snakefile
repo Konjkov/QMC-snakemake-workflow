@@ -1,19 +1,27 @@
 import re
-import csv
 
 include: '../Snakefile'
 
 MOLECULES = get_all_inputs()
-METHODS = ['HF']
-BASES = ['cc-pVDZ']
+METHODS = ['HF', 'B3LYP']
+BASES = ['cc-pVQZ']
 STABILITY_ANALYSIS = 'false'
 
 def hf_energy(molecule, method, basis):
+    """Get QCHEM output energy."""
     regexp = re.compile(' Total energy in the final basis set = (?P<energy>[-+]?\d+\.\d+)')
     with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
         # we are only interested in the last occurrence
         energy = float(re.findall(regexp, qchem_out.read())[-1])
     return energy
+
+def hf_time(molecule, method, basis):
+    """Get QCHEM time."""
+    regexp = re.compile(' Total job time:  (?P<time>\d+\.\d+)s\(wall\)')
+    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
+        # we are only interested in the last occurrence
+        time = float(re.findall(regexp, qchem_out.read())[-1])
+    return time
 
 def get_up_down(molecule, method, basis):
     """Get up and down electron numbers from QCHEM output file.
@@ -38,19 +46,6 @@ rule ALL:
         expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
         expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
         expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
-
-rule RESULTS:
-    output: 'results.csv'
-    run:
-        with open(output[0], 'w', newline='') as result_file:
-            energy_data = csv.writer(result_file, dialect=csv.unix_dialect, quoting=csv.QUOTE_NONE)
-            for molecule in MOLECULES:
-                for method in METHODS:
-                    for basis in BASES:
-                        try:
-                            energy_data.writerow((molecule, method, basis, hf_energy(molecule, method, basis)))
-                        except FileNotFoundError as e:
-                            print(e)
 
 rule ALL_VMC_DMC:
     input:
