@@ -3,16 +3,25 @@ import re
 include: '../Snakefile'
 
 MOLECULES = get_all_inputs()
-METHODS = ['HF']
-BASES = ['cc-pVDZ']
+METHODS = ['HF', 'B3LYP']
+BASES = ['cc-pVQZ']
 STABILITY_ANALYSIS = 'false'
 
 def hf_energy(molecule, method, basis):
+    """Get QCHEM output energy."""
     regexp = re.compile(' Total energy in the final basis set = (?P<energy>[-+]?\d+\.\d+)')
     with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
         # we are only interested in the last occurrence
         energy = float(re.findall(regexp, qchem_out.read())[-1])
     return energy
+
+def hf_time(molecule, method, basis):
+    """Get QCHEM time."""
+    regexp = re.compile(' Total job time:  (?P<time>\d+\.\d+)s\(wall\)')
+    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
+        # we are only interested in the last occurrence
+        time = float(re.findall(regexp, qchem_out.read())[-1])
+    return time
 
 def get_up_down(molecule, method, basis):
     """Get up and down electron numbers from QCHEM output file.

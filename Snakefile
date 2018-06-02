@@ -158,7 +158,13 @@ rule RESULTS:
                 for method in METHODS:
                     for basis in BASES:
                         try:
-                            energy_data.writerow((molecule, method, basis, hf_energy(molecule, method, basis)))
+                            energy_data.writerow((
+                                molecule,
+                                method,
+                                basis,
+                                hf_energy(molecule, method, basis),
+                                hf_time(molecule, method, basis)
+                            ))
                         except FileNotFoundError as e:
                             print(e)
 
