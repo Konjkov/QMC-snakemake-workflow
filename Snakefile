@@ -53,9 +53,13 @@ def  casino_time(molecule, method, basis, *path_spec):
      Total CASINO CPU time  : : :      378.0500
     """
     regexp = re.compile(' Total CASINO CPU time  : : :\s+(?P<energy_error>\d+\.\d+)')
-    with open(os.path.join(molecule, method, basis, *path_spec, 'out'), 'r') as casino_out:
-        # we are only interested in the last occurrence
-        return float(re.findall(regexp, casino_out.read())[-1])
+    try:
+        with open(os.path.join(molecule, method, basis, *path_spec, 'out'), 'r') as casino_out:
+            # we are only interested in the last occurrence
+            return float(re.findall(regexp, casino_out.read())[-1])
+    except (FileNotFoundError, IndexError) as e:
+        print(e)
+        return None
 
 def vmc_energy(molecule, method, basis, *path_spec):
     """Get VMC energy without JASTROW optimisation.
@@ -63,9 +67,13 @@ def vmc_energy(molecule, method, basis, *path_spec):
     """
 
     regexp = re.compile(' (?P<energy>[-+]?\d+\.\d+) \+/- (?P<energy_error>[-+]?\d+\.\d+)      Correlation time method')
-    with open(os.path.join(molecule, method, basis, *path_spec, 'out'), 'r') as vmc_out:
-        # we are only interested in the last occurrence
-        return map(float, re.findall(regexp, vmc_out.read())[-1])
+    try:
+        with open(os.path.join(molecule, method, basis, *path_spec, 'out'), 'r') as vmc_out:
+            # we are only interested in the last occurrence
+            return map(float, re.findall(regexp, vmc_out.read())[-1])
+    except (FileNotFoundError, IndexError) as e:
+        print(e)
+        return None, None
 
 def vmc_variance(molecule, method, basis, *path_spec):
     """Get VMC variance with JASTROW optimisation.
@@ -73,9 +81,13 @@ def vmc_variance(molecule, method, basis, *path_spec):
     """
 
     regexp = re.compile('Sample variance of E_L \(au\^2/sim.cell\) : (?P<variance>[-+]?\d+\.\d+) \+- (?P<variance_error>[-+]?\d+\.\d+)')
-    with open(os.path.join(molecule, method, basis, *path_spec, 'out'), 'r') as vmc_opt_out:
-        # we are only interested in the last occurrence
-        return map(float, re.findall(regexp, vmc_opt_out.read())[-1])
+    try:
+        with open(os.path.join(molecule, method, basis, *path_spec, 'out'), 'r') as vmc_opt_out:
+            # we are only interested in the last occurrence
+            return map(float, re.findall(regexp, vmc_opt_out.read())[-1])
+    except (FileNotFoundError, IndexError) as e:
+        print(e)
+        return None, None
 
 def dmc_energy(molecule, method, basis, *path_spec):
     """Get DMC energy.
@@ -83,11 +95,15 @@ def dmc_energy(molecule, method, basis, *path_spec):
     """
 
     dir = os.path.join(molecule, method, basis, *path_spec)
-    open(os.path.join(dir, '.casino_finished'), 'r').close()
-    regexp = re.compile('mean:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
-    with open(os.path.join(dir, 'out'), 'r') as dmc_out:
-        # we are only interested in the last occurrence
-        return map(float, re.findall(regexp, dmc_out.read())[-1])
+    try:
+        open(os.path.join(dir, '.casino_finished'), 'r').close()
+        regexp = re.compile('mean:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
+        with open(os.path.join(dir, 'out'), 'r') as dmc_out:
+            # we are only interested in the last occurrence
+            return map(float, re.findall(regexp, dmc_out.read())[-1])
+    except (FileNotFoundError, IndexError) as e:
+        print(e)
+        return None, None
 
 def dmc_stderr(molecule, method, basis, *path_spec):
     """Get DMC standard error.
@@ -95,11 +111,15 @@ def dmc_stderr(molecule, method, basis, *path_spec):
     """
 
     dir = os.path.join(molecule, method, basis, *path_spec)
-    open(os.path.join(dir, '.casino_finished'), 'r').close()
-    regexp = re.compile('stderr:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
-    with open(os.path.join(dir, 'out'), 'r') as dmc_out:
-        # we are only interested in the last occurrence
-        return map(float, re.findall(regexp, dmc_out.read())[-1])
+    try:
+        open(os.path.join(dir, '.casino_finished'), 'r').close()
+        regexp = re.compile('stderr:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
+        with open(os.path.join(dir, 'out'), 'r') as dmc_out:
+            # we are only interested in the last occurrence
+            return map(float, re.findall(regexp, dmc_out.read())[-1])
+    except (FileNotFoundError, IndexError) as e:
+        print(e)
+        return None, None
 
 def dmc_ncorr(molecule, method, basis, *path_spec):
     """Get DMC correlation N.
@@ -107,11 +127,15 @@ def dmc_ncorr(molecule, method, basis, *path_spec):
     """
 
     dir = os.path.join(molecule, method, basis, *path_spec)
-    open(os.path.join(dir, '.casino_finished'), 'r').close()
-    regexp = re.compile('N_corr:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
-    with open(os.path.join(dir, 'out'), 'r') as dmc_out:
-        # we are only interested in the last occurrence
-        return map(float, re.findall(regexp, dmc_out.read())[-1])
+    try:
+        open(os.path.join(dir, '.casino_finished'), 'r').close()
+        regexp = re.compile('N_corr:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
+        with open(os.path.join(dir, 'out'), 'r') as dmc_out:
+            # we are only interested in the last occurrence
+            return map(float, re.findall(regexp, dmc_out.read())[-1])
+    except (FileNotFoundError, IndexError) as e:
+        print(e)
+        return None, None
 
 def dmc_stats_nstep(molecule, method, basis, *path_spec):
     """Get DMC statistic accumulation steps.
@@ -119,10 +143,14 @@ def dmc_stats_nstep(molecule, method, basis, *path_spec):
     """
 
     dir = os.path.join(molecule, method, basis, *path_spec)
-    regexp = re.compile('dmc_stats_nstep   :\s+(?P<nstep>\d+)')
-    with open(os.path.join(dir, 'input'), 'r') as dmc_input:
-        # we are only interested in the last occurrence
-        return int(re.findall(regexp, dmc_input.read())[-1])
+    try:
+        regexp = re.compile('dmc_stats_nstep   :\s+(?P<nstep>\d+)')
+        with open(os.path.join(dir, 'input'), 'r') as dmc_input:
+            # we are only interested in the last occurrence
+            return int(re.findall(regexp, dmc_input.read())[-1])
+    except (FileNotFoundError, IndexError) as e:
+        print(e)
+        return None
 
 def get_all_inputs():
     "get file names of all *.in input files"
@@ -130,7 +158,7 @@ def get_all_inputs():
 
 
 wildcard_constraints:
-    molecule='[-\w]+',
+    molecule='[-\w+=.]+',
     method='[-\w()]+',
     basis='[-\w]+',
     jastrow_type='[_\w]+',
@@ -140,8 +168,8 @@ wildcard_constraints:
 
 ####################################################################################################################
 
-rule RESULTS:
-    output: 'results.csv'
+rule HF_RESULTS:
+    output: 'hf_results.csv'
     run:
         with open(output[0], 'w', newline='') as result_file:
             energy_data = csv.writer(result_file, dialect=csv.unix_dialect, quoting=csv.QUOTE_NONE)
@@ -155,19 +183,41 @@ rule RESULTS:
                                 basis,
                                 hf_energy(molecule, method, basis),
                                 hf_time(molecule, method, basis),
-                                *vmc_energy(molecule, method, basis, *('VMC', '10000000')),
-                                *vmc_variance(molecule, method, basis, *('VMC', '10000000')),
-                                casino_time(molecule, method, basis, *('VMC', '10000000')),
-                                *vmc_energy(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9')),
-                                *vmc_variance(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9')),
-                                casino_time(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9')),
-                                *dmc_energy(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
-                                *dmc_stderr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
-                                *dmc_ncorr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
-                                casino_time(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
                             ))
                         except FileNotFoundError as e:
                             print(e)
+
+rule RESULTS:
+    output: 'results.csv'
+    run:
+        with open(output[0], 'w', newline='') as result_file:
+            energy_data = csv.writer(result_file, dialect=csv.unix_dialect, quoting=csv.QUOTE_NONE)
+            for molecule in MOLECULES:
+                for method in METHODS:
+                    for basis in BASES:
+                        for jastrow_rank in JASTROW_RANKS:
+                            try:
+                                energy_data.writerow((
+                                    molecule,
+                                    method,
+                                    basis,
+                                    hf_energy(molecule, method, basis),
+                                    hf_time(molecule, method, basis),
+                                    *vmc_energy(molecule, method, basis, *('VMC', '10000000')),
+                                    *vmc_variance(molecule, method, basis, *('VMC', '10000000')),
+                                    casino_time(molecule, method, basis, *('VMC', '10000000')),
+                                    jastrow_rank,
+                                    *vmc_energy(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', jastrow_rank, '1000000_9')),
+                                    *vmc_variance(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', jastrow_rank, '1000000_9')),
+                                    casino_time(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', jastrow_rank, '10000')),
+                                    casino_time(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', jastrow_rank, '1000000_9')),
+                                    *dmc_energy(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
+                                    *dmc_stderr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
+                                    *dmc_ncorr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
+                                    casino_time(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
+                                ))
+                            except FileNotFoundError as e:
+                                print(e)
 
 rule VMC_DMC_RUN:
     input:      '{path}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/input',
@@ -287,9 +337,8 @@ rule VMC_OPT_JASTROW:
     output:     '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/parameters.casl'
     run:
         for file_name in output:
-            jastrow = wildcards.jastrow_rank.split('_')
             with open(file_name, 'w') as f:
-                f.write(open('../casl.tmpl').read().format(term_2_0=jastrow[0], term_1_1=jastrow[1], term_2_1_1=jastrow[2][0], term_2_1_2=jastrow[2][1]))
+                f.write(open('../casl_{}.tmpl'.format(wildcards.jastrow_rank)).read())
             # workaround in multireference case
             source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'correlation.data')
             target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
@@ -482,7 +531,7 @@ rule VMC_OPT_BF_CASL_JASTROW:
         for file_name in output:
             jastrow = wildcards.jastrow_rank.split('_')
             with open(file_name, 'w') as f:
-                f.write(open('../casl.tmpl').read().format(term_2_0=jastrow[0], term_1_1=jastrow[1], term_2_1_1=jastrow[2][0], term_2_1_2=jastrow[2][1]))
+                f.write(open('../casl_{}.tmpl'.format(wildcards.jastrow_rank)).read())
 
 
 rule VMC_OPT_BF_GWFN:
