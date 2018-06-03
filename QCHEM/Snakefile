@@ -5,6 +5,7 @@ include: '../Snakefile'
 MOLECULES = get_all_inputs()
 METHODS = ['HF', 'B3LYP']
 BASES = ['cc-pVQZ']
+JASTROW_RANKS = ['8_8_44']
 STABILITY_ANALYSIS = 'false'
 
 def hf_energy(molecule, method, basis):
