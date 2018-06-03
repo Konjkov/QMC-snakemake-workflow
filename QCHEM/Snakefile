@@ -100,11 +100,11 @@ rule MOLDEN:
     shell:      'sed -n "{params.pattern}" "{input}" > "{output}"'
 
 rule QCHEM_RUN:
-    input:      '../chem_database/{molecule}.in'
+    input:      '../chem_database/{molecule}.xyz'
     output:     '{molecule}/{method}/{basis}/mol.out'
     run:
         stability_analysis = STABILITY_ANALYSIS
-        input_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.in')
+        input_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.xyz')
         for algorithm in ('diis', 'gdm'):
             # set template
             if wildcards.method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
