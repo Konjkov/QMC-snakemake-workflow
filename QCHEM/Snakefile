@@ -45,20 +45,20 @@ wildcard_constraints:
 rule ALL:
     input:
         expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_DMC:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_OPT:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC:
     input:
@@ -104,17 +104,17 @@ rule QCHEM_RUN:
     output:     '{molecule}/{method}/{basis}/mol.out'
     run:
         stability_analysis = STABILITY_ANALYSIS
-        input_file = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.in')
+        qchem_input = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.in')
         for algorithm in ('diis', 'gdm'):
             # set template
             if wildcards.method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
                 template = 'qchem_multideterminant.tmpl'
             else:
                 template = 'qchem.tmpl'
-            with open(INPUTS_DIR + '/{molecule}.xyz'.format(molecule=wildcards.molecule), 'r') as f:
+            with open(input[0], 'r') as f:
                 f.readline()                   # skip first line
                 molecule_data = f.read()[:-1]  # skip last NL
-            with open(input_file, 'w') as f:
+            with open(qchem_input, 'w') as f:
                 f.write(open(template).read().format(
                     basis=wildcards.basis,
                     method=wildcards.method,
@@ -122,6 +122,6 @@ rule QCHEM_RUN:
                     algorithm=algorithm,
                     stability_analysis=stability_analysis
                 ))
-            shell('qchem -nt 4 "{input_file}" "{output}"')
+            shell('qchem -nt 4 "{qchem_input}" "{output}"')
             if 'Convergence criterion met' in open(output[0]).read():
                 break

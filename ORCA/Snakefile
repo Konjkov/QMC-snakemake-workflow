@@ -65,20 +65,19 @@ def get_nelec(molecule, method, basis):
 rule ALL:
     input:
         expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_DMC:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/8_8_44/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS),
-
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 rule ALL_VMC_OPT_ENERGY:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_OPT:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/8_8_44/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC:
     input:
@@ -150,67 +149,66 @@ rule ORCA_INPUT:
     input:      '../chem_database/{molecule}.xyz'
     output:     '{molecule}/{method}/{basis}/mol.inp'
     run:
-        for file_name in output:
-            with open(input[0], 'r') as xyz:
-                charge, multiplicity = xyz.readlines()[1].split()
-            with open(file_name, 'w') as f:
-                if wildcards.method.startswith('CASSCF'):
-                    f.write(open('orca_casscf.tmpl').read().format(
-                        basis=wildcards.basis,
-                        method='HF',
-                        molecule=wildcards.molecule,
-                        charge=charge,
-                        multiplicity=multiplicity,
-                        nel=wildcards.method.split('_')[1],
-                        norb=wildcards.method.split('_')[2]
-                    ))
-                elif wildcards.method == 'DLPNO-CCSD_T':
-                    f.write(open('orca_dlpno_ccsdt.tmpl').read().format(
-                        basis=wildcards.basis,
-                        aux_basis='cc-pVQZ/C',
-                        extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
-                        extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
-                        method='DLPNO-CCSD(T)',
-                        molecule=wildcards.molecule,
-                        charge=charge,
-                        multiplicity=multiplicity,
-                        procs='! PAL{}'.format(PROCS)
-                    ))
-                elif wildcards.method == 'OO-RI-MP2':
-                    f.write(open('orca_oo_mp2.tmpl').read().format(
-                        basis=wildcards.basis,
-                        aux_basis=wildcards.basis + '/C',
-                        extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
-                        extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
-                        method='OO-RI-MP2',
-                        molecule=wildcards.molecule,
-                        charge=charge,
-                        multiplicity=multiplicity,
-                        procs='! PAL{}'.format(PROCS)
-                    ))
-                elif wildcards.method == 'OOCCD':
-                    f.write(open('orca_oo_ccd.tmpl').read().format(
-                        basis=wildcards.basis,
-                        aux_basis='cc-pVQZ/C',
-                        extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
-                        extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
-                        method='OOCCD',
-                        molecule=wildcards.molecule,
-                        charge=charge,
-                        multiplicity=multiplicity,
-                        procs='! PAL{}'.format(PROCS)
-                    ))
+        with open(input, 'r') as xyz:
+            charge, multiplicity = xyz.readlines()[1].split()
+        with open(output[0], 'w') as f:
+            if wildcards.method.startswith('CASSCF'):
+                f.write(open('orca_casscf.tmpl').read().format(
+                    basis=wildcards.basis,
+                    method='HF',
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    nel=wildcards.method.split('_')[1],
+                    norb=wildcards.method.split('_')[2]
+                ))
+            elif wildcards.method == 'DLPNO-CCSD_T':
+                f.write(open('orca_dlpno_ccsdt.tmpl').read().format(
+                    basis=wildcards.basis,
+                    aux_basis='cc-pVQZ/C',
+                    extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
+                    extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
+                    method='DLPNO-CCSD(T)',
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    procs='! PAL{}'.format(PROCS)
+                ))
+            elif wildcards.method == 'OO-RI-MP2':
+                f.write(open('orca_oo_mp2.tmpl').read().format(
+                    basis=wildcards.basis,
+                    aux_basis=wildcards.basis + '/C',
+                    extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
+                    extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
+                    method='OO-RI-MP2',
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    procs='! PAL{}'.format(PROCS)
+                ))
+            elif wildcards.method == 'OOCCD':
+                f.write(open('orca_oo_ccd.tmpl').read().format(
+                    basis=wildcards.basis,
+                    aux_basis='cc-pVQZ/C',
+                    extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
+                    extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
+                    method='OOCCD',
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    procs='! PAL{}'.format(PROCS)
+                ))
+            else:
+                if wildcards.molecule in ('c-hooo',) and wildcards.method == 'HF':
+                    method = 'ROHF'
                 else:
-                    if wildcards.molecule in ('c-hooo',) and wildcards.method == 'HF':
-                        method = 'ROHF'
-                    else:
-                        method = wildcards.method
-                    f.write(open('orca.tmpl').read().format(
-                        basis=wildcards.basis,
-                        extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
-                        extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
-                        method=method,
-                        molecule=wildcards.molecule,
-                        charge=charge,
-                        multiplicity=multiplicity
-                    ))
+                    method = wildcards.method
+                f.write(open('orca.tmpl').read().format(
+                    basis=wildcards.basis,
+                    extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
+                    extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
+                    method=method,
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity
+                ))
