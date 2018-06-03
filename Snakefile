@@ -168,8 +168,8 @@ wildcard_constraints:
 
 ####################################################################################################################
 
-rule RESULTS:
-    output: 'results.csv'
+rule HF_RESULTS:
+    output: 'hf_results.csv'
     run:
         with open(output[0], 'w', newline='') as result_file:
             energy_data = csv.writer(result_file, dialect=csv.unix_dialect, quoting=csv.QUOTE_NONE)
@@ -183,20 +183,41 @@ rule RESULTS:
                                 basis,
                                 hf_energy(molecule, method, basis),
                                 hf_time(molecule, method, basis),
-                                *vmc_energy(molecule, method, basis, *('VMC', '10000000')),
-                                *vmc_variance(molecule, method, basis, *('VMC', '10000000')),
-                                casino_time(molecule, method, basis, *('VMC', '10000000')),
-                                *vmc_energy(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9')),
-                                *vmc_variance(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9')),
-                                casino_time(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '10000')),
-                                casino_time(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', '8_8_44', '1000000_9')),
-                                *dmc_energy(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
-                                *dmc_stderr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
-                                *dmc_ncorr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
-                                casino_time(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', '8_8_44', 'tmax_2_1024_1')),
                             ))
                         except FileNotFoundError as e:
                             print(e)
+
+rule RESULTS:
+    output: 'results.csv'
+    run:
+        with open(output[0], 'w', newline='') as result_file:
+            energy_data = csv.writer(result_file, dialect=csv.unix_dialect, quoting=csv.QUOTE_NONE)
+            for molecule in MOLECULES:
+                for method in METHODS:
+                    for basis in BASES:
+                        for jastrow_rank in JASTROW_RANKS:
+                            try:
+                                energy_data.writerow((
+                                    molecule,
+                                    method,
+                                    basis,
+                                    hf_energy(molecule, method, basis),
+                                    hf_time(molecule, method, basis),
+                                    *vmc_energy(molecule, method, basis, *('VMC', '10000000')),
+                                    *vmc_variance(molecule, method, basis, *('VMC', '10000000')),
+                                    casino_time(molecule, method, basis, *('VMC', '10000000')),
+                                    jastrow_rank,
+                                    *vmc_energy(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', jastrow_rank, '1000000_9')),
+                                    *vmc_variance(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', jastrow_rank, '1000000_9')),
+                                    casino_time(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', jastrow_rank, '10000')),
+                                    casino_time(molecule, method, basis, *('VMC_OPT', 'emin', 'casl', jastrow_rank, '1000000_9')),
+                                    *dmc_energy(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
+                                    *dmc_stderr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
+                                    *dmc_ncorr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
+                                    casino_time(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
+                                ))
+                            except FileNotFoundError as e:
+                                print(e)
 
 rule VMC_DMC_RUN:
     input:      '{path}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/input',
@@ -316,9 +337,8 @@ rule VMC_OPT_JASTROW:
     output:     '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/parameters.casl'
     run:
         for file_name in output:
-            jastrow = wildcards.jastrow_rank.split('_')
             with open(file_name, 'w') as f:
-                f.write(open('../casl.tmpl').read().format(term_2_0=jastrow[0], term_1_1=jastrow[1], term_2_1_1=jastrow[2][0], term_2_1_2=jastrow[2][1]))
+                f.write(open('../casl_{}.tmpl'.format(wildcards.jastrow_rank)).read())
             # workaround in multireference case
             source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'correlation.data')
             target_path = os.path.join(os.path.dirname(file_name), 'correlation.data')
@@ -511,7 +531,7 @@ rule VMC_OPT_BF_CASL_JASTROW:
         for file_name in output:
             jastrow = wildcards.jastrow_rank.split('_')
             with open(file_name, 'w') as f:
-                f.write(open('../casl.tmpl').read().format(term_2_0=jastrow[0], term_1_1=jastrow[1], term_2_1_1=jastrow[2][0], term_2_1_2=jastrow[2][1]))
+                f.write(open('../casl_{}.tmpl'.format(wildcards.jastrow_rank)).read())
 
 
 rule VMC_OPT_BF_GWFN:
