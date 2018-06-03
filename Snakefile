@@ -153,8 +153,8 @@ def dmc_stats_nstep(molecule, method, basis, *path_spec):
         return None
 
 def get_all_inputs():
-    "get file names of all *.in input files"
-    return [os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR) if os.path.splitext(filename)[1] == '.xyz']
+    "get file names of all *.xyz input files"
+    return sorted((os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR) if os.path.splitext(filename)[1] == '.xyz'))
 
 
 wildcard_constraints:
@@ -514,7 +514,7 @@ rule VMC_OPT_BF_DATA_JASTROW:
                 backflow = wildcards.backflow_rank.split('_')
                 ae_cutoffs = get_ae_cutoffs(wildcards.molecule)
                 number, labels = get_atom_labels(wildcards.molecule)
-                template = '../backflow.tmpl' if backflow[2] == '00' else '../backflow.all'
+                template = '../backflow_eta_mu.tmpl' if backflow[2] == '00' else '../backflow_eta_mu_phi.tmpl'
                 f.write(open(template).read().format(
                     eta_term=backflow[0],
                     mu_number_of_atoms=number, mu_atom_labels=labels, mu_term=backflow[1],
