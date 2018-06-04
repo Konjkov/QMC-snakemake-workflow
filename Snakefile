@@ -182,7 +182,7 @@ rule HF_RESULTS:
                                 hf_energy(molecule, method, basis),
                                 hf_time(molecule, method, basis),
                             ))
-                        except FileNotFoundError as e:
+                        except (FileNotFoundError, IndexError) as e:
                             print(e)
 
 rule RESULTS:
@@ -214,7 +214,7 @@ rule RESULTS:
                                     *dmc_ncorr(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
                                     casino_time(molecule, method, basis, *('VMC_DMC', 'emin', 'casl', jastrow_rank, 'tmax_2_1024_1')),
                                 ))
-                            except FileNotFoundError as e:
+                            except (FileNotFoundError, IndexError) as e:
                                 print(e)
 
 rule VMC_DMC_RUN:
