@@ -71,6 +71,7 @@ rule ALL:
 rule ALL_VMC_DMC:
     input:
         expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+
 rule ALL_VMC_OPT_ENERGY:
     input:
         expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
@@ -149,7 +150,7 @@ rule ORCA_INPUT:
     input:      '../chem_database/{molecule}.xyz'
     output:     '{molecule}/{method}/{basis}/mol.inp'
     run:
-        with open(input, 'r') as xyz:
+        with open(input[0], 'r') as xyz:
             charge, multiplicity = xyz.readlines()[1].split()
         with open(output[0], 'w') as f:
             if wildcards.method.startswith('CASSCF'):
