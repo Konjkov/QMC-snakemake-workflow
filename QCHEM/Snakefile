@@ -2,11 +2,12 @@ import re
 
 include: '../Snakefile'
 
+configfile: 'config.yaml'
 MOLECULES = get_all_inputs()
-METHODS = ['B3LYP']
-BASES = ['cc-pVQZ']
-JASTROW_RANKS = ['8_8_44']
-STABILITY_ANALYSIS = 'false'
+METHODS = config['METHODS']
+BASES = config['BASES']
+JASTROW_RANKS = config['JASTROW_RANKS']
+STABILITY_ANALYSIS = config['STABILITY_ANALYSIS']
 
 def hf_energy(molecule, method, basis):
     """Get QCHEM output energy."""
@@ -100,7 +101,7 @@ rule MOLDEN:
     shell:      'sed -n "{params.pattern}" "{input}" > "{output}"'
 
 rule QCHEM_RUN:
-    input:      '../chem_database/{molecule}.xyz'
+    input:      config['INPUTS_DIR'] + '/{molecule}.xyz'
     output:     '{molecule}/{method}/{basis}/mol.out'
     run:
         stability_analysis = STABILITY_ANALYSIS

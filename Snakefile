@@ -5,8 +5,6 @@ from operator import itemgetter
 from datetime import timedelta
 
 
-INPUTS_DIR = '../chem_database'
-
 def atom_charge(symbol):
     periodic = ('X', 'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne')
     periodic += ('Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar')
@@ -154,7 +152,7 @@ def dmc_stats_nstep(molecule, method, basis, *path_spec):
 
 def get_all_inputs():
     "get file names of all *.xyz input files"
-    return sorted((os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR) if os.path.splitext(filename)[1] == '.xyz'))
+    return sorted((os.path.splitext(filename)[0] for filename in os.listdir(config['INPUTS_DIR']) if os.path.splitext(filename)[1] == '.xyz'))
 
 
 wildcard_constraints:
