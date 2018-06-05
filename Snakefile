@@ -249,8 +249,7 @@ rule VMC_DMC_INPUT:
             ))
 
 rule VMC_DMC_JASTROW:
-    input:      '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/parameters.9.casl',
-                '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/gwfn.data'
+    input:      '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/gwfn.data'
     output:     '{molecule}/{method}/{basis}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/parameters.casl'
     run:
         shell('ln -s ../../../../../VMC_OPT/{wildcards.jastrow_opt_method}/casl/{wildcards.jastrow_rank}/10000/parameters.9.casl {output}')
@@ -403,7 +402,7 @@ rule VMC_DMC_BF_CASL_JASTROW:
 rule VMC_DMC_BF_GWFN:
     input:      '{molecule}/{method}/{basis}/gwfn.data',
     output:     '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_1/gwfn.data'
-    shell:      'mkdir -p "$(dirname "{output}")" && ln -s ../../../../../gwfn.data "{output}"'
+    shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
 
 ####################################################################################################################
 
@@ -438,7 +437,7 @@ rule VMC_OPT_BF_CASL_ENERGY_JASTROW:
 rule VMC_OPT_BF_ENERGY_GWFN:
     input:      '{path}/gwfn.data'
     output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/1000000_9/gwfn.data'
-    shell:      'mkdir -p "$(dirname "{output}")" && ln -s ../../../../../gwfn.data "{output}"'
+    shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
 
 ####################################################################################################################
 
@@ -491,4 +490,4 @@ rule VMC_OPT_BF_CASL_JASTROW:
 rule VMC_OPT_BF_GWFN:
     input:      '{path}/gwfn.data'
     output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/10000/gwfn.data'
-    shell:      'mkdir -p "$(dirname "{output}")" && ln -s ../../../../../gwfn.data "{output}"'
+    shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
