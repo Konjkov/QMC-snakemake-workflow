@@ -245,7 +245,8 @@ rule VMC_DMC_INPUT:
         nstep=max(50000, int(round(nstep, -3)))
         with open(output[0], 'w') as f:
             f.write(open('../vmc_dmc.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000,
+                backflow='F'
             ))
 
 rule VMC_DMC_JASTROW:
@@ -278,7 +279,7 @@ rule VMC_OPT_ENERGY_INPUT:
     run:
         neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
         with open(output[0], 'w') as f:
-            f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule))
+            f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, backflow='F'))
 
 rule VMC_OPT_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/out'
@@ -317,7 +318,7 @@ rule VMC_OPT_JASTROW:
     output:     '{molecule}/{method}/{basis}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/parameters.casl'
     run:
         with open(output[0], 'w') as f:
-            f.write(open('../casl_{}.tmpl'.format(wildcards.jastrow_rank)).read())
+            f.write(open('../casl/{}.tmpl'.format(wildcards.jastrow_rank)).read())
         # workaround in multireference case
         source_path = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'correlation.data')
         target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
@@ -383,8 +384,9 @@ rule VMC_DMC_BF_INPUT:
         nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
         nstep=max(50000, int(round(nstep, -3)))
         with open(output[0], 'w') as f:
-            f.write(open('../vmc_dmc_bf.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000
+            f.write(open('../vmc_dmc.tmpl').read().format(
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000,
+                backflow='T'
             ))
 
 rule VMC_DMC_BF_DATA_JASTROW:
@@ -420,7 +422,7 @@ rule VMC_OPT_BF_ENERGY_INPUT:
     run:
         neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
         with open(output[0], 'w') as f:
-            f.write(open('../vmc_opt_energy_bf.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule))
+            f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule), backflow='T')
 
 rule VMC_OPT_BF_DATA_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/10000/out'
@@ -484,7 +486,7 @@ rule VMC_OPT_BF_CASL_JASTROW:
     run:
         jastrow = wildcards.jastrow_rank.split('_')
         with open(output[0], 'w') as f:
-            f.write(open('../casl_{}.tmpl'.format(wildcards.jastrow_rank)).read())
+            f.write(open('../casl/{}.tmpl'.format(wildcards.jastrow_rank)).read())
 
 
 rule VMC_OPT_BF_GWFN:
