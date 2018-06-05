@@ -9,6 +9,7 @@ include: '../Snakefile'
 ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi202',
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 
+INPUTS_DIR = '../chem_database'
 MOLECULES = get_all_inputs()
 METHODS = ['B3LYP']
 BASES = ['cc-pVQZ']
