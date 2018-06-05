@@ -262,7 +262,7 @@ rule VMC_DMC_JASTROW:
 rule VMC_DMC_GWFN:
     input:      '{path}/gwfn.data',
     output:     '{path}/VMC_DMC/{jastrow_opt_method}/casl/{jastrow_rank}/tmax_2_{nconfig}_1/gwfn.data'
-    shell:      'mkdir -p "$(dirname "{output}")" && ln -s ../../../../../gwfn.data {output}'
+    shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
 
 ####################################################################################################################
 
@@ -294,7 +294,7 @@ rule VMC_OPT_ENERGY_JASTROW:
 rule VMC_OPT_ENERGY_GWFN:
     input:      '{path}/gwfn.data'
     output:     '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/1000000_9/gwfn.data'
-    shell:      'mkdir -p "$(dirname "{output}")" && ln -s ../../../../../gwfn.data {output}'
+    shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
 
 ####################################################################################################################
 
@@ -328,7 +328,7 @@ rule VMC_OPT_JASTROW:
 rule VMC_OPT_GWFN:
     input:      '{path}/gwfn.data'
     output:     '{path}/VMC_OPT/{jastrow_opt_method}/casl/{jastrow_rank}/10000/gwfn.data'
-    shell:      'mkdir -p "$(dirname "{output}")" && ln -s ../../../../../gwfn.data {output}'
+    shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
 
 ####################################################################################################################
 
@@ -352,7 +352,7 @@ rule VMC_INPUT:
 rule VMC_GWFN:
     input:      '{path}/gwfn.data'
     output:     '{path}/VMC/10000000/gwfn.data'
-    shell:      'mkdir -p "$(dirname "{output}")" && ln -s ../../gwfn.data "{output}"'
+    shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
 
 ####################################################################################################################
 
