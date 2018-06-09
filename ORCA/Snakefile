@@ -9,11 +9,10 @@ include: '../Snakefile'
 ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi202',
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 
-INPUTS_DIR = '../chem_database'
-MOLECULES = get_all_inputs()
+MOLECULES = ['he', 'li', 'n', 'o', 'f', 'ne']
 METHODS = ['B3LYP']
-BASES = ['cc-pVQZ']
-JASTROW_RANKS = ['8_8_44']
+BASES = ['ano-pVDZ'] #, 'ano-pVTZ', 'ano-pVQZ', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ']
+JASTROW_RANKS = ['8_8_44', '8_8_44_sym', 'a_8_44', 'a_ra_44']
 
 def hf_energy(molecule, method, basis):
     """Get ORCA output energy."""
@@ -72,6 +71,13 @@ rule ALL:
 rule ALL_VMC_DMC:
     input:
         expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/bf_plan_A/casl/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule='be', basis=BASES, method='CASSCF_2_4', jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule='b', basis=BASES, method='CASSCF_3_4', jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule='c', basis=BASES, method='CASSCF_4_4', jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/bf_plan_A/casl/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', molecule='be', basis=BASES, method='CASSCF_2_4', jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/bf_plan_A/casl/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', molecule='b', basis=BASES, method='CASSCF_3_4', jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/bf_plan_A/casl/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', molecule='c', basis=BASES, method='CASSCF_4_4', jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
@@ -80,6 +86,9 @@ rule ALL_VMC_OPT_ENERGY:
 rule ALL_VMC_OPT:
     input:
         expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule='be', basis=BASES, method='CASSCF_2_4', jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule='b', basis=BASES, method='CASSCF_3_4', jastrow_rank=JASTROW_RANKS),
+        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule='c', basis=BASES, method='CASSCF_4_4', jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC:
     input:
@@ -96,9 +105,11 @@ rule ALL_ORCA:
 #####################################################################################################################
 
 rule MDET:
-    input:      '{molecule}/{method}/{basis}/mol.out'
-    output:     '{molecule}/{method}/{basis}/correlation.data'
-    shell:      'multideterminant.py 3 {input} {output}'
+    input:      '{molecule}/{multideterminant_method}/{basis}/mol.out'
+    output:     '{molecule}/{multideterminant_method}/{basis}/correlation.data'
+    wildcard_constraints:
+        multideterminant_method='CASSCF_\d+_\d+'
+    shell:      'cd "$(dirname "{output}")" && multideterminant.py 3 mol.out'
 
 rule GWFN:
     input:      '{molecule}/{method}/{basis}/mol.molden.input'

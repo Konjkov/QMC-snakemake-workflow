@@ -424,17 +424,15 @@ rule VMC_OPT_BF_ENERGY_INPUT:
     run:
         neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
         with open(output[0], 'w') as f:
-            f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule), backflow='T')
+            f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, backflow='T'))
 
 rule VMC_OPT_BF_DATA_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/10000/out'
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/1000000_9/gwfn.data'
     output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/1000000_9/correlation.data'
     shell:      'ln -s ../10000/correlation.out.9 "{output}"'
 
 rule VMC_OPT_BF_CASL_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/10000/out'
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/1000000_9/gwfn.data'
     output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/1000000_9/parameters.casl'
     shell:      'ln -s ../10000/parameters.9.casl "{output}"'
 
