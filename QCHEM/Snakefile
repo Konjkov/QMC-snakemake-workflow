@@ -11,7 +11,7 @@ STABILITY_ANALYSIS = config['STABILITY_ANALYSIS']
 
 def hf_energy(molecule, method, basis):
     """Get QCHEM output energy."""
-    regexp = re.compile(' Total energy in the final basis set = (?P<energy>[-+]?\d+\.\d+)')
+    regexp = re.compile(' Total energy in the final basis set =\s+(?P<energy>[-+]?\d+\.\d+)')
     with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
         # we are only interested in the last occurrence
         energy = float(re.findall(regexp, qchem_out.read())[-1])
@@ -19,7 +19,7 @@ def hf_energy(molecule, method, basis):
 
 def hf_time(molecule, method, basis):
     """Get QCHEM time."""
-    regexp = re.compile(' Total job time:  (?P<time>\d+\.\d+)s\(wall\)')
+    regexp = re.compile(' Total job time:\s+(?P<time>\d+\.\d+)s\(wall\)')
     with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
         # we are only interested in the last occurrence
         time = float(re.findall(regexp, qchem_out.read())[-1])

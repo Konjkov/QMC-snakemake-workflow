@@ -11,25 +11,33 @@ periodic          : F              #*! Periodic boundary conditions (Boolean)
 atom_basis_type   : gaussian       #*! Basis set type (text)
 
 # RUN
-runtype           : vmc_dmc        #*! Type of calculation (Text)
+runtype           : vmc_opt        #*! Type of calculation (Text)
 newrun            : T              #*! New run or continue old (Boolean)
 testrun           : F              #*! Test run flag (Boolean)
 
 # VMC
 vmc_equil_nstep   : 5000           #*! Number of equilibration steps (Integer)
-vmc_nstep         : {nconfig:<4}           #*! Number of steps (Integer)
+vmc_nstep         : {nconfig}         #*! Number of steps (Integer)
 vmc_nblock        : 10             #*! Number of checkpoints (Integer)
-vmc_nconfig_write : {nconfig:<4}           #*! Number of configs to write (Integer)
+vmc_nconfig_write : {nconfig}         #*! Number of configs to write (Integer)
 vmc_decorr_period : 0              #*! VMC decorrelation period (0 - auto)
 
-# DMC
-dmc_equil_nstep   : 10000          #*! Number of steps (Integer)
-dmc_equil_nblock  : 10             #*! Number of checkpoints (Integer)
-dmc_stats_nstep   : {nstep}          #*! Number of steps (Integer)
-dmc_stats_nblock  : {nblock}             #*! Number of checkpoints (Integer)
-dmc_target_weight : {nconfig}.0         #*! Total target weight in DMC (Real)
-dtdmc             : {dtdmc:5.5f}        #*! DMC time step (Real)
-use_tmove         : F              #*! Casula nl pp for DMC (Boolean)
+# OPTIMIZATION
+opt_method        : emin           #*! Opt method (varmin/madmin/emin/...)
+opt_jastrow       : T              #*! Optimize Jastrow factor (Boolean)
+opt_detcoeff      : T              #*! Optimize determinant coeffs (Boolean)
+opt_backflow      : T              #*! Optimize backflow parameters (Boolean)
+%block opt_plan                    #*! Multi-cycle optimization plan (Block)
+1 method=varmin_linjas backflow=F det_coeff=F
+2 jastrow=F
+3 jastrow=F
+4 jastrow=F
+5 jastrow=F
+6
+7
+8
+9
+%endblock opt_plan
 
 # GENERAL PARAMETERS
 use_gjastrow      : T              #*! Use a Jastrow function (Boolean)
