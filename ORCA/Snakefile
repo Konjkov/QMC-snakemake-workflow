@@ -12,7 +12,7 @@ ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 MOLECULES = ['he', 'li', 'n', 'o', 'f', 'ne']
 METHODS = ['B3LYP']
 BASES = ['ano-pVDZ'] #, 'ano-pVTZ', 'ano-pVQZ', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ']
-JASTROW_RANKS = ['8_8_44', '8_8_44_sym', 'a_8_44', 'a_ra_44']
+JASTROW_RANKS = ['8_8_44', 'a_ra_44', '8_8_4ra']
 
 def hf_energy(molecule, method, basis):
     """Get ORCA output energy."""

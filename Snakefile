@@ -239,7 +239,7 @@ rule VMC_DMC_INPUT:
     run:
         neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
         hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC', '10000000'))
-        vmc, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC_OPT', 'emin', 'casl', wildcards.jastrow_rank, '1000000_9'))
+        vmc, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC_OPT', wildcards.jastrow_opt_method, 'casl', wildcards.jastrow_rank, '1000000_9'))
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
         nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
         nstep=max(50000, int(round(nstep, -3)))
@@ -364,7 +364,7 @@ rule VMC_DMC_BF_RUN:
                 '{path}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_1/correlation.data',
                 '{path}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_1/parameters.casl',
     output:     '{path}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_1/out'
-    shell:      'cd "$(dirname "{output}") && runqmc'
+    shell:      'cd "$(dirname "{output}")" && runqmc'
 
 rule VMC_DMC_BF_INPUT:
     input:      '{molecule}/{method}/{basis}/VMC_DMC_BF/{jastrow_opt_method}/casl/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_1/gwfn.data',
@@ -381,7 +381,7 @@ rule VMC_DMC_BF_INPUT:
     run:
         neu, ned = get_up_down(wildcards.molecule, wildcards.method, wildcards.basis)
         hf, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC', '10000000'))
-        vmc, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC_OPT_BF', 'emin', 'casl', wildcards.jastrow_rank + '__' + wildcards.backflow_rank, '1000000_9'))
+        vmc, _ = vmc_energy(wildcards.molecule, wildcards.method, wildcards.basis, *('VMC_OPT_BF', wildcards.jastrow_opt_method, 'casl', wildcards.jastrow_rank + '__' + wildcards.backflow_rank, '1000000_9'))
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
         nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
         nstep=max(50000, int(round(nstep, -3)))
