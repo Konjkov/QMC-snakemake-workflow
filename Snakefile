@@ -124,7 +124,7 @@ def dmc_ncorr(method, basis, molecule, *path_spec):
           N_corr:      0.000906128433 +/-       0.000046917552
     """
 
-    dir = os.path.join(molecule, method, basis, *path_spec)
+    dir = os.path.join(method, basis, molecule, *path_spec)
     try:
         open(os.path.join(dir, '.casino_finished'), 'r').close()
         regexp = re.compile('N_corr:\s+(?P<energy>[-+]?\d+\.\d+) \+/- \s+(?P<energy_error>[-+]?\d+\.\d+)')
@@ -178,13 +178,12 @@ rule HF_RESULTS:
             for method in METHODS:
                 for basis in BASES:
                     for molecule in MOLECULES:
+                        path = (method, basis, molecule)
                         try:
                             energy_data.writerow((
-                                method,
-                                basis,
-                                molecule,
-                                hf_energy(method, basis, molecule),
-                                hf_time(method, basis, molecule),
+                                *path,
+                                hf_energy(*path),
+                                hf_time(*path),
                             ))
                         except (FileNotFoundError, IndexError) as e:
                             print(e)
@@ -205,26 +204,25 @@ rule RESULTS:
             for method in METHODS:
                 for basis in BASES:
                     for molecule in MOLECULES:
+                        path = (method, basis, molecule)
                         for jastrow_rank in JASTROW_RANKS:
                             try:
                                 writer.writerow((
-                                    method,
-                                    basis,
-                                    molecule,
-                                    hf_energy(method, basis, molecule),
-                                    hf_time(method, basis, molecule),
-                                    *vmc_energy(molecule, method, basis, *('VMC', '10000000')),
-                                    *vmc_variance(molecule, method, basis, *('VMC', '10000000')),
-                                    casino_time(molecule, method, basis, *('VMC', '10000000')),
+                                    *path,
+                                    hf_energy(*path),
+                                    hf_time(*path),
+                                    *vmc_energy(*path, *('VMC', '10000000')),
+                                    *vmc_variance(*path, *('VMC', '10000000')),
+                                    casino_time(*path, *('VMC', '10000000')),
                                     jastrow_rank,
-                                    *vmc_energy(method, basis, molecule, *('VMC_OPT', 'emin', jastrow_rank, '1000000_9')),
-                                    *vmc_variance(method, basis, molecule, *('VMC_OPT', 'emin', jastrow_rank, '1000000_9')),
-                                    casino_time(method, basis, molecule, *('VMC_OPT', 'emin', jastrow_rank, '10000')),
-                                    casino_time(method, basis, molecule, *('VMC_OPT', 'emin', jastrow_rank, '1000000_9')),
-                                    *dmc_energy(method, basis, molecule, *('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')),
-                                    *dmc_stderr(method, basis, molecule, *('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')),
-                                    *dmc_ncorr(method, basis, molecule, *('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')),
-                                    casino_time(method, basis, molecule, *('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')),
+                                    *vmc_energy(*path, *('VMC_OPT', 'emin', jastrow_rank, '1000000_9')),
+                                    *vmc_variance(*path, *('VMC_OPT', 'emin', jastrow_rank, '1000000_9')),
+                                    casino_time(*path, *('VMC_OPT', 'emin', jastrow_rank, '10000')),
+                                    casino_time(*path, *('VMC_OPT', 'emin', jastrow_rank, '1000000_9')),
+                                    *dmc_energy(*path, *('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')),
+                                    *dmc_stderr(*path, *('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')),
+                                    *dmc_ncorr(*path, *('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')),
+                                    casino_time(*path, *('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')),
                                 ))
                             except (FileNotFoundError, IndexError) as e:
                                 print(e)
@@ -269,7 +267,7 @@ rule VMC_DMC_JASTROW:
         # workaround in multireference case
         source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_OPT', wildcards.jastrow_opt_method, wildcards.jastrow_rank, '10000', 'correlation.out.9')
         target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
-        shell('[[ -e {source_path} ]] && ln -s ../../../../VMC_OPT/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}/10000/correlation.out.9 {target_path}; exit 0')
+        shell('[[ -e "{source_path}" ]] && ln -s ../../../../VMC_OPT/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}/10000/correlation.out.9 "{target_path}"; exit 0')
 
 rule VMC_DMC_GWFN:
     input:      '{path}/gwfn.data',
@@ -336,7 +334,7 @@ rule VMC_OPT_JASTROW:
         # workaround in multireference case
         source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'correlation.data')
         target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
-        shell('[[ -e {source_path} ]] && ln -s ../../../../correlation.data {target_path}; exit 0')
+        shell('[[ -e "{source_path}" ]] && ln -s ../../../../correlation.data "{target_path}"; exit 0')
 
 
 rule VMC_OPT_GWFN:
