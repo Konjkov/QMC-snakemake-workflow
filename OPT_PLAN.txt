@@ -1,0 +1,55 @@
+* monte_carlo.f90: added input block OPT_PLAN with run params for each opt cycle
+  -- Pablo Lopez Rios, 2017-07-21
+
+  OPT_PLAN allows specifying different parameters for each optimization cycle
+
+  The block has one line per optimization cycle, each containing the cycle index
+  followed by any number of '<keyword>=<value>' assignments, where current valid
+  keywords are:
+  * method: sets OPT_METHOD
+  * jastrow: sets OPT_JASTROW
+  * backflow: sets OPT_BACKFLOW
+  * det_coeff: sets OPT_DET_COEFF
+  * orbitals: sets OPT_ORBITALS
+  * geminal: sets OPT_GEMINAL
+  * maxiter: sets OPT_MAXITER
+  * fix_cutoffs: determines whether to fix cut-offs or not, extending
+    the functionality of OPT_NOCTF_CYCLES
+
+  OPT_PLAN keywords not specified for any given cycle remain at the value set by
+  the corresponding input keyword (or its default value if absent).
+
+  The following example will run one cycle of varmin_linjas on the Jastrow
+  parameters (excluding cutoffs by design), followed by one cycle of madmin on
+  all Jastrow parameters, followed by two cycles of emin on all Jastrow
+  parameters excluding cutoffs, followed by two cycles of emin on the Jastrow
+  and backflow parameters excluding cutoffs:
+
+   opt_method  : madmin
+   use_jastrow : T
+   use_backflow: T
+   opt_jastrow : F
+   opt_backflow: F
+
+   %block opt_plan
+   1 method=varmin_linjas
+   2
+   3 method=emin fix_cutoffs=T
+   4 method=emin fix_cutoffs=T
+   5 method=emin backflow=T fix_cutoffs=T
+   6 method=emin backflow=T fix_cutoffs=T
+   %endblock opt_plan
+
+  The internal non_empty_{jastrow,bacfklow} flags have been tidied up, and the
+  code should know to keep the Jastrow and backflow off until needed.  E.g., in
+  the above example the first 5 VMC and 4 optimization cycles will have backflow
+  off (provided the backflow block in the initial correlation.data is "empty").
+  Note that the somewhat recent pjastrow initialization mode where alpha_1 is
+  set to zero no longer sets the "non-empty" Jastrow factor flag; as a
+  consequence autotest example heg_3d_fluid/complex_varmin now gives different
+  results.
+
+  This commit also changes the OPT_METHOD-dependent headings in the
+  "out" file to simply say "optimization", modifies envmc to parse this 
+  correctly, and updates runqmc to ignore OPT_* keyword inconsistencies in the
+  presence of OPT_PLAN.
