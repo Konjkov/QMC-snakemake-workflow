@@ -9,29 +9,29 @@ BASES = config['BASES']
 JASTROW_RANKS = config['JASTROW_RANKS']
 STABILITY_ANALYSIS = config['STABILITY_ANALYSIS']
 
-def hf_energy(molecule, method, basis):
+def hf_energy(method, basis, molecule):
     """Get QCHEM output energy."""
     regexp = re.compile(' Total energy in the final basis set =\s+(?P<energy>[-+]?\d+\.\d+)')
-    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
+    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as qchem_out:
         # we are only interested in the last occurrence
         energy = float(re.findall(regexp, qchem_out.read())[-1])
     return energy
 
-def hf_time(molecule, method, basis):
+def hf_time(method, basis, molecule):
     """Get QCHEM time."""
     regexp = re.compile(' Total job time:\s+(?P<time>\d+\.\d+)s\(wall\)')
-    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
+    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as qchem_out:
         # we are only interested in the last occurrence
         time = float(re.findall(regexp, qchem_out.read())[-1])
     return time
 
-def get_up_down(molecule, method, basis):
+def get_up_down(method, basis, molecule):
     """Get up and down electron numbers from QCHEM output file.
      There are        2 alpha and        2 beta electrons
     """
 
     regexp = re.compile('There are\s+(?P<alpha>\d+) alpha and\s+(?P<beta>\d+) beta electrons')
-    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as qchem_out:
+    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as qchem_out:
         for line in qchem_out:
             m = re.search(regexp, line)
             if m:
@@ -45,29 +45,29 @@ wildcard_constraints:
 
 rule ALL:
     input:
-        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_DMC:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_OPT:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC:
     input:
-        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 rule ALL_QCHEM:
     input:
-        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{method}/{basis}/{molecule}/gwfn.data', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 ###################################################################################################################
 
@@ -75,19 +75,19 @@ ruleorder:
     MULTIDETERMINENT_GWFN > GWFN
 
 rule MULTIDETERMINENT_GWFN:
-    input:      '{molecule}/{multideterminant_method}/{basis}/gwfn.data'
-    output:     '{molecule}/{multideterminant_method}_{order}/{basis}/gwfn.data'
+    input:      '{multideterminant_method}/{basis}/{molecule}/gwfn.data'
+    output:     '{multideterminant_method}_{order}/{basis}/{molecule}/gwfn.data'
     shell:
         """
-        cd "{wildcards.molecule}/{wildcards.multideterminant_method}_{wildcards.order}/{wildcards.basis}" &&
-        ln -s "../../{wildcards.multideterminant_method}/{wildcards.basis}/gwfn.data" &&
-        ln -s "../../{wildcards.multideterminant_method}/{wildcards.basis}/mol.out" &&
+        cd "{wildcards.multideterminant_method}_{wildcards.order}/{wildcards.basis}/{wildcards.molecule}" &&
+        ln -s "../../../{wildcards.multideterminant_method}/{wildcards.basis}/{wildcards.molecule}/gwfn.data" &&
+        ln -s "../../../{wildcards.multideterminant_method}/{wildcards.basis}/{wildcards.molecule}/mol.out" &&
         multideterminant.py 7 mol.out --truncate "{wildcards.order}"
         """
 
 rule GWFN:
-    input:      '{molecule}/{method}/{basis}/mol.molden'
-    output:     '{molecule}/{method}/{basis}/gwfn.data'
+    input:      '{method}/{basis}/{molecule}/mol.molden'
+    output:     '{method}/{basis}/{molecule}/gwfn.data'
     run:
         shell('molden2qmc.py 7 "{input}" "{output}"')
 
@@ -95,17 +95,17 @@ pat1 = '======= MOLDEN-FORMATTED INPUT FILE FOLLOWS ======='
 pat2 = '======= END OF MOLDEN-FORMATTED INPUT FILE ======='
 
 rule MOLDEN:
-    input:      '{molecule}/{method}/{basis}/mol.out'
-    output:     '{molecule}/{method}/{basis}/mol.molden'
+    input:      '{method}/{basis}/{molecule}/mol.out'
+    output:     '{method}/{basis}/{molecule}/mol.molden'
     params:      pattern='/%(pat1)s/,/%(pat2)s/{/%(pat1)s/!{/%(pat2)s/!p}}' % {'pat1': pat1, 'pat2': pat2}
     shell:      'sed -n "{params.pattern}" "{input}" > "{output}"'
 
 rule QCHEM_RUN:
     input:      config['INPUTS_DIR'] + '/{molecule}.xyz'
-    output:     '{molecule}/{method}/{basis}/mol.out'
+    output:     '{method}/{basis}/{molecule}/mol.out'
     run:
         stability_analysis = STABILITY_ANALYSIS
-        qchem_input = os.path.join(wildcards.molecule, wildcards.method, wildcards.basis, 'mol.in')
+        qchem_input = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'mol.in')
         for algorithm in ('diis', 'gdm'):
             # set template
             if wildcards.method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):

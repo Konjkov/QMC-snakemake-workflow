@@ -12,34 +12,34 @@ ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 MOLECULES = ['he', 'li', 'n', 'o', 'f', 'ne']
 METHODS = ['B3LYP']
 BASES = ['ano-pVDZ'] #, 'ano-pVTZ', 'ano-pVQZ', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ']
-JASTROW_RANKS = ['8_8_44', 'a_ra_44', '8_8_4ra']
+JASTROW_RANKS = ['8_8_44', 'a_ra_44', '8_8_4ra', 'a_ra_4ra']
 
-def hf_energy(molecule, method, basis):
+def hf_energy(method, basis, molecule):
     """Get ORCA output energy."""
     regexp = re.compile('FINAL SINGLE POINT ENERGY\s+(?P<energy>[-+]?\d+\.\d+)')
-    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as orca_out:
+    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as orca_out:
         # we are only interested in the last occurrence
         energy = float(re.findall(regexp, orca_out.read())[-1])
     return energy
 
-def hf_time(molecule, method, basis):
+def hf_time(method, basis, molecule):
     """Get ORCA time."""
     regexp = re.compile('TOTAL RUN TIME: (?P<days>\d+) days (?P<hours>\d+) hours (?P<minutes>\d+) minutes (?P<seconds>\d+) seconds (?P<msec>\d+) msec')
     total_seconds = 0.0
-    with open(os.path.join(molecule, method, basis, 'mol.out'), 'r') as orca_out:
+    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as orca_out:
         m = list(map(int, re.findall(regexp, orca_out.read())[-1]))
         if m:
             total_seconds = timedelta(days=m[0], hours=m[1], minutes=m[2], seconds=m[3], milliseconds=m[4]).total_seconds()
     return total_seconds
 
-def get_up_down(molecule, method, basis):
+def get_up_down(method, basis, molecule):
     """Get up and down electron numbers from ORCA output file.
     Number of up&down electrons required in CASINO input.
     """
 
     regexp1 = re.compile('Multiplicity           Mult            ....\s+(?P<mult>\d+)')
     regexp2 = re.compile('Number of Electrons    NEL             ....\s+(?P<elec>\d+)')
-    with open('%s/%s/%s/%s' % (molecule, method, basis, 'mol.out'), 'r') as orca_out:
+    with open('%s/%s/%s/%s' % (method, basis, molecule, 'mol.out'), 'r') as orca_out:
         for line in orca_out:
             m1 = re.search(regexp1, line)
             if m1:
@@ -51,11 +51,11 @@ def get_up_down(molecule, method, basis):
     ned = (elec - mult + 1)//2
     return neu, ned
 
-def get_nelec(molecule, method, basis):
+def get_nelec(method, basis, molecule):
     """Get total electron numbers from ORCA output file.
     """
     regexp = re.compile('Number of Electrons    NEL             ....\s+(?P<elec>\d+)')
-    with open('%s/%s/%s/%s' % (molecule, method, basis, 'mol.out'), 'r') as orca_out:
+    with open('%s/%s/%s/%s' % (method, basis, molecule, 'mol.out'), 'r') as orca_out:
         for line in orca_out:
             m = re.search(regexp, line)
             if m:
@@ -64,84 +64,84 @@ def get_nelec(molecule, method, basis):
 
 rule ALL:
     input:
-        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_DMC:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/bf_plan_A/casl/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule='be', basis=BASES, method='CASSCF_2_4', jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule='b', basis=BASES, method='CASSCF_3_4', jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC/emin/casl/{jastrow_rank}/tmax_2_1024_1/out', molecule='c', basis=BASES, method='CASSCF_4_4', jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/bf_plan_A/casl/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', molecule='be', basis=BASES, method='CASSCF_2_4', jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/bf_plan_A/casl/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', molecule='b', basis=BASES, method='CASSCF_3_4', jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_DMC_BF/bf_plan_A/casl/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', molecule='c', basis=BASES, method='CASSCF_4_4', jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_OPT:
     input:
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule='be', basis=BASES, method='CASSCF_2_4', jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule='b', basis=BASES, method='CASSCF_3_4', jastrow_rank=JASTROW_RANKS),
-        expand('{molecule}/{method}/{basis}/VMC_OPT/emin/casl/{jastrow_rank}/10000/out', molecule='c', basis=BASES, method='CASSCF_4_4', jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC:
     input:
-        expand('{molecule}/{method}/{basis}/VMC/10000000/out', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, basis=BASES, molecule=MOLECULES),
 
 rule ALL_ORCA:
     input:
-        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='ano-pVDZ', method=METHODS),
-        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='ano-pVDZ', method='MP2'),
-        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='ano-pVDZ', method='OO-RI-MP2'),
-        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='ano-pVDZ', method='OOCCD'),
-        expand('{molecule}/{method}/{basis}/gwfn.data', molecule=MOLECULES, basis='ano-pVDZ', method='DLPNO-CCSD_T'),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, basis='ano-pVDZ', molecule=MOLECULES),
+#        expand('{method}/{basis}/{molecule}/gwfn.data', method='MP2', basis='ano-pVDZ', molecule=MOLECULES),
+#        expand('{method}/{basis}/{molecule}/gwfn.data', method='OO-RI-MP2', basis='ano-pVDZ', molecule=MOLECULES),
+#        expand('{method}/{basis}/{molecule}/gwfn.data', method='OOCCD', basis='ano-pVDZ', molecule=MOLECULES),
+#        expand('{method}/{basis}/{molecule}/gwfn.data', method='DLPNO-CCSD_T', basis='ano-pVDZ', molecule=MOLECULES),
 
 #####################################################################################################################
 
 rule MDET:
-    input:      '{molecule}/{multideterminant_method}/{basis}/mol.out'
-    output:     '{molecule}/{multideterminant_method}/{basis}/correlation.data'
+    input:      '{multideterminant_method}/{basis}/{molecule}/mol.out'
+    output:     '{multideterminant_method}/{basis}/{molecule}/correlation.data'
     wildcard_constraints:
         multideterminant_method='CASSCF_\d+_\d+'
     shell:      'cd "$(dirname "{output}")" && multideterminant.py 3 mol.out'
 
 rule GWFN:
-    input:      '{molecule}/{method}/{basis}/mol.molden.input'
-    output:     '{molecule}/{method}/{basis}/gwfn.data'
+    input:      '{method}/{basis}/{molecule}/mol.molden.input'
+    output:     '{method}/{basis}/{molecule}/gwfn.data'
     run:
         shell('molden2qmc.py 3 {input} {output}')
         # workaround in multireference case
         if wildcards.method.startswith('CASSCF'):
-            shell('cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} && multideterminant.py 3 mol.out')
+            shell('cd "$(dirname "{output}")" && multideterminant.py 3 mol.out')
 
 rule MOLDEN:
-    input:      '{molecule}/{method}/{basis}/mol.out'
-    output:     '{molecule}/{method}/{basis}/mol.molden.input'
+    input:      '{method}/{basis}/{molecule}/mol.out'
+    output:     '{method}/{basis}/{molecule}/mol.molden.input'
     run:
         if wildcards.method == 'OO-RI-MP2' and wildcards.molecule != 'h':
             shell("""export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
                      export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
-                     cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} &&
+                     cd "$(dirname "{output}")" &&
                      ln -s mol.mp2nat mol.mp2nat.gbw &&
                      {ORCA_PATH}/orca_2mkl mol.mp2nat -molden &&
                      ln -s mol.mp2nat.molden.input mol.molden.input""")
         if wildcards.method == 'OOCCD':
             shell("""export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
                      export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
-                     cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} &&
+                     cd "$(dirname "{output}")" &&
                      ln -s mol.mdci.optorb mol.mdci.gbw &&
                      {ORCA_PATH}/orca_2mkl mol.mdci -molden &&
                      ln -s mol.mdci.molden.input mol.molden.input""")
         else:
             shell("""export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH &&
                      export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} &&
-                     cd {wildcards.molecule}/{wildcards.method}/{wildcards.basis} &&
+                     cd "$(dirname "{output}")" &&
                      {ORCA_PATH}/orca_2mkl mol -molden""")
 
 rule ORCA_RUN:
@@ -160,7 +160,7 @@ end""")
 
 rule ORCA_INPUT:
     input:      '../chem_database/{molecule}.xyz'
-    output:     '{molecule}/{method}/{basis}/mol.inp'
+    output:     '{method}/{basis}/{molecule}/mol.inp'
     run:
         with open(input[0], 'r') as xyz:
             charge, multiplicity = xyz.readlines()[1].split()
