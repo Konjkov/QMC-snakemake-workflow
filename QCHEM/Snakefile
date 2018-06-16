@@ -9,29 +9,29 @@ BASES = config['BASES']
 JASTROW_RANKS = config['JASTROW_RANKS']
 STABILITY_ANALYSIS = config['STABILITY_ANALYSIS']
 
-def hf_energy(method, basis, molecule):
+def hf_energy(*path):
     """Get QCHEM output energy."""
     regexp = re.compile(' Total energy in the final basis set =\s+(?P<energy>[-+]?\d+\.\d+)')
-    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as qchem_out:
+    with open(os.path.join(*path, 'mol.out'), 'r') as qchem_out:
         # we are only interested in the last occurrence
         energy = float(re.findall(regexp, qchem_out.read())[-1])
     return energy
 
-def hf_time(method, basis, molecule):
+def hf_time(*path):
     """Get QCHEM time."""
     regexp = re.compile(' Total job time:\s+(?P<time>\d+\.\d+)s\(wall\)')
-    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as qchem_out:
+    with open(os.path.join(*path, 'mol.out'), 'r') as qchem_out:
         # we are only interested in the last occurrence
         time = float(re.findall(regexp, qchem_out.read())[-1])
     return time
 
-def get_up_down(method, basis, molecule):
+def get_up_down(*path):
     """Get up and down electron numbers from QCHEM output file.
      There are        2 alpha and        2 beta electrons
     """
 
     regexp = re.compile('There are\s+(?P<alpha>\d+) alpha and\s+(?P<beta>\d+) beta electrons')
-    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as qchem_out:
+    with open(os.path.join(*path, 'mol.out'), 'r') as qchem_out:
         for line in qchem_out:
             m = re.search(regexp, line)
             if m:

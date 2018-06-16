@@ -14,32 +14,32 @@ METHODS = ['B3LYP']
 BASES = ['ano-pVDZ'] #, 'ano-pVTZ', 'ano-pVQZ', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ']
 JASTROW_RANKS = ['8_8_44', 'a_ra_44', '8_8_4ra', 'a_ra_4ra']
 
-def hf_energy(method, basis, molecule):
+def hf_energy(*path):
     """Get ORCA output energy."""
     regexp = re.compile('FINAL SINGLE POINT ENERGY\s+(?P<energy>[-+]?\d+\.\d+)')
-    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as orca_out:
+    with open(os.path.join(*path, 'mol.out'), 'r') as orca_out:
         # we are only interested in the last occurrence
         energy = float(re.findall(regexp, orca_out.read())[-1])
     return energy
 
-def hf_time(method, basis, molecule):
+def hf_time(*path):
     """Get ORCA time."""
     regexp = re.compile('TOTAL RUN TIME: (?P<days>\d+) days (?P<hours>\d+) hours (?P<minutes>\d+) minutes (?P<seconds>\d+) seconds (?P<msec>\d+) msec')
     total_seconds = 0.0
-    with open(os.path.join(method, basis, molecule, 'mol.out'), 'r') as orca_out:
+    with open(os.path.join(*path, 'mol.out'), 'r') as orca_out:
         m = list(map(int, re.findall(regexp, orca_out.read())[-1]))
         if m:
             total_seconds = timedelta(days=m[0], hours=m[1], minutes=m[2], seconds=m[3], milliseconds=m[4]).total_seconds()
     return total_seconds
 
-def get_up_down(method, basis, molecule):
+def get_up_down(*path):
     """Get up and down electron numbers from ORCA output file.
     Number of up&down electrons required in CASINO input.
     """
 
     regexp1 = re.compile('Multiplicity           Mult            ....\s+(?P<mult>\d+)')
     regexp2 = re.compile('Number of Electrons    NEL             ....\s+(?P<elec>\d+)')
-    with open('%s/%s/%s/%s' % (method, basis, molecule, 'mol.out'), 'r') as orca_out:
+    with open(os.path.join(*path, 'mol.out'), 'r') as orca_out:
         for line in orca_out:
             m1 = re.search(regexp1, line)
             if m1:
@@ -51,11 +51,11 @@ def get_up_down(method, basis, molecule):
     ned = (elec - mult + 1)//2
     return neu, ned
 
-def get_nelec(method, basis, molecule):
+def get_nelec(*path):
     """Get total electron numbers from ORCA output file.
     """
     regexp = re.compile('Number of Electrons    NEL             ....\s+(?P<elec>\d+)')
-    with open('%s/%s/%s/%s' % (method, basis, molecule, 'mol.out'), 'r') as orca_out:
+    with open(os.path.join(*path, 'mol.out'), 'r') as orca_out:
         for line in orca_out:
             m = re.search(regexp, line)
             if m:
