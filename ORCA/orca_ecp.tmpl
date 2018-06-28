@@ -2,16 +2,15 @@
 # Orca input file
 # ================================================================
 ! {method} {basis} VeryTightSCF UseSym
-{extra_params}
 ! PAL4
 
-#%scf
-#  STABPerform true
-#end
+%scf
+  Guess = HCore
+end
 
 %basis
-  GTOName = {external_basis};
-  {external_ecp}
+{external_basis}
+{external_ecp}
 end
 
 * xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
