@@ -87,6 +87,38 @@ class BaseLoader:
                                     file=output_file)
                         print('end', file=output_file)
 
+    def load_qchem(self):
+
+        target_path = self.name + '_gaussian.bas'
+        with open(target_path, 'w') as output_file:
+            for atom in self.periodic:
+                source_path = self.base_path + atom.lower() + self.pp_gaussian
+                response = io.StringIO(requests.get(source_path).text)
+                for line in response:
+                    if line.startswith('Element'):
+                        atomic_symbol = line.split()[2]
+                        print(' {}'.format(atomic_symbol), file=output_file)
+                        ncore = self.core_charge(self.atom_charge(atomic_symbol))
+                        print(' {} {} {}'.format(self.name, 2, ncore), file=output_file)
+                        response.readline()
+                        response.readline()
+                        for i in range(3):
+                            lmax = response.readline()[1]
+                            if i == 0:
+                                print(' d potential'.format(lmax), file=output_file)
+                            elif i == 1:
+                                print(' s-d potential'.format(lmax), file=output_file)
+                            elif i == 2:
+                                print(' p-d potential'.format(lmax), file=output_file)
+                            num = int(response.readline()[1])
+                            print(' {}'.format(num), file=output_file)
+                            for j in range(num):
+                                print(
+                                    '  {data[0]:>2} {data[1]:>20} {data[2]:>20}'.format(
+                                        data=response.readline().split()),
+                                    file=output_file)
+                        print('****', file=output_file)
+
 
 class DiracFock_AREP(BaseLoader):
 
@@ -152,9 +184,12 @@ class SmallCoreDF_AREP(BaseLoader):
 
 loader = DiracFock_AREP()
 loader.load_orca()
+loader.load_qchem()
 
 loader = HartreeFock()
 loader.load_orca()
+loader.load_qchem()
 
 loader = SmallCoreDF_AREP()
 loader.load_orca()
+loader.load_qchem()
