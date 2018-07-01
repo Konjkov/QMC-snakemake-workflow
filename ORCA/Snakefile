@@ -101,11 +101,11 @@ rule ALL_VMC:
 
 rule ALL_ORCA:
     input:
-        expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, basis='ano-pVDZ', molecule=MOLECULES),
-#        expand('{method}/{basis}/{molecule}/gwfn.data', method='MP2', basis='ano-pVDZ', molecule=MOLECULES),
-#        expand('{method}/{basis}/{molecule}/gwfn.data', method='OO-RI-MP2', basis='ano-pVDZ', molecule=MOLECULES),
-#        expand('{method}/{basis}/{molecule}/gwfn.data', method='OOCCD', basis='ano-pVDZ', molecule=MOLECULES),
-#        expand('{method}/{basis}/{molecule}/gwfn.data', method='DLPNO-CCSD_T', basis='ano-pVDZ', molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method='MP2', basis=BASES', molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method='OO-RI-MP2', basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method='OOCCD', basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method='DLPNO-CCSD_T', basis=BASES, molecule=MOLECULES),
 
 #####################################################################################################################
 
@@ -198,7 +198,7 @@ rule ORCA_INPUT:
                     charge=charge,
                     multiplicity=multiplicity,
                     external_basis=external_basis,
-                    external_ecp=open('../ppotential/DiracFock_AREP_gaussian.bas').read()
+                    external_ecp=open('ppotential/DiracFock_AREP_gaussian.bas').read()
                 ))
             elif wildcards.method == 'DLPNO-CCSD_T':
                 f.write(open('orca_dlpno_ccsdt.tmpl').read().format(
