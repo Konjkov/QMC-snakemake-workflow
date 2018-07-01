@@ -102,7 +102,7 @@ rule ALL_VMC:
 rule ALL_ORCA:
     input:
         expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, basis=BASES, molecule=MOLECULES),
-        expand('{method}/{basis}/{molecule}/gwfn.data', method='MP2', basis=BASES', molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method='MP2', basis=BASES, molecule=MOLECULES),
         expand('{method}/{basis}/{molecule}/gwfn.data', method='OO-RI-MP2', basis=BASES, molecule=MOLECULES),
         expand('{method}/{basis}/{molecule}/gwfn.data', method='OOCCD', basis=BASES, molecule=MOLECULES),
         expand('{method}/{basis}/{molecule}/gwfn.data', method='DLPNO-CCSD_T', basis=BASES, molecule=MOLECULES),
