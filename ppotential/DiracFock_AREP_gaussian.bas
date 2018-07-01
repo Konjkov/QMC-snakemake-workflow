@@ -805,7 +805,7 @@ newecp Fe
   8           19.83252710        1285.65869960    4
 end
 newecp Co
- N_core 28
+ N_core 18
  lmax d
  d 8
   1           36.02389377           9.00000000    1
@@ -836,7 +836,7 @@ newecp Co
   8           18.40951514        2392.56310292    4
 end
 newecp Ni
- N_core 28
+ N_core 18
  lmax d
  d 8
   1           25.13417308          10.00000000    1
@@ -867,7 +867,7 @@ newecp Ni
   8           23.24760339         656.07961450    4
 end
 newecp Cu
- N_core 28
+ N_core 18
  lmax d
  d 8
   1           13.90418645          11.00000000    1
@@ -898,7 +898,7 @@ newecp Cu
   8           24.08164466        2826.48355326    4
 end
 newecp Zn
- N_core 28
+ N_core 18
  lmax d
  d 8
   1            9.47245754          12.00000000    1

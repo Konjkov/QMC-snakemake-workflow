@@ -31,7 +31,7 @@ class BaseLoader:
         elif atom_charge <= 18:  # Na-Ar
             return 10
         elif atom_charge <= 30:  # K-Zn
-            return 12
+            return 18
         elif atom_charge <= 36:  # Ga-Kr
             return 28
         elif atom_charge <= 48:  # Rb-Cd
@@ -150,6 +150,11 @@ class SmallCoreDF_AREP(BaseLoader):
         self.periodic += ('Hf', )
 
 
-loader = SmallCoreDF_AREP()
+loader = DiracFock_AREP()
+loader.load_orca()
 
+loader = HartreeFock()
+loader.load_orca()
+
+loader = SmallCoreDF_AREP()
 loader.load_orca()
