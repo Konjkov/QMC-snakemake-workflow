@@ -187,7 +187,7 @@ rule ORCA_INPUT:
             elif wildcards.basis.endswith('_PP'):
                 basis = wildcards.basis.split('_')[0]
                 if basis in ('aug-cc-pVDZ-CDF', 'aug-cc-pVTZ-CDF', 'aug-cc-pVQZ-CDF', 'aug-cc-pV5Z-CDF'):
-                    external_basis = """GTOName = "../../../../basis/{}.bas";""".format(basis)
+                    external_basis = """GTOName = "../../../basis/{}.bas";""".format(basis)
                     basis = 'cc-pVDZ'
                 else:
                     external_basis = ""
