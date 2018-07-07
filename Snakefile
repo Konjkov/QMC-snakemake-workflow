@@ -437,10 +437,14 @@ rule VMC_DMC_BF_INPUT:
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
         nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
         nstep=max(50000, int(round(nstep, -3)))
+        if wildcards.basis.endswith('_PP'):
+            tmove = 'T'
+        else:
+            tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../vmc_dmc.tmpl').read().format(
                 neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000,
-                backflow='T'
+                tmove=tmove, backflow='T'
             ))
 
 rule VMC_DMC_BF_DATA_JASTROW:
