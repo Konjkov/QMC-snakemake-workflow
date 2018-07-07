@@ -104,18 +104,25 @@ class BaseLoader:
                         response.readline()
                         for i in range(3):
                             lmax = response.readline()[1]
-                            if i == 0:
-                                print(' d potential'.format(lmax), file=output_file)
-                            elif i == 1:
-                                print(' s-d potential'.format(lmax), file=output_file)
-                            elif i == 2:
-                                print(' p-d potential'.format(lmax), file=output_file)
                             num = int(response.readline()[1])
-                            print(' {}'.format(num), file=output_file)
+                            if lmax == 'd':
+                                print(' d potential', file=output_file)
+                                print(' {}'.format(num-1), file=output_file)
+                            elif lmax == 's':
+                                print(' s-d potential'.format(lmax), file=output_file)
+                                print(' {}'.format(num), file=output_file)
+                            elif lmax == 'p':
+                                print(' p-d potential'.format(lmax), file=output_file)
+                                print(' {}'.format(num), file=output_file)
                             for j in range(num):
+                                r, e, c = response.readline().split()
+                                r = int(r)
+                                if r == 1:
+                                    # Coulombic term Z_val/r, where Z_val is the number of valence electrons
+                                    continue
                                 print(
                                     '  {data[0]:>2} {data[1]:>20} {data[2]:>20}'.format(
-                                        data=response.readline().split()),
+                                        data=(r-2, e, c)),
                                     file=output_file)
                         print('****', file=output_file)
 
