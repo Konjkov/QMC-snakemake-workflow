@@ -126,6 +126,7 @@ rule QCHEM_RUN:
                         algorithm=algorithm,
                         stability_analysis=stability_analysis,
                         external_ecp=open('ppotential/DiracFock_AREP_gaussian.bas').read()
+                        external_basis=open('basis/{}.bas'.format(basis)).read()
                     ))
             else:
                 with open(qchem_input, 'w') as f:
