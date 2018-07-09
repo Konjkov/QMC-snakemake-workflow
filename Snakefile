@@ -189,7 +189,15 @@ rule RESULTS:
     output: 'results.csv'
     run:
         with open(output[0], 'w', newline='') as result_file:
+            fieldnames = [
+                'molecule', 'method', 'basis', 'hf_energy', 'hf_time',
+                'vmc_energy', 'vmc_energy_error', 'vmc_variance', 'vmc_variance_error', 'vmc_time',
+                'jastrow_rank',
+                'vmc_opt_energy', 'vmc_opt_energy_error', 'vmc_opt_variance', 'vmc_opt_variance_error', 'vmc_opt_time', 'vmc_opt_energy_time',
+                'dmc_energy', 'dmc_energy_error', 'dmc_stderr', 'dmc_stderr_error', 'dmc_ncorr', 'dmc_ncorr_error', 'dmc_time'
+            ]
             energy_data = csv.writer(result_file, dialect=csv.unix_dialect, quoting=csv.QUOTE_NONE)
+            energy_data.writerow(fieldnames)
             for molecule in MOLECULES:
                 for method in METHODS:
                     for basis in BASES:
