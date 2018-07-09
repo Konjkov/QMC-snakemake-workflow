@@ -1,0 +1,29 @@
+$comment0
+$end
+
+$rem
+SYMMETRY              true
+BASIS                 gen
+ECP                   gen
+METHOD                {method}
+MAX_SCF_CYCLES        100
+SCF_CONVERGENCE       8
+SCF_ALGORITHM         {algorithm}
+MEM_STATIC            2000
+STABILITY_ANALYSIS    {stability_analysis}
+SET_ITER              100
+MOLDEN_FORMAT         true
+PRINT_ORBITALS        2000
+$end
+
+$ecp
+{external_ecp}
+$end
+
+$basis
+{external_basis}
+$end
+
+$molecule
+{molecule_data}
+$end

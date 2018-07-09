@@ -8,10 +8,22 @@ from datetime import timedelta
 def atom_charge(symbol):
     periodic = ('X', 'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne')
     periodic += ('Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar')
-    periodic += ('K', 'Ca', 'Sc', 'Ti', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr')
+    periodic += ('K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr')
     periodic += ('Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe')
+    # periodic += ('Cs', 'Ba', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg')
     atoms = {v.lower():i for i,v in enumerate(periodic)}
     return atoms[symbol.lower()]
+
+def get_atomic_symbols(molecule):
+    """Get atomic symbols set"""
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
+        natoms = int(input_geometry.readline())
+        charge, mult = map(int, input_geometry.readline().split())
+        atomic_symbols = set()
+        for atom in range(natoms):
+            symbol, x, y, z = input_geometry.readline().split()
+            atomic_symbols.add(symbol)
+    return atomic_symbols
 
 def get_XYZ(molecule):
     """Load XYZ-geometry from file."""
@@ -34,7 +46,7 @@ def get_ae_cutoffs(molecule):
     """
     result = []
     for i, _ in enumerate(get_XYZ(molecule)):
-        result.append('{i}         {i}         0.5                          1'.format(i=i+1))
+        result.append('{i}         {i}         0.5                          0'.format(i=i+1))
     return '\n  '.join(result)
 
 def get_atom_labels(molecule):
@@ -257,10 +269,14 @@ rule VMC_DMC_INPUT:
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
         nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
         nstep=max(50000, int(round(nstep, -3)))
+        if wildcards.basis.endswith('_PP'):
+            tmove = 'T'
+        else:
+            tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../vmc_dmc.tmpl').read().format(
                 neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000,
-                backflow='F'
+                tmove=tmove, backflow='F'
             ))
 
 rule VMC_DMC_JASTROW:
@@ -272,6 +288,12 @@ rule VMC_DMC_JASTROW:
         source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_OPT', wildcards.jastrow_opt_method, wildcards.jastrow_rank, '10000', 'correlation.out.9')
         target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
         shell('[[ -e "{source_path}" ]] && ln -s ../../../../VMC_OPT/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}/10000/correlation.out.9 "{target_path}"; exit 0')
+        # workaround in pseudopotential
+        if wildcards.basis.endswith('_PP'):
+            for symbol in get_atomic_symbols(wildcards.molecule):
+                symbol = symbol.lower()
+                shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
+
 
 rule VMC_DMC_GWFN:
     input:      '{path}/gwfn.data',
@@ -296,14 +318,20 @@ rule VMC_OPT_ENERGY_INPUT:
             f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, backflow='F'))
 
 rule VMC_OPT_ENERGY_JASTROW:
-    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/out'
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/parameters.casl'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/out'
+    output:     '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/parameters.casl'
     run:
         shell('ln -s ../10000/parameters.9.casl "{output}"')
         # workaround in multireference case
-        source_path = os.path.join(wildcards.path, 'VMC_OPT', wildcards.jastrow_opt_method, wildcards.jastrow_rank, '10000', 'correlation.out.9')
+        source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_OPT', wildcards.jastrow_opt_method, wildcards.jastrow_rank, '10000', 'correlation.out.9')
         target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
         shell('[[ -e "{source_path}" ]] && ln -s ../10000/correlation.out.9 "{target_path}"; exit 0')
+        # workaround in pseudopotential
+        if wildcards.basis.endswith('_PP'):
+            for symbol in get_atomic_symbols(wildcards.molecule):
+                symbol = symbol.lower()
+                shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
+
 
 rule VMC_OPT_ENERGY_GWFN:
     input:      '{path}/gwfn.data'
@@ -339,6 +367,11 @@ rule VMC_OPT_JASTROW:
         source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'correlation.data')
         target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
         shell('[[ -e "{source_path}" ]] && ln -s ../../../../correlation.data "{target_path}"; exit 0')
+        # workaround in pseudopotential
+        if wildcards.basis.endswith('_PP'):
+            for symbol in get_atomic_symbols(wildcards.molecule):
+                symbol = symbol.lower()
+                shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
 
 
 rule VMC_OPT_GWFN:
@@ -364,6 +397,11 @@ rule VMC_INPUT:
         source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'correlation.data')
         target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
         shell('[[ -e "{source_path}" ]] && ln -s ../../correlation.data "{target_path}"; exit 0')
+        # workaround in pseudopotential
+        if wildcards.basis.endswith('_PP'):
+            for symbol in get_atomic_symbols(wildcards.molecule):
+                symbol = symbol.lower()
+                shell('cd "$(dirname "{output}")" && ln -s ../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
 
 rule VMC_GWFN:
     input:      '{path}/gwfn.data'
@@ -399,10 +437,14 @@ rule VMC_DMC_BF_INPUT:
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * params.dt_relative_step)
         nstep = params.magic_const*(hf - vmc)/(int(wildcards.nconfig)*dtdmc*params.stderr*params.stderr)
         nstep=max(50000, int(round(nstep, -3)))
+        if wildcards.basis.endswith('_PP'):
+            tmove = 'T'
+        else:
+            tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../vmc_dmc.tmpl').read().format(
                 neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000,
-                backflow='T'
+                tmove=tmove, backflow='T'
             ))
 
 rule VMC_DMC_BF_DATA_JASTROW:

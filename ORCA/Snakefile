@@ -9,10 +9,10 @@ include: '../Snakefile'
 ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi202',
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 
-MOLECULES = ['he', 'li', 'n', 'o', 'f', 'ne']
-METHODS = ['B3LYP']
+MOLECULES = ['b']
+METHODS = ['CASSCF_6_4']
 BASES = ['ano-pVDZ'] #, 'ano-pVTZ', 'ano-pVQZ', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ']
-JASTROW_RANKS = ['8_8_44', 'a_ra_44', '8_8_4ra', 'a_ra_4ra']
+JASTROW_RANKS = ['8_8_44'] #, 'a_ra_44', '8_8_4ra', 'a_ra_4ra']
 
 def hf_energy(*path):
     """Get ORCA output energy."""
@@ -70,14 +70,19 @@ rule ALL:
 
 rule ALL_VMC_DMC:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='al', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='si', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_4_8', basis=BASES, molecule='be2', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_6_8', basis=BASES, molecule='b2', jastrow_rank=JASTROW_RANKS),
+
 
 rule ALL_VMC_OPT_ENERGY:
     input:
@@ -96,11 +101,11 @@ rule ALL_VMC:
 
 rule ALL_ORCA:
     input:
-        expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, basis='ano-pVDZ', molecule=MOLECULES),
-#        expand('{method}/{basis}/{molecule}/gwfn.data', method='MP2', basis='ano-pVDZ', molecule=MOLECULES),
-#        expand('{method}/{basis}/{molecule}/gwfn.data', method='OO-RI-MP2', basis='ano-pVDZ', molecule=MOLECULES),
-#        expand('{method}/{basis}/{molecule}/gwfn.data', method='OOCCD', basis='ano-pVDZ', molecule=MOLECULES),
-#        expand('{method}/{basis}/{molecule}/gwfn.data', method='DLPNO-CCSD_T', basis='ano-pVDZ', molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method='MP2', basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method='OO-RI-MP2', basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method='OOCCD', basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/gwfn.data', method='DLPNO-CCSD_T', basis=BASES, molecule=MOLECULES),
 
 #####################################################################################################################
 
@@ -115,8 +120,12 @@ rule GWFN:
     input:      '{method}/{basis}/{molecule}/mol.molden.input'
     output:     '{method}/{basis}/{molecule}/gwfn.data'
     run:
-        shell('molden2qmc.py 3 {input} {output}')
-        # workaround in multireference case
+        # workaround for pseudo potential
+        if wildcards.basis.endswith('_PP'):
+            shell('molden2qmc.py 3 {input} {output} --pseudoatoms all')
+        else:
+            shell('molden2qmc.py 3 {input} {output}')
+        # workaround for multireference case
         if wildcards.method.startswith('CASSCF'):
             shell('cd "$(dirname "{output}")" && multideterminant.py 3 mol.out')
 
@@ -174,6 +183,22 @@ rule ORCA_INPUT:
                     multiplicity=multiplicity,
                     nel=wildcards.method.split('_')[1],
                     norb=wildcards.method.split('_')[2]
+                ))
+            elif wildcards.basis.endswith('_PP'):
+                basis = wildcards.basis.split('_')[0]
+                if basis in ('aug-cc-pVDZ-CDF', 'aug-cc-pVTZ-CDF', 'aug-cc-pVQZ-CDF', 'aug-cc-pV5Z-CDF'):
+                    external_basis = """GTOName = "../../../basis/{}.bas";""".format(basis)
+                    basis = 'cc-pVDZ'
+                else:
+                    external_basis = ""
+                f.write(open('orca_ecp.tmpl').read().format(
+                    basis=basis,
+                    method=wildcards.method,
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    external_basis=external_basis,
+                    external_ecp=open('ppotential/DiracFock_AREP_gaussian.bas').read()
                 ))
             elif wildcards.method == 'DLPNO-CCSD_T':
                 f.write(open('orca_dlpno_ccsdt.tmpl').read().format(

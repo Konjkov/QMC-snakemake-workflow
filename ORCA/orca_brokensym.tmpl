@@ -1,0 +1,15 @@
+# ================================================================
+# Orca input file
+# ================================================================
+! UHF {method} {basis} VeryTightSCF
+{extra_params}
+! PAL4
+
+%scf
+  BrokenSym 1,1
+  STABPerform true
+end
+
+{extra_basis}
+
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
