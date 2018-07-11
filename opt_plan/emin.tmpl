@@ -24,8 +24,18 @@ vmc_decorr_period : 0              #*! VMC decorrelation period (0 - auto)
 
 # OPTIMIZATION
 opt_method        : emin           #*! Opt method (varmin/madmin/emin/...)
-opt_cycles        : 9              #*! Number of optimization cycles (Integer)
 opt_jastrow       : T              #*! Optimize Jastrow factor (Boolean)
+%block opt_plan                    #*! Multi-cycle optimization plan (Block)
+1 method=varmin
+2
+3
+4
+5
+6
+7
+8
+9
+%endblock opt_plan
 
 # GENERAL PARAMETERS
 use_gjastrow      : T              #*! Use a Jastrow function (Boolean)
