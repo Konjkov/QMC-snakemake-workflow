@@ -1,6 +1,7 @@
 import os
 import csv
 from math import sqrt
+from collections import defaultdict
 from operator import itemgetter
 from datetime import timedelta
 
@@ -24,6 +25,21 @@ def get_atomic_symbols(molecule):
             symbol, x, y, z = input_geometry.readline().split()
             atomic_symbols.add(symbol)
     return atomic_symbols
+
+def get_lebels_set(molecule):
+    """Get set of lebels from xyz-file for every atom type"""
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
+        natoms = int(input_geometry.readline())
+        charge, mult = map(int, input_geometry.readline().split())
+        atomic_symbols = []
+        for atom in range(natoms):
+            symbol, x, y, z = input_geometry.readline().split()
+            atomic_symbols.add(symbol)
+
+    result = defaultdict(list)
+    for i,item in enumerate(seq):
+        result[item].append(i)
+    return result
 
 def get_XYZ(molecule):
     """Load XYZ-geometry from file."""

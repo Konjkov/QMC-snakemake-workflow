@@ -9,9 +9,9 @@ include: '../Snakefile'
 ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi202',
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 
-MOLECULES = ['b']
-METHODS = ['CASSCF_6_4']
-BASES = ['ano-pVDZ'] #, 'ano-pVTZ', 'ano-pVQZ', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ']
+MOLECULES = ['ch4']
+METHODS = ['B3LYP']
+BASES = ['ano-pVDZ_PP'] #, 'ano-pVTZ', 'ano-pVQZ', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ']
 JASTROW_RANKS = ['8_8_44'] #, 'a_ra_44', '8_8_4ra', 'a_ra_4ra']
 
 def hf_energy(*path):
@@ -70,18 +70,23 @@ rule ALL:
 
 rule ALL_VMC_DMC:
     input:
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='al', jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='si', jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_4_8', basis=BASES, molecule='be2', jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/bf_plan_A/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_6_8', basis=BASES, molecule='b2', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='al', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='si', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_2', basis=BASES, molecule='be2', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_4_8', basis=BASES, molecule='be2', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_6_6', basis=BASES, molecule='be2', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method='CASSCF_6_8', basis=BASES, molecule='b2', jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_6_4', basis=BASES, molecule='o3', jastrow_rank=JASTROW_RANKS),
 
 
 rule ALL_VMC_OPT_ENERGY:
@@ -102,10 +107,10 @@ rule ALL_VMC:
 rule ALL_ORCA:
     input:
         expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, basis=BASES, molecule=MOLECULES),
-        expand('{method}/{basis}/{molecule}/gwfn.data', method='MP2', basis=BASES, molecule=MOLECULES),
-        expand('{method}/{basis}/{molecule}/gwfn.data', method='OO-RI-MP2', basis=BASES, molecule=MOLECULES),
-        expand('{method}/{basis}/{molecule}/gwfn.data', method='OOCCD', basis=BASES, molecule=MOLECULES),
-        expand('{method}/{basis}/{molecule}/gwfn.data', method='DLPNO-CCSD_T', basis=BASES, molecule=MOLECULES),
+#        expand('{method}/{basis}/{molecule}/gwfn.data', method='MP2', basis=BASES, molecule=MOLECULES),
+#        expand('{method}/{basis}/{molecule}/gwfn.data', method='OO-RI-MP2', basis=BASES, molecule=MOLECULES),
+#        expand('{method}/{basis}/{molecule}/gwfn.data', method='OOCCD', basis=BASES, molecule=MOLECULES),
+#        expand('{method}/{basis}/{molecule}/gwfn.data', method='DLPNO-CCSD_T', basis=BASES, molecule=MOLECULES),
 
 #####################################################################################################################
 
@@ -191,6 +196,21 @@ rule ORCA_INPUT:
                     basis = 'cc-pVDZ'
                 else:
                     external_basis = ""
+
+                flag = False
+                external_ecp = ''
+                with open('ppotential/DiracFock_AREP_gaussian.bas') as ecp:
+                    for line in ecp:
+                        for symbol in get_atomic_symbols(wildcards.molecule):
+                            if line.strip().lower() == 'newecp ' + symbol.lower():
+                                print(line)
+                                flag = True
+                        if flag:
+                            external_ecp += line
+                        if line.startswith('end'):
+                            print(line)
+                            flag = False
+
                 f.write(open('orca_ecp.tmpl').read().format(
                     basis=basis,
                     method=wildcards.method,
@@ -198,7 +218,7 @@ rule ORCA_INPUT:
                     charge=charge,
                     multiplicity=multiplicity,
                     external_basis=external_basis,
-                    external_ecp=open('ppotential/DiracFock_AREP_gaussian.bas').read()
+                    external_ecp=external_ecp
                 ))
             elif wildcards.method == 'DLPNO-CCSD_T':
                 f.write(open('orca_dlpno_ccsdt.tmpl').read().format(
