@@ -118,6 +118,31 @@ rule QCHEM_RUN:
             if wildcards.basis.endswith('_PP'):
                 basis = wildcards.basis.split('_')[0]
                 template = 'qchem_ecp.tmpl'
+
+                flag = False
+                external_ecp = ''
+                with open('ppotential/DiracFock_AREP_gaussian.bas') as ecp:
+                    for line in ecp:
+                        for symbol in get_atomic_symbols(wildcards.molecule):
+                            if symbol.lower() == line.strip().lower():
+                                flag = True
+                        if flag:
+                            external_ecp += line
+                        if line.startswith('****'):
+                            flag = False
+
+                flag = False
+                external_basis = ''
+                with open('basis/{}.bas'.format(basis)) as basis:
+                    for line in basis:
+                        for symbol in get_atomic_symbols(wildcards.molecule):
+                            if symbol.lower() == line.strip().lower():
+                                flag = True
+                        if flag:
+                            external_basis += line
+                        if line.startswith('****'):
+                            flag = False
+
                 with open(qchem_input, 'w') as f:
                     f.write(open(template).read().format(
                         basis=basis,
@@ -125,8 +150,8 @@ rule QCHEM_RUN:
                         molecule_data=molecule_data,
                         algorithm=algorithm,
                         stability_analysis=stability_analysis,
-                        external_ecp=open('ppotential/DiracFock_AREP_gaussian.bas').read(),
-                        external_basis=open('basis/{}.bas'.format(basis)).read()
+                        external_ecp=external_ecp,
+                        external_basis=external_basis
                     ))
             else:
                 with open(qchem_input, 'w') as f:
