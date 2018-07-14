@@ -7,11 +7,14 @@ from datetime import timedelta
 
 
 def atom_charge(symbol):
-    periodic = ('X', 'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne')
-    periodic += ('Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar')
-    periodic += ('K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr')
-    periodic += ('Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe')
-    # periodic += ('Cs', 'Ba', 'Lu', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg')
+    periodic = ['X', 'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne']
+    periodic += ['Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar']
+    periodic += ['K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr']
+    periodic += ['Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe']
+    periodic += ['Cs', 'Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn']
+    periodic += ['Fr', 'Ra', 'Ac', 'Rf', 'Db', 'Sg', 'Bh', 'Hs']
+    periodic[58:58] = ['Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
+    periodic[90:90] = ['Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr']
     atoms = {v.lower():i for i,v in enumerate(periodic)}
     return atoms[symbol.lower()]
 
@@ -25,21 +28,6 @@ def get_atomic_symbols(molecule):
             symbol, x, y, z = input_geometry.readline().split()
             atomic_symbols.add(symbol)
     return atomic_symbols
-
-def get_lebels_set(molecule):
-    """Get set of lebels from xyz-file for every atom type"""
-    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
-        natoms = int(input_geometry.readline())
-        charge, mult = map(int, input_geometry.readline().split())
-        atomic_symbols = []
-        for atom in range(natoms):
-            symbol, x, y, z = input_geometry.readline().split()
-            atomic_symbols.add(symbol)
-
-    result = defaultdict(list)
-    for i,item in enumerate(seq):
-        result[item].append(i)
-    return result
 
 def get_XYZ(molecule):
     """Load XYZ-geometry from file."""
@@ -56,6 +44,21 @@ def get_max_Z(molecule):
     """Get maximal Z for atoms in molecule."""
     return max(Z for Z, _ in get_XYZ(molecule))
 
+def get_lebel_set(molecule):
+    """Get set of lebels from xyz-file for every atom type"""
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
+        natoms = int(input_geometry.readline())
+        charge, mult = map(int, input_geometry.readline().split())
+        atomic_symbols = []
+        for atom in range(natoms):
+            symbol, x, y, z = input_geometry.readline().split()
+            atomic_symbols.append(symbol)
+
+    result = defaultdict(list)
+    for i, item in enumerate(atomic_symbols):
+        result[item].append(i+1)
+    return result
+
 def get_ae_cutoffs(molecule):
     """Create AE_cutoff initial values.
     Used for Backflow format.
@@ -64,15 +67,6 @@ def get_ae_cutoffs(molecule):
     for i, _ in enumerate(get_XYZ(molecule)):
         result.append('{i}         {i}         0.5                          0'.format(i=i+1))
     return '\n  '.join(result)
-
-def get_atom_labels(molecule):
-    """Returns number of atoms in a set and list of labels for this set.
-    Used for generic JASTROW format.
-    """
-    result = []
-    for i, _ in enumerate(get_XYZ(molecule)):
-        result.append('{i}'.format(i=i+1))
-    return i+1, ' '.join(result)
 
 def  casino_time(*path):
     """Get CASINO time.
@@ -537,17 +531,73 @@ rule VMC_OPT_BF_DATA_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/gwfn.data'
     output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/correlation.data'
     run:
+        MU_SET = """ START SET {nset}
+ Number of atoms in set
+   {number_of_atoms}
+ Labels of the atoms in this set
+   {atom_labels}
+ Type of e-N cusp conditions (0->PP/cuspless AE; 1->AE with cusp)
+   1
+ Expansion order
+   {mu_term}
+ Spin dep (0->u=d; 1->u/=d)
+   {spin_dep}
+ Cutoff (a.u.)     ;  Optimizable (0=NO; 1=YES)
+   5.0                               1
+ Parameter values  ;  Optimizable (0=NO; 1=YES)
+ END SET {nset}
+"""
+        PHI_SET = """ START SET {nset}
+ Number of atoms in set
+   {number_of_atoms}
+ Labels of the atoms in this set
+   {atom_labels}
+ Type of e-N cusp conditions (0=PP; 1=AE)
+   1
+ Irrotational Phi term (0=NO; 1=YES)
+   0
+ Electron-nucleus expansion order N_eN
+   {phi_term_eN}
+ Electron-electron expansion order N_ee
+   {phi_term_ee}
+ Spin dep (0->uu=dd=ud; 1->uu=dd/=ud; 2->uu/=dd/=ud)
+   1
+ Cutoff (a.u.)     ;  Optimizable (0=NO; 1=YES)
+   5.0                               1
+ Parameter values  ;  Optimizable (0=NO; 1=YES)
+ END SET {nset}
+"""
         jastrow = wildcards.jastrow_rank.split('_')
+        backflow = wildcards.backflow_rank.split('_')
+        mu_sets = ''
+        phi_sets = ''
+        neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
+        for nset, (_, labels) in enumerate(get_lebel_set(wildcards.molecule).items()):
+            mu_sets += MU_SET.format(
+                number_of_atoms=len(labels),
+                spin_dep=0 if neu == ned else 1,
+                atom_labels=' '.join(map(str, labels)),
+                mu_term=backflow[1],
+                nset=nset + 1
+            )
+            if backflow[2] != '00':
+                phi_sets += PHI_SET.format(
+                    number_of_atoms=len(labels),
+                    atom_labels=' '.join(map(str, labels)),
+                    phi_term_eN=backflow[2][0], phi_term_ee=backflow[2][1],
+                    nset=nset + 1
+                )
+        ae_cutoffs = get_ae_cutoffs(wildcards.molecule)
+        template = '../backflow_eta_mu.tmpl' if backflow[2] == '00' else '../backflow_eta_mu_phi.tmpl'
         with open(output[0], 'w') as f:
-            backflow = wildcards.backflow_rank.split('_')
-            ae_cutoffs = get_ae_cutoffs(wildcards.molecule)
-            number, labels = get_atom_labels(wildcards.molecule)
-            template = '../backflow_eta_mu.tmpl' if backflow[2] == '00' else '../backflow_eta_mu_phi.tmpl'
             f.write(open(template).read().format(
                 eta_term=backflow[0],
-                mu_number_of_atoms=number, mu_atom_labels=labels, mu_term=backflow[1],
-                phi_number_of_atoms=number, phi_atom_labels=labels, phi_term_eN=backflow[2][0], phi_term_ee=backflow[2][1],
-                ae_cutoffs=ae_cutoffs))
+                number_of_mu_sets=nset + 1,
+                number_of_phi_sets=nset + 1,
+                mu_sets=mu_sets,
+                phi_sets=phi_sets,
+                ae_cutoffs=ae_cutoffs
+            ))
         source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'correlation.data')
         shell('[[ -e "{source_path}" ]] && cat "{source_path}" >> "{output}"; exit 0')
 
