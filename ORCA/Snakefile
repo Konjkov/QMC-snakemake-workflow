@@ -9,9 +9,9 @@ include: '../Snakefile'
 ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi202',
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 
-MOLECULES = ['methanol']
-METHODS = ['B3LYP']
-BASES = ['ano-pVDZ'] #, 'ano-pVTZ', 'ano-pVQZ', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ']
+MOLECULES = ['o3']
+METHODS = ['CASSCF_2_2']
+BASES = ['cc-pVQZ'] #, 'ano-pVTZ', 'ano-pVQZ', 'cc-pVDZ', 'cc-pVTZ', 'cc-pVQZ']
 JASTROW_RANKS = ['8_8_44'] #, 'a_ra_44', '8_8_4ra', 'a_ra_4ra']
 
 def hf_energy(*path):
@@ -70,8 +70,8 @@ rule ALL:
 
 rule ALL_VMC_DMC:
     input:
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule='be', jastrow_rank=JASTROW_RANKS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule='b', jastrow_rank=JASTROW_RANKS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule='c', jastrow_rank=JASTROW_RANKS),

@@ -263,7 +263,7 @@ rule VMC_DMC_RUN:
 
 
 rule VMC_DMC_INPUT:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/gwfn.data',
+    input:      '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/gwfn.data',
     output:     '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/input'
     params:
         dt_relative_step = 2.0,
@@ -283,7 +283,7 @@ rule VMC_DMC_INPUT:
             ))
 
 rule VMC_DMC_JASTROW:
-    input:      '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/gwfn.data'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/out'
     output:     '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/parameters.casl'
     run:
         shell('ln -s ../../../../VMC_OPT/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}/10000/parameters.9.casl "{output}"')
