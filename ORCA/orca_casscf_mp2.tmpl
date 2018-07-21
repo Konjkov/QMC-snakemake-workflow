@@ -1,0 +1,39 @@
+# ================================================================
+# Orca input file
+# ================================================================
+! RI-MP2 {basis} {basis}/C VeryTightSCF
+! PAL4
+
+%mp2
+  density unrelaxed
+  natorbs true
+end
+
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
+
+
+$new_job
+! {basis} VeryTightSCF
+! MOREAD
+
+%moinp "mol.mp2nat"
+
+%casscf
+  nel  {nel}
+  norb {norb}
+  PrintWF det
+end
+
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
+
+
+$new_job
+! {basis} VeryTightSCF
+
+%casscf
+  nel  {nel}
+  norb {norb}
+  PrintWF csf
+end
+
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
