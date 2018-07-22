@@ -263,8 +263,8 @@ rule VMC_DMC_RUN:
 
 
 rule DMC_STATS_INPUT:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_2/gwfn.data',
-                '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_1/out',
+    input:      '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_2/gwfn.data',
+                '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_1/out',
     output:     '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_2/input'
     params:
         dt_relative_step = 2.0,

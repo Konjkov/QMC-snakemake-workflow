@@ -14,10 +14,11 @@ MOLECULES = ['mg', 'al', 'si']
 METHODS = ['B3LYP']
 BASES = ['cc-pVQZ']
 JASTROW_RANKS = ['8_8_44'] #, 'a_ra_44', '8_8_4ra', 'a_ra_4ra']
-MOLECULES_2_2 = ['be2', 'b2', 'o3']
+MOLECULES_2_2 = ['be2', 'c2', 'n2', 'f2', 'o3']
 MOLECULES_2_4 = ['be', 'mg']
 MOLECULES_3_4 = ['b', 'al']
-MOLECULES_4_4 = ['c', 'si']
+MOLECULES_4_4 = ['c', 'si', 'b2']
+MOLECULES_6_5 = ['o2']
 
 def hf_energy(*path):
     """Get ORCA output energy."""
@@ -69,12 +70,13 @@ def get_nelec(*path):
 
 rule ALL:
     input:
-#        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, basis=BASES, molecule=MOLECULES),
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/1000000_9/out', method='CASSCF_6_5', basis=BASES, molecule=MOLECULES_6_5, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
