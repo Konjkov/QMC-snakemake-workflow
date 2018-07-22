@@ -277,7 +277,7 @@ rule DMC_STATS_INPUT:
             nstep = 1
         else:
             nstep = ((stderr/STD_ERR)**2 - 1) * 50000
-            nstep = max(50000, int(round(nstep, -4)))
+            nstep = max(10000, int(round(nstep, -4)))
         if wildcards.basis.endswith('_PP'):
             tmove = 'T'
         else:
@@ -466,7 +466,7 @@ rule DMC_STATS_BF_INPUT:
             nstep = 1
         else:
             nstep = ((stderr/STD_ERR)**2 - 1) * 50000
-            nstep = max(50000, int(round(nstep, -4)))
+            nstep = max(10000, int(round(nstep, -4)))
         if wildcards.basis.endswith('_PP'):
             tmove = 'T'
         else:
@@ -483,8 +483,8 @@ rule DMC_STATS_BF_CONFIG:
     shell:      'cp "$(dirname "{input}")"/config.out "{output}"'
 
 rule VMC_DMC_BF_INPUT:
-    input:      '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_{i}/gwfn.data',
-    output:     '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_{i}/input'
+    input:      '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_1/gwfn.data',
+    output:     '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_1/input'
     params:
         dt_relative_step = 2.0,
     run:
