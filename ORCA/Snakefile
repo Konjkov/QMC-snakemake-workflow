@@ -10,6 +10,7 @@ ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi20
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 EXPORT_PATH = "export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH && export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} && ".format(ORCA_PATH=ORCA_PATH, ORCA_LIBS=ORCA_LIBS)
 
+STD_ERR = 0.001
 MOLECULES = ['mg', 'al', 'si']
 METHODS = ['B3LYP']
 BASES = ['cc-pVQZ']
@@ -265,16 +266,11 @@ rule ORCA_INPUT:
                     procs='! PAL{}'.format(PROCS)
                 ))
             else:
-                if wildcards.molecule in ('c-hooo',) and wildcards.method == 'HF':
-                    method = 'ROHF'
-                else:
-                    method = wildcards.method
-#                f.write(open('orca.tmpl').read().format(
-                f.write(open('orca_unstable.tmpl').read().format(
+                f.write(open('orca.tmpl').read().format(
                     basis=wildcards.basis,
                     extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
                     extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
-                    method=method,
+                    method=wildcards.method,
                     molecule=wildcards.molecule,
                     charge=charge,
                     multiplicity=multiplicity
