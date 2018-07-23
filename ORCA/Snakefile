@@ -81,8 +81,9 @@ rule ALL:
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_2/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_DMC:
     input:
