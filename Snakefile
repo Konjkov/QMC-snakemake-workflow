@@ -499,13 +499,11 @@ rule VMC_DMC_BF_INPUT:
 
 rule VMC_DMC_BF_DATA_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/out',
-                '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_{i}/gwfn.data'
     output:     '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_{i}/correlation.data'
     shell:      'ln -s "../../../../VMC_OPT_BF/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}__{wildcards.backflow_rank}/10000/correlation.out.9" "{output}"'
 
 rule VMC_DMC_BF_CASL_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/out',
-                '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_{i}/gwfn.data'
     output:     '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_{i}/parameters.casl'
     shell:      'ln -s "../../../../VMC_OPT_BF/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}__{wildcards.backflow_rank}/10000/parameters.9.casl" "{output}"'
 
