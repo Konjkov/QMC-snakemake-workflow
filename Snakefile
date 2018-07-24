@@ -383,7 +383,7 @@ rule VMC_OPT_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../opt_plan/{}.tmpl'.format(wildcards.jastrow_opt_method)).read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, molecule=wildcards.molecule
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, molecule=wildcards.molecule, backflow='F'
             ))
 
 rule VMC_OPT_JASTROW:
@@ -562,7 +562,7 @@ rule VMC_OPT_BF_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../opt_plan/{}.tmpl'.format(wildcards.jastrow_opt_method)).read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, molecule=wildcards.molecule
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, molecule=wildcards.molecule, backflow='T'
             ))
 
 rule VMC_OPT_BF_DATA_JASTROW:
