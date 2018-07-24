@@ -370,10 +370,10 @@ rule VMC_OPT_ENERGY_GWFN:
 ####################################################################################################################
 
 rule VMC_OPT_RUN:
-    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/input',
-                '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/gwfn.data',
-                '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/parameters.casl',
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/out'
+    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/{nconfig}/input',
+                '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/{nconfig}/gwfn.data',
+                '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/{nconfig}/parameters.casl',
+    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/{nconfig}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
 rule VMC_OPT_INPUT:
@@ -383,12 +383,12 @@ rule VMC_OPT_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../opt_plan/{}.tmpl'.format(wildcards.jastrow_opt_method)).read().format(
-                neu=neu, ned=ned, nconfig=10000, molecule=wildcards.molecule
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, molecule=wildcards.molecule
             ))
 
 rule VMC_OPT_JASTROW:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/gwfn.data'
-    output:     '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/parameters.casl'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/{nconfig}/gwfn.data'
+    output:     '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/{nconfig}/parameters.casl'
     run:
         with open(output[0], 'w') as f:
             f.write(open('../casl/{}.tmpl'.format(wildcards.jastrow_rank)).read())
@@ -405,7 +405,7 @@ rule VMC_OPT_JASTROW:
 
 rule VMC_OPT_GWFN:
     input:      '{path}/gwfn.data'
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/gwfn.data'
+    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/{nconfig}/gwfn.data'
     shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
 
 ####################################################################################################################
@@ -550,26 +550,26 @@ rule VMC_OPT_BF_ENERGY_GWFN:
 ####################################################################################################################
 
 rule VMC_OPT_BF_CASL_RUN:
-    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/input',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/gwfn.data',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/correlation.data',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/parameters.casl',
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/out'
+    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/input',
+                '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/gwfn.data',
+                '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/correlation.data',
+                '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/parameters.casl',
+    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
 rule VMC_OPT_BF_INPUT:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/gwfn.data'
-    output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/input'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/gwfn.data'
+    output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/input'
     run:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../opt_plan/{}.tmpl'.format(wildcards.jastrow_opt_method)).read().format(
-                neu=neu, ned=ned, nconfig=10000, molecule=wildcards.molecule
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, molecule=wildcards.molecule
             ))
 
 rule VMC_OPT_BF_DATA_JASTROW:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/gwfn.data'
-    output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/correlation.data'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/gwfn.data'
+    output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/correlation.data'
     run:
         MU_SET = """ START SET {nset}
  Number of atoms in set
@@ -643,8 +643,8 @@ rule VMC_OPT_BF_DATA_JASTROW:
 
 
 rule VMC_OPT_BF_CASL_JASTROW:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/gwfn.data'
-    output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/parameters.casl'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/gwfn.data'
+    output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/parameters.casl'
     run:
         jastrow = wildcards.jastrow_rank.split('_')
         with open(output[0], 'w') as f:
@@ -653,5 +653,5 @@ rule VMC_OPT_BF_CASL_JASTROW:
 
 rule VMC_OPT_BF_GWFN:
     input:      '{path}/gwfn.data'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/gwfn.data'
+    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/gwfn.data'
     shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
