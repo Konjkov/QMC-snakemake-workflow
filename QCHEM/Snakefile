@@ -3,6 +3,7 @@ import re
 include: '../Snakefile'
 
 STD_ERR = 0.001
+VMC_NCONFIG = 100000
 configfile: 'config.yaml'
 MOLECULES = get_all_inputs()
 METHODS = config['METHODS']

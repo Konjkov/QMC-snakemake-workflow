@@ -314,9 +314,7 @@ rule VMC_DMC_JASTROW:
     run:
         shell('ln -s ../../../../VMC_OPT/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}/10000/parameters.9.casl "{output}"')
         # workaround in multireference case
-        source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_OPT', wildcards.jastrow_opt_method, wildcards.jastrow_rank, '10000', 'correlation.out.9')
-        target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
-        shell('[[ -e "{source_path}" ]] && ln -s ../../../../VMC_OPT/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}/10000/correlation.out.9 "{target_path}"; exit 0')
+        shell('[[ -e "$(dirname "{input}")/correlation.out.9" ]] && ln -rs "$(dirname "{input}")/correlation.out.9" "$(dirname "{output}")/correlation.data"; exit 0')
         # workaround in pseudopotential
         if wildcards.basis.endswith('_PP'):
             for symbol in get_atomic_symbols(wildcards.molecule):
@@ -347,14 +345,12 @@ rule VMC_OPT_ENERGY_INPUT:
             f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, backflow='F'))
 
 rule VMC_OPT_ENERGY_JASTROW:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/{nconfig}/out'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/10000/out'
     output:     '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/parameters.casl'
     run:
-        shell('ln -s ../{wildcards.nconfig}/parameters.9.casl "{output}"')
+        shell('ln -rs "$(dirname "{input}")/parameters.9.casl" "{output}"')
         # workaround in multireference case
-        source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_OPT', wildcards.jastrow_opt_method, wildcards.jastrow_rank, '10000', 'correlation.out.9')
-        target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
-        shell('[[ -e "{source_path}" ]] && ln -s ../{wildcards.nconfig}/correlation.out.9 "{target_path}"; exit 0')
+        shell('[[ -e "$(dirname "{input}")/correlation.out.9" ]] && ln -rs "$(dirname "{input}")/correlation.out.9" "$(dirname "{output}")/correlation.data"; exit 0')
         # workaround in pseudopotential
         if wildcards.basis.endswith('_PP'):
             for symbol in get_atomic_symbols(wildcards.molecule):
@@ -383,7 +379,7 @@ rule VMC_OPT_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../opt_plan/{}.tmpl'.format(wildcards.jastrow_opt_method)).read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, molecule=wildcards.molecule, backflow='F'
+                neu=neu, ned=ned, nconfig=VMC_NCONFIG, molecule=wildcards.molecule, backflow='F'
             ))
 
 rule VMC_OPT_JASTROW:
@@ -500,12 +496,12 @@ rule VMC_DMC_BF_INPUT:
 rule VMC_DMC_BF_DATA_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/out',
     output:     '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_{i}/correlation.data'
-    shell:      'ln -s "../../../../VMC_OPT_BF/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}__{wildcards.backflow_rank}/10000/correlation.out.9" "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")/correlation.out.9" "{output}"'
 
 rule VMC_DMC_BF_CASL_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/out',
     output:     '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_2_{nconfig}_{i}/parameters.casl'
-    shell:      'ln -s "../../../../VMC_OPT_BF/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}__{wildcards.backflow_rank}/10000/parameters.9.casl" "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")/parameters.9.casl" "{output}"'
 
 rule VMC_DMC_BF_GWFN:
     input:      '{method}/{basis}/{molecule}/gwfn.data',
@@ -531,14 +527,14 @@ rule VMC_OPT_BF_ENERGY_INPUT:
             f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, backflow='T'))
 
 rule VMC_OPT_BF_DATA_ENERGY_JASTROW:
-    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/out'
+    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/out'
     output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/correlation.data'
-    shell:      'ln -s ../{wildcards.nconfig}/correlation.out.9 "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")/correlation.out.9" "{output}"'
 
 rule VMC_OPT_BF_CASL_ENERGY_JASTROW:
-    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/{nconfig}/out'
+    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/10000/out'
     output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/parameters.casl'
-    shell:      'ln -s ../{wildcards.nconfig}/parameters.9.casl "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")/parameters.9.casl" "{output}"'
 
 rule VMC_OPT_BF_ENERGY_GWFN:
     input:      '{path}/gwfn.data'
@@ -562,7 +558,7 @@ rule VMC_OPT_BF_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../opt_plan/{}.tmpl'.format(wildcards.jastrow_opt_method)).read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, molecule=wildcards.molecule, backflow='T'
+                neu=neu, ned=ned, nconfig=VMC_NCONFIG, molecule=wildcards.molecule, backflow='T'
             ))
 
 rule VMC_OPT_BF_DATA_JASTROW:
