@@ -330,15 +330,15 @@ rule VMC_DMC_GWFN:
 ####################################################################################################################
 
 rule VMC_OPT_ENERGY_RUN:
-    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/input',
-                '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/gwfn.data',
-                '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/parameters.casl'
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/out'
+    input:      '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/input',
+                '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/gwfn.data',
+                '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/parameters.casl'
+    output:     '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
 rule VMC_OPT_ENERGY_INPUT:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/gwfn.data'
-    output:     '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/input'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/gwfn.data'
+    output:     '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/input'
     run:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
@@ -346,7 +346,7 @@ rule VMC_OPT_ENERGY_INPUT:
 
 rule VMC_OPT_ENERGY_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out'
-    output:     '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/parameters.casl'
+    output:     '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/parameters.casl'
     run:
         shell('ln -rs "$(dirname "{input}")/parameters.9.casl" "{output}"')
         # workaround in multireference case
@@ -360,7 +360,7 @@ rule VMC_OPT_ENERGY_JASTROW:
 
 rule VMC_OPT_ENERGY_GWFN:
     input:      '{path}/gwfn.data'
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/1000000_9/gwfn.data'
+    output:     '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/gwfn.data'
     shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
 
 ####################################################################################################################
@@ -510,16 +510,16 @@ rule VMC_DMC_BF_GWFN:
 ####################################################################################################################
 
 rule VMC_OPT_BF_ENERGY_RUN:
-    input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/input',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/gwfn.data',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/correlation.data',
-                '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/parameters.casl'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/out'
+    input:      '{path}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/input',
+                '{path}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/gwfn.data',
+                '{path}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/correlation.data',
+                '{path}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/parameters.casl'
+    output:     '{path}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
 rule VMC_OPT_BF_ENERGY_INPUT:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/gwfn.data'
-    output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/input'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/gwfn.data'
+    output:     '{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/input'
     run:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
@@ -527,17 +527,17 @@ rule VMC_OPT_BF_ENERGY_INPUT:
 
 rule VMC_OPT_BF_DATA_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/out'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/correlation.data'
+    output:     '{path}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/correlation.data'
     shell:      'ln -rs "$(dirname "{input}")/correlation.out.9" "{output}"'
 
 rule VMC_OPT_BF_CASL_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/out'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/parameters.casl'
+    output:     '{path}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/parameters.casl'
     shell:      'ln -rs "$(dirname "{input}")/parameters.9.casl" "{output}"'
 
 rule VMC_OPT_BF_ENERGY_GWFN:
     input:      '{path}/gwfn.data'
-    output:     '{path}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000_9/gwfn.data'
+    output:     '{path}/VMC_OPT_ENERGY_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/1000000/gwfn.data'
     shell:      'mkdir -p "$(dirname "{output}")" && ln -rs "{input}" "{output}"'
 
 ####################################################################################################################
