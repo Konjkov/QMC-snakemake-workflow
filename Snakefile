@@ -280,7 +280,7 @@ rule DMC_STATS_INPUT:
             tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../dmc_stats.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000,
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//1000 or 1,
                 tmove=tmove, backflow='F'
             ))
 
@@ -304,7 +304,7 @@ rule VMC_DMC_INPUT:
             tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../vmc_dmc.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000,
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//1000 or 1,
                 tmove=tmove, backflow='F'
             ))
 
@@ -464,7 +464,7 @@ rule DMC_STATS_BF_INPUT:
             tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../dmc_stats.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000,
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//1000 or 1,
                 tmove=tmove, backflow='T'
             ))
 
@@ -488,7 +488,7 @@ rule VMC_DMC_BF_INPUT:
             tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../vmc_dmc.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep // 1000,
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//1000 or 1,
                 tmove=tmove, backflow='T'
             ))
 
