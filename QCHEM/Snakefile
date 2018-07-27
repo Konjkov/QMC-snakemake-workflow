@@ -118,7 +118,10 @@ rule QCHEM_RUN:
             if wildcards.method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
                 template = 'qchem_multideterminant.tmpl'
             else:
-                template = 'qchem.tmpl'
+                if stability_analysis = 'true':
+                    template = 'qchem.tmpl'
+                else:
+                    template = 'qchem_unstable.tmpl'
             with open(input[0], 'r') as f:
                 f.readline()                   # skip first line
                 molecule_data = f.read()[:-1]  # skip last NL
