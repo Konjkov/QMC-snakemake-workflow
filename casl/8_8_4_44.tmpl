@@ -9,6 +9,11 @@ JASTROW:
     e-e cusp: T
     e-e cutoff:
       Type: alt polynomial
+      Parameters:
+        Channel 1-1:
+          L: [ 5.0, limits: [ 3.0, 9.0 ]]
+        Channel 1-2:
+          L: [ 4.0, limits: [ 3.0, 9.0 ]]
   TERM 2:
     Rank: [1, 1]
     Rules: [Z, 1=2]
@@ -24,7 +29,20 @@ JASTROW:
       Type: natural power
       Order: 4
     e-n basis:
-      Type: r/(r+a) power
-      Order: 2
+      Type: natural power
+      Order: 4
     e-n cutoff:
       Type: alt polynomial
+  TERM 4:
+    Rank: [3, 0]
+    Rules: [1-1=2-2]
+    e-e basis:
+      Type: natural power
+      Order: 4
+    e-e cutoff:
+      Type: alt polynomial
+      Parameters:
+        Channel 1-1:
+          L: [ 1.5, limits: [ 1.0, 3.0 ]]
+        Channel 1-2:
+          L: [ 1.5, limits: [ 1.0, 3.0 ]]
