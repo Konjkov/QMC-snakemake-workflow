@@ -230,7 +230,7 @@ rule RESULTS:
                         path = (method, basis, molecule)
                         for jastrow_rank in JASTROW_RANKS:
                             vmc_opt_path = ('VMC_OPT', 'emin', jastrow_rank)
-                            vmc_opt_energy_path = ('VMC_OPT', 'emin', jastrow_rank, '1000000_9')
+                            vmc_opt_energy_path = ('VMC_OPT', 'emin', jastrow_rank, '1000000')
                             dmc_path = ('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')
                             try:
                                 writer.writerow((
