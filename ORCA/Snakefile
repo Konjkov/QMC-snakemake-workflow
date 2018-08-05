@@ -99,15 +99,19 @@ rule ALL_VMC_OPT_ENERGY:
 
 rule ALL_VMC_OPT:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC:
     input:
         expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_ORCA:
     input:
