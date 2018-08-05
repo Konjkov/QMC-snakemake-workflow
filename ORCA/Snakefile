@@ -99,15 +99,19 @@ rule ALL_VMC_OPT_ENERGY:
 
 rule ALL_VMC_OPT:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/10000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC:
     input:
         expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_ORCA:
     input:
@@ -119,25 +123,17 @@ rule ALL_ORCA:
 
 #####################################################################################################################
 
-rule MDET:
-    input:      '{multideterminant_method}/{basis}/{molecule}/mol.out'
-    output:     '{multideterminant_method}/{basis}/{molecule}/correlation.data'
-    wildcard_constraints:
-        multideterminant_method='CASSCF_\d+_\d+'
-    shell:      'cd "$(dirname "{output}")" && multideterminant.py 3 mol.out'
-
 rule GWFN:
     input:      '{method}/{basis}/{molecule}/mol.molden.input'
-    output:     '{method}/{basis}/{molecule}/gwfn.data'
+    output:     '{method}/{basis}/{molecule}/gwfn.data',
+                dynamic('{method}/{basis}/{molecule}/correlation.data'),
     run:
+        shell('cd "$(dirname "{output}")" && multideterminant.py 3 mol.out')
         # workaround for pseudo potential
         if wildcards.basis.endswith('_PP'):
             shell('molden2qmc.py 3 {input} {output} --pseudoatoms all')
         else:
             shell('molden2qmc.py 3 {input} {output}')
-        # workaround for multireference case
-        if wildcards.method.startswith('CASSCF'):
-            shell('cd "$(dirname "{output}")" && multideterminant.py 3 mol.out')
 
 rule MOLDEN:
     input:      '{method}/{basis}/{molecule}/mol.out'

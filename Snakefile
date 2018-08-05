@@ -176,6 +176,19 @@ def get_all_inputs():
     "get file names of all *.xyz input files"
     return sorted((os.path.splitext(filename)[0] for filename in os.listdir(config['INPUTS_DIR']) if os.path.splitext(filename)[1] == '.xyz'))
 
+def if_exists(rule):
+    def correlation_rule(wildcards):
+        """In singledeterminant case correlation.data file should be empty."""
+        print(wildcards.path)
+        path = os.path.join(wildcards.path, 'correlation.data')
+        print(path)
+        if os.path.isfile(path):
+            print('if')
+            return expand(rule, **wildcards)
+        else:
+            print('else')
+            return []
+    return correlation_rule
 
 wildcard_constraints:
     i = '\d',
@@ -230,7 +243,7 @@ rule RESULTS:
                         path = (method, basis, molecule)
                         for jastrow_rank in JASTROW_RANKS:
                             vmc_opt_path = ('VMC_OPT', 'emin', jastrow_rank)
-                            vmc_opt_energy_path = ('VMC_OPT', 'emin', jastrow_rank, '1000000_9')
+                            vmc_opt_energy_path = ('VMC_OPT', 'emin', jastrow_rank, '1000000')
                             dmc_path = ('VMC_DMC', 'emin', jastrow_rank, 'tmax_2_1024_1')
                             try:
                                 writer.writerow((
@@ -254,6 +267,7 @@ rule VMC_DMC_RUN:
     input:      '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/input',
                 '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/gwfn.data',
                 '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/parameters.casl',
+                if_exists('{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/correlation.data'),
     output:     '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
@@ -307,20 +321,21 @@ rule VMC_DMC_INPUT:
                 neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//1000 or 1,
                 tmove=tmove, backflow='F'
             ))
-
-rule VMC_DMC_JASTROW:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out'
-    output:     '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/parameters.casl'
-    run:
-        shell('ln -s ../../../../VMC_OPT/{wildcards.jastrow_opt_method}/{wildcards.jastrow_rank}/parameters.9.casl "{output}"')
-        # workaround in multireference case
-        shell('[[ -e "$(dirname "{input}")/correlation.out.9" ]] && ln -rs "$(dirname "{input}")/correlation.out.9" "$(dirname "{output}")/correlation.data"; exit 0')
         # workaround in pseudopotential
         if wildcards.basis.endswith('_PP'):
             for symbol in get_atomic_symbols(wildcards.molecule):
                 symbol = symbol.lower()
                 shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
 
+rule VMC_DMC_DATA_JASTROW:
+    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out',
+    output:     '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/correlation.data'
+    shell:      'ln -rs "$(dirname "{input}")/correlation.out.9" "{output}"'
+
+rule VMC_DMC_CASL_JASTROW:
+    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out',
+    output:     '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/parameters.casl'
+    shell:      'ln -rs "$(dirname "{input}")/parameters.9.casl" "{output}"'
 
 rule VMC_DMC_GWFN:
     input:      '{path}/gwfn.data',
@@ -332,7 +347,8 @@ rule VMC_DMC_GWFN:
 rule VMC_OPT_ENERGY_RUN:
     input:      '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/input',
                 '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/gwfn.data',
-                '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/parameters.casl'
+                '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/parameters.casl',
+                if_exists('{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/correlation.data'),
     output:     '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
@@ -343,20 +359,21 @@ rule VMC_OPT_ENERGY_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, backflow='F'))
-
-rule VMC_OPT_ENERGY_JASTROW:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out'
-    output:     '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/parameters.casl'
-    run:
-        shell('ln -rs "$(dirname "{input}")/parameters.9.casl" "{output}"')
-        # workaround in multireference case
-        shell('[[ -e "$(dirname "{input}")/correlation.out.9" ]] && ln -rs "$(dirname "{input}")/correlation.out.9" "$(dirname "{output}")/correlation.data"; exit 0')
         # workaround in pseudopotential
         if wildcards.basis.endswith('_PP'):
             for symbol in get_atomic_symbols(wildcards.molecule):
                 symbol = symbol.lower()
                 shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
 
+rule VMC_OPT_ENERGY_DATA_JASTROW:
+    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out'
+    output:     '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/correlation.data'
+    shell:      'ln -rs "$(dirname "{input}")/correlation.out.9" "{output}"'
+
+rule VMC_OPT_ENERGY_CASL_JASTROW:
+    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out'
+    output:     '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/parameters.casl'
+    shell:      'ln -rs "$(dirname "{input}")/parameters.9.casl" "{output}"'
 
 rule VMC_OPT_ENERGY_GWFN:
     input:      '{path}/gwfn.data'
@@ -369,6 +386,7 @@ rule VMC_OPT_RUN:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/input',
                 '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/gwfn.data',
                 '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/parameters.casl',
+                if_exists('{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/correlation.data'),
     output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
@@ -381,22 +399,24 @@ rule VMC_OPT_INPUT:
             f.write(open('../opt_plan/{}.tmpl'.format(wildcards.jastrow_opt_method)).read().format(
                 neu=neu, ned=ned, nconfig=VMC_NCONFIG, molecule=wildcards.molecule, backflow='F'
             ))
-
-rule VMC_OPT_JASTROW:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/gwfn.data'
-    output:     '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/parameters.casl'
-    run:
-        with open(output[0], 'w') as f:
-            f.write(open('../casl/{}.tmpl'.format(wildcards.jastrow_rank)).read())
-        # workaround in multireference case
-        source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'correlation.data')
-        shell('[[ -e "{source_path}" ]] && ln -s ../../../correlation.data "$(dirname "{output}")/correlation.data"; exit 0')
         # workaround in pseudopotential
         if wildcards.basis.endswith('_PP'):
             for symbol in get_atomic_symbols(wildcards.molecule):
                 symbol = symbol.lower()
                 shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
 
+rule VMC_OPT_DATA_JASTROW:
+    input:      '{path}/correlation.data'
+    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/correlation.data'
+    shell:      'ln -rs "{input}" "{output}"'
+
+rule VMC_OPT_CASL_JASTROW:
+    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/gwfn.data'
+    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/parameters.casl'
+    run:
+        jastrow = wildcards.jastrow_rank.split('_')
+        with open(output[0], 'w') as f:
+            f.write(open('../casl/{}.tmpl'.format(wildcards.jastrow_rank)).read())
 
 rule VMC_OPT_GWFN:
     input:      '{path}/gwfn.data'
@@ -406,7 +426,9 @@ rule VMC_OPT_GWFN:
 ####################################################################################################################
 
 rule VMC_RUN:
-    input:      '{path}/VMC/10000000/input'
+    input:      '{path}/VMC/10000000/input',
+                '{path}/gwfn.data',
+                dynamic('{path}/VMC/10000000/correlation.data'),
     output:     '{path}/VMC/10000000/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
@@ -417,15 +439,16 @@ rule VMC_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../vmc.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule))
-        # workaround in multireference case
-        source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'correlation.data')
-        target_path = os.path.join(os.path.dirname(output[0]), 'correlation.data')
-        shell('[[ -e "{source_path}" ]] && ln -s ../../correlation.data "{target_path}"; exit 0')
         # workaround in pseudopotential
         if wildcards.basis.endswith('_PP'):
             for symbol in get_atomic_symbols(wildcards.molecule):
                 symbol = symbol.lower()
                 shell('cd "$(dirname "{output}")" && ln -s ../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
+
+rule VMC_DATA_JASTROW:
+    input:      dynamic('{path}/correlation.data')
+    output:     dynamic('{path}/VMC/10000000/correlation.data')
+    shell:      'ln -rs "{input}" "{output}"'
 
 rule VMC_GWFN:
     input:      '{path}/gwfn.data'
