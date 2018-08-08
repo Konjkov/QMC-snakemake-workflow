@@ -176,20 +176,6 @@ def get_all_inputs():
     "get file names of all *.xyz input files"
     return sorted((os.path.splitext(filename)[0] for filename in os.listdir(config['INPUTS_DIR']) if os.path.splitext(filename)[1] == '.xyz'))
 
-def if_exists(rule):
-    def correlation_rule(wildcards):
-        """In singledeterminant case correlation.data file should be empty."""
-        print(wildcards.path)
-        path = os.path.join(wildcards.path, 'correlation.data')
-        print(path)
-        if os.path.isfile(path):
-            print('if')
-            return expand(rule, **wildcards)
-        else:
-            print('else')
-            return []
-    return correlation_rule
-
 wildcard_constraints:
     i = '\d',
     molecule='[-\w+=.]+',
@@ -264,11 +250,11 @@ rule RESULTS:
                                 print(e)
 
 rule VMC_DMC_RUN:
-    input:      '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/input',
-                '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/gwfn.data',
-                '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/parameters.casl',
-                if_exists('{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/correlation.data'),
-    output:     '{path}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/out'
+    input:      '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/input',
+                '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/gwfn.data',
+                '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/parameters.casl',
+                if_md('{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/correlation.data'),
+    output:     '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_2_{nconfig}_{i}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
 
@@ -345,11 +331,11 @@ rule VMC_DMC_GWFN:
 ####################################################################################################################
 
 rule VMC_OPT_ENERGY_RUN:
-    input:      '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/input',
-                '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/gwfn.data',
-                '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/parameters.casl',
-                if_exists('{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/correlation.data'),
-    output:     '{path}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/out'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/input',
+                '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/gwfn.data',
+                '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/parameters.casl',
+                if_md('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/correlation.data'),
+    output:     '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{jastrow_opt_method}/{jastrow_rank}/1000000/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
 rule VMC_OPT_ENERGY_INPUT:
@@ -383,11 +369,11 @@ rule VMC_OPT_ENERGY_GWFN:
 ####################################################################################################################
 
 rule VMC_OPT_RUN:
-    input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/input',
-                '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/gwfn.data',
-                '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/parameters.casl',
-                if_exists('{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/correlation.data'),
-    output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out'
+    input:      '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/input',
+                '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/gwfn.data',
+                '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/parameters.casl',
+                if_md('{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/correlation.data'),
+    output:     '{method}/{basis}/{molecule}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
 rule VMC_OPT_INPUT:
@@ -426,10 +412,10 @@ rule VMC_OPT_GWFN:
 ####################################################################################################################
 
 rule VMC_RUN:
-    input:      '{path}/VMC/10000000/input',
-                '{path}/gwfn.data',
-                dynamic('{path}/VMC/10000000/correlation.data'),
-    output:     '{path}/VMC/10000000/out'
+    input:      '{method}/{basis}/{molecule}/VMC/10000000/input',
+                '{method}/{basis}/{molecule}/gwfn.data',
+                if_md('{method}/{basis}/{molecule}/VMC/10000000/correlation.data'),
+    output:     '{method}/{basis}/{molecule}/VMC/10000000/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
 rule VMC_INPUT:
@@ -446,8 +432,8 @@ rule VMC_INPUT:
                 shell('cd "$(dirname "{output}")" && ln -s ../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
 
 rule VMC_DATA_JASTROW:
-    input:      dynamic('{path}/correlation.data')
-    output:     dynamic('{path}/VMC/10000000/correlation.data')
+    input:      '{path}/correlation.data'
+    output:     '{path}/VMC/10000000/correlation.data'
     shell:      'ln -rs "{input}" "{output}"'
 
 rule VMC_GWFN:

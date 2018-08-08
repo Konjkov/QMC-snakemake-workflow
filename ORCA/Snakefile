@@ -4,8 +4,6 @@ from datetime import timedelta
 
 PROCS = multiprocessing.cpu_count()
 
-include: '../Snakefile'
-
 ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi202'
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 EXPORT_PATH = "export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH && export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} && ".format(ORCA_PATH=ORCA_PATH, ORCA_LIBS=ORCA_LIBS)
@@ -70,8 +68,18 @@ def get_nelec(*path):
                 elec = int(m.group('elec'))
     return elec
 
-rule ALL:
+def if_md(rule):
+    """If multideterminant WFN."""
+    def correlation_rule(wildcards):
+        if wildcards.method.startswith('CASSCF'):
+            return expand(rule, **wildcards)
+        else:
+            return []
+    return correlation_rule
 
+include: '../Snakefile'
+
+rule ALL:
 
 rule ALL_VMC_DMC:
     input:
@@ -123,13 +131,16 @@ rule ALL_ORCA:
 
 #####################################################################################################################
 
+rule MULTIDETERMINANT:
+    input:      '{method}/{basis}/{molecule}/mol.out'
+    output:     '{method}/{basis}/{molecule}/correlation.data'
+    shell:      'cd "$(dirname "{output}")" && multideterminant.py 3 mol.out'
+
 rule GWFN:
     input:      '{method}/{basis}/{molecule}/mol.molden.input'
-    output:     '{method}/{basis}/{molecule}/gwfn.data',
-                dynamic('{method}/{basis}/{molecule}/correlation.data'),
+    output:     '{method}/{basis}/{molecule}/gwfn.data'
     run:
-        shell('cd "$(dirname "{output}")" && multideterminant.py 3 mol.out')
-        # workaround for pseudo potential
+        # workaround for pseudopotential
         if wildcards.basis.endswith('_PP'):
             shell('molden2qmc.py 3 {input} {output} --pseudoatoms all')
         else:
