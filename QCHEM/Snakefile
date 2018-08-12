@@ -1,15 +1,12 @@
 import re
 
-include: '../Snakefile'
-
 STD_ERR = 0.0001
 VMC_NCONFIG = 100000
-configfile: 'config.yaml'
-MOLECULES = get_all_inputs()
-METHODS = config['METHODS']
-BASES = config['BASES']
-JASTROW_RANKS = config['JASTROW_RANKS']
-STABILITY_ANALYSIS = config['STABILITY_ANALYSIS']
+MOLECULES = ['h']
+METHODS = ['HF']
+BASES = ['cc-pVQZ']
+JASTROW_RANKS = ['8_8_44']
+STABILITY_ANALYSIS = False
 
 def hf_energy(*path):
     """Get QCHEM output energy."""
@@ -41,6 +38,17 @@ def get_up_down(*path):
                 ned = int(m.group('beta'))
     return neu, ned
 
+def if_md(rule):
+    """If multideterminant WFN."""
+    def correlation_rule(wildcards):
+        if wildcards.method.split('_')[0] in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
+            return expand(rule, **wildcards)
+        else:
+            return []
+    return correlation_rule
+
+include: '../Snakefile'
+
 wildcard_constraints:
     multideterminant_method='OD|OD\(2\)|VOD|VOD\(2\)|QCCD|QCCD\(2\)|VQCCD',
     order='\d+'
@@ -60,9 +68,17 @@ rule ALL_VMC_OPT_ENERGY:
     input:
         expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow_rank}/1000000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
+rule ALL_VMC_OPT_ENERGY_BF:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+
 rule ALL_VMC_OPT:
     input:
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+
+rule ALL_VMC_OPT_BF:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC:
     input:
@@ -74,25 +90,20 @@ rule ALL_QCHEM:
 
 ###################################################################################################################
 
-ruleorder:
-    MULTIDETERMINENT_GWFN > GWFN
-
-rule MULTIDETERMINENT_GWFN:
-    input:      '{multideterminant_method}/{basis}/{molecule}/gwfn.data'
-    output:     '{multideterminant_method}_{order}/{basis}/{molecule}/gwfn.data'
-    shell:
-        """
-        cd "{wildcards.multideterminant_method}_{wildcards.order}/{wildcards.basis}/{wildcards.molecule}" &&
-        ln -s "../../../{wildcards.multideterminant_method}/{wildcards.basis}/{wildcards.molecule}/gwfn.data" &&
-        ln -s "../../../{wildcards.multideterminant_method}/{wildcards.basis}/{wildcards.molecule}/mol.out" &&
-        multideterminant.py 7 mol.out --truncate "{wildcards.order}"
-        """
+rule MULTIDETERMINANT:
+    input:      '{method}/{basis}/{molecule}/mol.out'
+    output:     '{method}/{basis}/{molecule}/correlation.data'
+    run:
+        value = wildcards.method.split('_')[1]
+        if float(value) < 1.0:
+            shell('cd "$(dirname "{output}")" && multideterminant.py 7 mol.out --amplitude "{value}"')
+        else:
+            shell('cd "$(dirname "{output}")" && multideterminant.py 7 mol.out --excitation "{value}"')
 
 rule GWFN:
     input:      '{method}/{basis}/{molecule}/mol.molden'
     output:     '{method}/{basis}/{molecule}/gwfn.data'
-    run:
-        shell('molden2qmc.py 7 "{input}" "{output}"')
+    shell:      'molden2qmc.py 7 "{input}" "{output}"'
 
 pat1 = '======= MOLDEN-FORMATTED INPUT FILE FOLLOWS ======='
 pat2 = '======= END OF MOLDEN-FORMATTED INPUT FILE ======='
@@ -104,16 +115,18 @@ rule MOLDEN:
     shell:      'sed -n "{params.pattern}" "{input}" > "{output}"'
 
 rule QCHEM_RUN:
-    input:      config['INPUTS_DIR'] + '/{molecule}.xyz'
+    input:      INPUTS_DIR + '/{molecule}.xyz'
     output:     '{method}/{basis}/{molecule}/mol.out'
     run:
         stability_analysis = STABILITY_ANALYSIS
         qchem_input = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'mol.in')
         for algorithm in ('diis', 'gdm'):
             # set template
-            if wildcards.method in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
+            if wildcards.method.split('_')[0] in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
+                method = wildcards.method.split('_')[0]
                 template = 'qchem_multideterminant.tmpl'
             else:
+                method = wildcards.method
                 if stability_analysis == 'true':
                     template = 'qchem.tmpl'
                 else:
@@ -152,7 +165,7 @@ rule QCHEM_RUN:
                 with open(qchem_input, 'w') as f:
                     f.write(open(template).read().format(
                         basis=basis,
-                        method=wildcards.method,
+                        method=method,
                         molecule_data=molecule_data,
                         algorithm=algorithm,
                         stability_analysis=stability_analysis,
@@ -163,7 +176,7 @@ rule QCHEM_RUN:
                 with open(qchem_input, 'w') as f:
                     f.write(open(template).read().format(
                         basis=wildcards.basis,
-                        method=wildcards.method,
+                        method=method,
                         molecule_data=molecule_data,
                         algorithm=algorithm,
                         stability_analysis=stability_analysis

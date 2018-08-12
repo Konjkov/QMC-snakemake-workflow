@@ -172,14 +172,16 @@ def dmc_stats_nstep(*path):
         print(e)
         return None
 
+INPUTS_DIR = '../chem_database'
+
 def get_all_inputs():
     "get file names of all *.xyz input files"
-    return sorted((os.path.splitext(filename)[0] for filename in os.listdir(config['INPUTS_DIR']) if os.path.splitext(filename)[1] == '.xyz'))
+    return sorted((os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR) if os.path.splitext(filename)[1] == '.xyz'))
 
 wildcard_constraints:
     i = '\d',
     molecule='[-\w+=.]+',
-    method='[-\w()]+',
+    method='[-\w().]+',
     basis='[-\w]+',
     jastrow_type='[_\w]+',
     jastrow_rank='[_\w]+',

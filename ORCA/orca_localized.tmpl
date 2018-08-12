@@ -1,0 +1,19 @@
+# ================================================================
+# Orca input file
+# ================================================================
+! {method} {basis} VeryTightSCF UseSym
+{extra_params}
+! PAL4
+
+%loc
+  LocMet    PipekMezey # localization method. Choices:
+                       # PipekMezey (=PM)
+                       # FosterBoys (=FB)
+  T_Core   -1000 # cutoff for core orbitals
+  Tol       1e-8 # conv. Tolerance (default=1e-6)
+  MaxIter   20   # max. no of iterations (def. 128)
+end
+
+{extra_basis}
+
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
