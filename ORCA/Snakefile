@@ -4,8 +4,6 @@ from datetime import timedelta
 
 PROCS = multiprocessing.cpu_count()
 
-include: '../Snakefile'
-
 ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi202'
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 EXPORT_PATH = "export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH && export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} && ".format(ORCA_PATH=ORCA_PATH, ORCA_LIBS=ORCA_LIBS)
@@ -70,8 +68,18 @@ def get_nelec(*path):
                 elec = int(m.group('elec'))
     return elec
 
-rule ALL:
+def if_md(rule):
+    """If multideterminant WFN."""
+    def correlation_rule(wildcards):
+        if wildcards.method.startswith('CASSCF'):
+            return expand(rule, **wildcards)
+        else:
+            return []
+    return correlation_rule
 
+include: '../Snakefile'
+
+rule ALL:
 
 rule ALL_VMC_DMC:
     input:
@@ -97,6 +105,14 @@ rule ALL_VMC_OPT_ENERGY:
         expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow_rank}/1000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow_rank}/1000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
 
+rule ALL_VMC_OPT_ENERGY_BF:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+
 rule ALL_VMC_OPT:
     input:
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
@@ -104,6 +120,14 @@ rule ALL_VMC_OPT:
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+
+rule ALL_VMC_OPT_BF:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC:
     input:
@@ -123,25 +147,20 @@ rule ALL_ORCA:
 
 #####################################################################################################################
 
-rule MDET:
-    input:      '{multideterminant_method}/{basis}/{molecule}/mol.out'
-    output:     '{multideterminant_method}/{basis}/{molecule}/correlation.data'
-    wildcard_constraints:
-        multideterminant_method='CASSCF_\d+_\d+'
+rule MULTIDETERMINANT:
+    input:      '{method}/{basis}/{molecule}/mol.out'
+    output:     '{method}/{basis}/{molecule}/correlation.data'
     shell:      'cd "$(dirname "{output}")" && multideterminant.py 3 mol.out'
 
 rule GWFN:
     input:      '{method}/{basis}/{molecule}/mol.molden.input'
     output:     '{method}/{basis}/{molecule}/gwfn.data'
     run:
-        # workaround for pseudo potential
+        # workaround for pseudopotential
         if wildcards.basis.endswith('_PP'):
             shell('molden2qmc.py 3 {input} {output} --pseudoatoms all')
         else:
             shell('molden2qmc.py 3 {input} {output}')
-        # workaround for multireference case
-        if wildcards.method.startswith('CASSCF'):
-            shell('cd "$(dirname "{output}")" && multideterminant.py 3 mol.out')
 
 rule MOLDEN:
     input:      '{method}/{basis}/{molecule}/mol.out'
