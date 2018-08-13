@@ -8,17 +8,17 @@ ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi20
 ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
 EXPORT_PATH = "export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH && export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} && ".format(ORCA_PATH=ORCA_PATH, ORCA_LIBS=ORCA_LIBS)
 
-STD_ERR = 0.0001
+STD_ERR = 0.00001
 VMC_NCONFIG = 100000
-MOLECULES = ['mg', 'al', 'si']
-METHODS = ['B3LYP']
-BASES = ['cc-pVQZ']
-JASTROW_RANKS = ['8_8_44'] #, 'a_ra_44', '8_8_4ra', 'a_ra_4ra']
-MOLECULES_2_2 = ['be2', 'c2', 'n2', 'f2', 'o3']
-MOLECULES_2_4 = ['be', 'mg']
-MOLECULES_3_4 = ['b', 'al']
-MOLECULES_4_4 = ['c', 'si', 'b2']
-MOLECULES_6_5 = ['o2']
+MOLECULES = ['h', 'he', 'li']
+METHODS = ['HF']
+BASES = ['cc-pVDZ']
+JASTROW_RANKS = ['8_8_44_simple']
+MOLECULES_2_2 = []
+MOLECULES_2_4 = []
+MOLECULES_3_4 = []
+MOLECULES_4_4 = []
+
 
 def hf_energy(*path):
     """Get ORCA output energy."""
@@ -80,6 +80,10 @@ def if_md(rule):
 include: '../Snakefile'
 
 rule ALL:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_4_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_DMC:
     input:
