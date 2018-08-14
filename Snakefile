@@ -398,7 +398,6 @@ rule VMC_OPT_CASL_JASTROW:
     input:      '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/gwfn.data'
     output:     '{path}/VMC_OPT/{jastrow_opt_method}/{jastrow_rank}/parameters.casl'
     run:
-        jastrow = wildcards.jastrow_rank.split('_')
         with open(output[0], 'w') as f:
             f.write(open('../casl/{}.tmpl'.format(wildcards.jastrow_rank)).read())
 
@@ -603,7 +602,6 @@ rule VMC_OPT_BF_DATA_JASTROW:
  Parameter values  ;  Optimizable (0=NO; 1=YES)
  END SET {nset}
 """
-        jastrow = wildcards.jastrow_rank.split('_')
         backflow = wildcards.backflow_rank.split('_')
         mu_sets = ''
         phi_sets = ''
@@ -642,7 +640,6 @@ rule VMC_OPT_BF_CASL_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/gwfn.data'
     output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/parameters.casl'
     run:
-        jastrow = wildcards.jastrow_rank.split('_')
         with open(output[0], 'w') as f:
             f.write(open('../casl/{}.tmpl'.format(wildcards.jastrow_rank)).read())
 
