@@ -270,24 +270,24 @@ rule DMC_STATS_INPUT:
         stderr, _ = dmc_stderr(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_DMC', wildcards.jastrow_opt_method, wildcards.jastrow_rank, 'tmax_{dt}_{nconfig}_1'.format(dt=wildcards.dt, nconfig=wildcards.nconfig))
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * int(wildcards.dt))
         if STD_ERR > stderr:
-            nstep = 1
+            nstep = 10000
         else:
             nstep = ((stderr/STD_ERR)**2 - 1) * 50000
-            nstep = max(10000, int(round(nstep, -4)))
+            nstep = int(round(nstep + 5000, -4))
         if wildcards.basis.endswith('_PP'):
             tmove = 'T'
         else:
             tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../dmc_stats.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//1000 or 1,
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//10000,
                 tmove=tmove, backflow='F'
             ))
 
 rule DMC_STATS_CONFIG:
     input:      '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_{dt}_{nconfig}_1/out',
     output:     '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_{dt}_{nconfig}_2/config.in'
-    shell:      'cp "$(dirname "{input}")"/config.out "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")"/config.out "{output}"'
 
 rule VMC_DMC_INPUT:
     input:      '{method}/{basis}/{molecule}/VMC_DMC/{jastrow_opt_method}/{jastrow_rank}/tmax_{dt}_{nconfig}_1/gwfn.data',
@@ -302,7 +302,7 @@ rule VMC_DMC_INPUT:
             tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../vmc_dmc.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//1000 or 1,
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//10000,
                 tmove=tmove, backflow='F'
             ))
         # workaround in pseudopotential
@@ -381,7 +381,7 @@ rule VMC_OPT_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../opt_plan/{}.tmpl'.format(wildcards.jastrow_opt_method)).read().format(
-                neu=neu, ned=ned, nconfig=VMC_NCONFIG, molecule=wildcards.molecule, backflow='F'
+                neu=neu, ned=ned, nstep=VMC_NCONFIG*10, nconfig=VMC_NCONFIG, molecule=wildcards.molecule, backflow='F'
             ))
         # workaround in pseudopotential
         if wildcards.basis.endswith('_PP'):
@@ -458,24 +458,24 @@ rule DMC_STATS_BF_INPUT:
         stderr, _ = dmc_stderr(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_DMC_BF', wildcards.jastrow_opt_method, wildcards.jastrow_rank + '__' + wildcards.backflow_rank, 'tmax_{dt}_{nconfig.format(dt=wildcards.dt, nconfig=wildcards.nconfig)}_1')
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * int(wildcards.dt))
         if STD_ERR > stderr:
-            nstep = 1
+            nstep = 10000
         else:
             nstep = ((stderr/STD_ERR)**2 - 1) * 50000
-            nstep = max(10000, int(round(nstep, -4)))
+            nstep = int(round(nstep + 5000, -4))
         if wildcards.basis.endswith('_PP'):
             tmove = 'T'
         else:
             tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../dmc_stats.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//1000 or 1,
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//10000,
                 tmove=tmove, backflow='T'
             ))
 
 rule DMC_STATS_BF_CONFIG:
     input:      '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_{dt}_{nconfig}_1/out',
     output:     '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_{dt}_{nconfig}_2/config.in'
-    shell:      'cp "$(dirname "{input}")"/config.out "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")"/config.out "{output}"'
 
 rule VMC_DMC_BF_INPUT:
     input:      '{method}/{basis}/{molecule}/VMC_DMC_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/tmax_{dt}_{nconfig}_1/gwfn.data',
@@ -490,7 +490,7 @@ rule VMC_DMC_BF_INPUT:
             tmove = 'F'
         with open(output[0], 'w') as f:
             f.write(open('../vmc_dmc.tmpl').read().format(
-                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//1000 or 1,
+                neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//10000,
                 tmove=tmove, backflow='T'
             ))
 
@@ -559,7 +559,7 @@ rule VMC_OPT_BF_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         with open(output[0], 'w') as f:
             f.write(open('../opt_plan/{}.tmpl'.format(wildcards.jastrow_opt_method)).read().format(
-                neu=neu, ned=ned, nconfig=VMC_NCONFIG, molecule=wildcards.molecule, backflow='T'
+                neu=neu, ned=ned, nstep=VMC_NCONFIG*10, nconfig=VMC_NCONFIG, molecule=wildcards.molecule, backflow='T'
             ))
 
 rule VMC_OPT_BF_DATA_JASTROW:

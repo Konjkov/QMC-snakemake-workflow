@@ -12,10 +12,10 @@ STD_ERR = 0.00001
 VMC_NCONFIG = 100000
 MOLECULES = ['h', 'he', 'li']
 METHODS = ['HF']
-BASES = ['cc-pVDZ']
+BASES = ['cc-pVTZ']
 JASTROW_RANKS = ['8_8_44_simple']
 MOLECULES_2_2 = []
-MOLECULES_2_4 = []
+MOLECULES_2_4 = ['be']
 MOLECULES_3_4 = []
 MOLECULES_4_4 = []
 
@@ -84,6 +84,9 @@ rule ALL:
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_4_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_1_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_4_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
 
 rule ALL_VMC_DMC:
     input:
