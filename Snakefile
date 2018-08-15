@@ -12,7 +12,7 @@ def atom_charge(symbol):
     periodic += ['K', 'Ca', 'Sc', 'Ti', 'V', 'Cr', 'Mn', 'Fe', 'Co', 'Ni', 'Cu', 'Zn', 'Ga', 'Ge', 'As', 'Se', 'Br', 'Kr']
     periodic += ['Rb', 'Sr', 'Y', 'Zr', 'Nb', 'Mo', 'Tc', 'Ru', 'Rh', 'Pd', 'Ag', 'Cd', 'In', 'Sn', 'Sb', 'Te', 'I', 'Xe']
     periodic += ['Cs', 'Ba', 'La', 'Hf', 'Ta', 'W', 'Re', 'Os', 'Ir', 'Pt', 'Au', 'Hg', 'Tl', 'Pb', 'Bi', 'Po', 'At', 'Rn']
-    periodic += ['Fr', 'Ra', 'Ac', 'Rf', 'Db', 'Sg', 'Bh', 'Hs']
+    periodic += ['Fr', 'Ra', 'Ac', 'Rf', 'Db', 'Sg', 'Bh', 'Hs', 'Mt', 'Ds', 'Rg', 'Cn']
     periodic[58:58] = ['Ce', 'Pr', 'Nd', 'Pm', 'Sm', 'Eu', 'Gd', 'Tb', 'Dy', 'Ho', 'Er', 'Tm', 'Yb', 'Lu']
     periodic[90:90] = ['Th', 'Pa', 'U', 'Np', 'Pu', 'Am', 'Cm', 'Bk', 'Cf', 'Es', 'Fm', 'Md', 'No', 'Lr']
     atoms = {v.lower():i for i,v in enumerate(periodic)}
@@ -566,48 +566,14 @@ rule VMC_OPT_BF_DATA_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/gwfn.data'
     output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{jastrow_opt_method}/{jastrow_rank}__{backflow_rank}/correlation.data'
     run:
-        MU_SET = """ START SET {nset}
- Number of atoms in set
-   {number_of_atoms}
- Labels of the atoms in this set
-   {atom_labels}
- Type of e-N cusp conditions (0->PP/cuspless AE; 1->AE with cusp)
-   1
- Expansion order
-   {mu_term}
- Spin dep (0->u=d; 1->u/=d)
-   {spin_dep}
- Cutoff (a.u.)     ;  Optimizable (0=NO; 1=YES)
-   5.0                               1
- Parameter values  ;  Optimizable (0=NO; 1=YES)
- END SET {nset}
-"""
-        PHI_SET = """ START SET {nset}
- Number of atoms in set
-   {number_of_atoms}
- Labels of the atoms in this set
-   {atom_labels}
- Type of e-N cusp conditions (0=PP; 1=AE)
-   1
- Irrotational Phi term (0=NO; 1=YES)
-   0
- Electron-nucleus expansion order N_eN
-   {phi_term_eN}
- Electron-electron expansion order N_ee
-   {phi_term_ee}
- Spin dep (0->uu=dd=ud; 1->uu=dd/=ud; 2->uu/=dd/=ud)
-   1
- Cutoff (a.u.)     ;  Optimizable (0=NO; 1=YES)
-   5.0                               1
- Parameter values  ;  Optimizable (0=NO; 1=YES)
- END SET {nset}
-"""
         backflow = wildcards.backflow_rank.split('_')
+        mu_set = open('../backflow_mu_set.tmpl').read()
+        phi_set = open('../backflow_phi_set.tmpl').read()
         mu_sets = ''
         phi_sets = ''
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         for nset, (_, labels) in enumerate(get_lebel_set(wildcards.molecule).items()):
-            mu_sets += MU_SET.format(
+            mu_sets += mu_set.format(
                 number_of_atoms=len(labels),
                 spin_dep=0 if neu == ned else 1,
                 atom_labels=' '.join(map(str, labels)),
@@ -615,7 +581,7 @@ rule VMC_OPT_BF_DATA_JASTROW:
                 nset=nset + 1
             )
             if backflow[2] != '00':
-                phi_sets += PHI_SET.format(
+                phi_sets += phi_set.format(
                     number_of_atoms=len(labels),
                     atom_labels=' '.join(map(str, labels)),
                     phi_term_eN=backflow[2][0], phi_term_ee=backflow[2][1],
