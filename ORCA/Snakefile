@@ -13,7 +13,7 @@ VMC_NCONFIG = 100000
 MOLECULES = ['H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na']
 METHODS = ['HF']
 BASES = ['cc-pVQZ']
-JASTROW_RANKS = ['8_8_44_simple']
+JASTROWS = ['8_8_44_simple']
 MOLECULES_2_2 = []
 MOLECULES_2_4 = ['Be']
 MOLECULES_3_4 = ['B']
@@ -81,74 +81,74 @@ include: '../Snakefile'
 
 rule ALL:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_4_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_1_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_4_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_1_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_4_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_1_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_4_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_1/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_1/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_DMC:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_DMC_BF:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_2/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_2/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_2/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_2/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow_rank}/1000000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow_rank}/1000000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow_rank}/1000000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow_rank}/1000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow_rank}/1000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_ENERGY_BF:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_BF:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC:
     input:
         expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, basis=BASES, molecule=MOLECULES),
-        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4, jastrow_rank=JASTROW_RANKS),
-        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_2_2', basis=BASES, molecule=MOLECULES_2_2),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_3_4', basis=BASES, molecule=MOLECULES_3_4),
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF_4_4', basis=BASES, molecule=MOLECULES_4_4),
 
 rule ALL_ORCA:
     input:

@@ -5,7 +5,7 @@ VMC_NCONFIG = 100000
 MOLECULES = ['h']
 METHODS = ['HF']
 BASES = ['cc-pVQZ']
-JASTROW_RANKS = ['8_8_44']
+JASTROWS = ['8_8_44']
 STABILITY_ANALYSIS = False
 
 def hf_energy(*path):
@@ -58,27 +58,27 @@ rule ALL:
 
 rule ALL_VMC_DMC:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow_rank}/tmax_2_1024_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
 
 rule ALL_VMC_DMC_BF:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow_rank}__9_9_33/tmax_2_1024_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow_rank}/1000000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_ENERGY_BF:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow_rank}__9_9_33/1000000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow_rank}/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_BF:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow_rank}__9_9_33/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow_rank=JASTROW_RANKS),
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
 
 rule ALL_VMC:
     input:
