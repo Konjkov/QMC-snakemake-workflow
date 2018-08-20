@@ -38,33 +38,34 @@ The basic information necessary for calculations is contained in global variable
 Depending on the program used to generate "trial" WFN, the following rules are available:
 
 * __ORCA__
-    ```
-    rule ALL_ORCA:
-        input: '{method}/{basis}/{molecule}/gwfn.data'
-    ```
-        perform ORCA calculaction and generate gwfm.data file and correlation.data in case of CASSCF method.  
-        _method_ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N,M) for multideterminant extension.  
-        _basis_ - any bases available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).  
-        _molecule_ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.  
+        rule ALL_ORCA:
+            input: '{method}/{basis}/{molecule}/gwfn.data'
+
+    perform ORCA calculaction and generate gwfm.data file and correlation.data in case of CASSCF method.  
+    _method_ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N,M) for multideterminant extension.  
+    _basis_ - any bases available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).  
+    _molecule_ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.  
 
 * __QCHEM__
-    * __ALL_QCHEM__  
-        perform QCHEM calculaction and generate gwfm.data file and correlation.data in case of OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD.  
-        General form of this rule is '{method}/{basis}/{molecule}/gwfn.data' where  
-        __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).  
-        in case of OO-method T2-amplitudes where used as determinant's weights but some type of active space truncation should be specified:  
-        it should be done with two ways:  
-          __multideterminant method___X if X > 1 then first X active orbitals were taken.  
-          __multideterminant method___X if X < 1 then all orbitals with T2-amplitudes greate then X were taken.  
-        __basis__ - any basis available in QCHEM (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).  
-        __molecule__ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.  
+        rule ALL_QCHEM:
+            input: '{method}/{basis}/{molecule}/gwfn.data'
+
+    perform QCHEM calculaction and generate gwfm.data file and correlation.data in case of OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD.  
+    __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).  
+    in case of OO-method T2-amplitudes where used as determinant's weights but some type of active space truncation should be specified:  
+    it should be done with two ways:  
+      _multideterminant method_ _X if X > 1 then first X active orbitals were taken.  
+      _multideterminant method_ _X if X < 1 then all orbitals with T2-amplitudes greate then X were taken.  
+    _basis_ - any basis available in QCHEM (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).  
+    _molecule_ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.  
 
 * __QMC__
-    * __ALL_VMC__  
-        perform pure VMC calculation (without JASTROW), this rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one.  
-        General form of this rule is '{method}/{basis}/{molecule}/VMC/{nstep}/out' where  
-        __nstep__ - number of VMC statistic accumulation steps.  
-        This step is not required to calculate the DMC energy.  
+        rule ALL_VMC:
+            input: '{method}/{basis}/{molecule}/VMC/{nstep}/out'
+
+    perform pure VMC calculation (without JASTROW), this rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one.  
+    _nstep_ - number of VMC statistic accumulation steps.  
+    This rule is not required to calculate the DMC energy.  
     * __ALL_VMC_OPT__  
         perform JASTROW coefficients optimization using some optimization plan.  
         General form of this rule is '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/out' where  
@@ -74,7 +75,7 @@ Depending on the program used to generate "trial" WFN, the following rules are a
         perform VMC energy calculation with optimized JASTROW coefficients. It may be required if you need the VMC energy with high accuracy.  
         General form of this rule is '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/out' where  
         __nstep__ - number of VMC statistic accumulation steps.  
-        This step is not required to calculate the DMC energy.  
+        This rule is not required to calculate the DMC energy.  
     * __ALL_VMC_DMC__  
         perform FN-DMC energy calculation to achive desired accuracy (specified in the variable STD_ERR).  
         General form of this rule is '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/out' where  
@@ -90,7 +91,7 @@ Depending on the program used to generate "trial" WFN, the following rules are a
         perform the same actions as __ALL_VMC_OPT_ENERGY__ but with BACKFLOW transformation.  
         General form of this rule is '{path}/VMC_OPT_ENERGY_BF/{opt_plan}/{jastrow}__{backflow}/{nstep}/out'  
         __nstep__ - number of VMC statistic accumulation steps.  
-        This step is not required to calculate the DMC energy.  
+        This rule is not required to calculate the DMC energy.  
     * __ALL_VMC_DMC_BF__  
         perform the same actions as __ALL_VMC_DMC__ but with BACKFLOW transformed WFN.  
         General form of this rule is '{path}/VMC_DMC_BF/{opt_plan}/{jastrow}__{backflow}/tmax_{dt}_{nconfig}_{i}/out'  
