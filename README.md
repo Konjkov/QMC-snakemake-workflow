@@ -37,20 +37,24 @@ The basic information necessary for calculations is contained in global variable
 
 Depending on the program used to generate "trial" WFN, the following rules are available:
 
-* ORCA calculaction  
-        rule ALL_ORCA:
-            input: '{method}/{basis}/{molecule}/gwfn.data'
+* ORCA calculation  
+    ```
+    rule ALL_ORCA:
+        input: '{method}/{basis}/{molecule}/gwfn.data'
+    ```
 
     This rule perform ORCA calculaction and generate gwfm.data file and correlation.data in case of CASSCF method.  
     _method_ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N,M) for multideterminant extension.  
     _basis_ - any bases available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).  
     _molecule_ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.  
 
-* QCHEM calculaction  
-        rule ALL_QCHEM:
-            input: '{method}/{basis}/{molecule}/gwfn.data'
+* QCHEM calculation  
+    ```
+    rule ALL_QCHEM:
+        input: '{method}/{basis}/{molecule}/gwfn.data'
+    ```
 
-    This rule perform QCHEM calculaction and generate gwfm.data file and correlation.data in case of OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD.  
+    This rule perform QCHEM calculation and generate gwfm.data file and correlation.data in case of OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD.  
     __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).  
     in case of OO-method T2-amplitudes where used as determinant's weights but some type of active space truncation should be specified:  
     it should be done with two ways:  
@@ -61,8 +65,10 @@ Depending on the program used to generate "trial" WFN, the following rules are a
 
 * QMC rules
     * pure VMC calculation (without JASTROW)  
+        ```
         rule ALL_VMC:
             input: '{method}/{basis}/{molecule}/VMC/{nstep}/out'
+        ```
     Where:  
     _nstep_ - number of VMC statistic accumulation steps.  
     This rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one.
