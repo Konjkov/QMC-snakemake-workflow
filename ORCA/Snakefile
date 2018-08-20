@@ -82,8 +82,8 @@ include: '../Snakefile'
 rule ALL:
     input:
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
 #        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_1/out', method='CASSCF_2_4', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
