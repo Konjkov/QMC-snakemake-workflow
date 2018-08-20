@@ -38,12 +38,14 @@ The basic information necessary for calculations is contained in global variable
 Depending on the program used to generate "trial" WFN, the following rules are available:
 
 * __ORCA__
-    * _ALL_ORCA_ rule  
+    ```
+    rule ALL_ORCA:
+        input: '{method}/{basis}/{molecule}/gwfn.data'
+    ```
         perform ORCA calculaction and generate gwfm.data file and correlation.data in case of CASSCF method.  
-        General form of this rule is '{method}/{basis}/{molecule}/gwfn.data' where  
-        __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N,M) for multideterminant extension.  
-        __basis__ - any bases available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).  
-        __molecule__ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.  
+        _method_ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N,M) for multideterminant extension.  
+        _basis_ - any bases available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).  
+        _molecule_ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.  
 
 * __QCHEM__
     * __ALL_QCHEM__  
