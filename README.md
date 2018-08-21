@@ -44,7 +44,8 @@ Depending on the program used to generate "trial" WFN, the following rules are a
         input: '{method}/{basis}/{molecule}/gwfn.data'
     ```
     Where:
-    * __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N,M) for multideterminant extension.
+    * __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0),
+    OO-RI-MP2, CASSCF(N,M) for multideterminant extension. CASSCF(N,M) should be coded as CASSCF_N_M
     * __basis__ - any basis available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).
     * __molecule__ - molecular geometry file name in xyz-format (without extension) located in the `chem_database` directory.
 
@@ -55,12 +56,12 @@ Depending on the program used to generate "trial" WFN, the following rules are a
         input: '{method}/{basis}/{molecule}/gwfn.data'
     ```
     Where:
-    * __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).  
-    in case of OO-method T2-amplitudes where used as determinant's weights but some type of active space truncation should be specified:  
+    * __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).
+    in case of OO-method T2-amplitudes where used as determinant's weights but some type of active space truncation should be specified.\
     It should be done with two ways:  
-    __multideterminant method_X__ if X > 1 then first X active orbitals were taken.  
-    __multideterminant method_X__ if X < 1 then all orbitals with T2-amplitudes greate then X were taken.  
-    * __basis__ - any basis available in QCHEM (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).
+        - __OD_10__ first 10 active orbitals were taken.
+        - __OD\_\.01__ all orbitals with T2-amplitudes greater then 0.01 were taken.
+    * __basis__ - any basis available in QCHEM (i.e. cc-pVDZ, aug-cc-pVQZ, pc-1).
     * __molecule__ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.
 
 * __QMC rules__
@@ -72,8 +73,7 @@ Depending on the program used to generate "trial" WFN, the following rules are a
         Where:
         * __nstep__ - number of VMC statistic accumulation steps.
 
-        This rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one.
-        It is not required to calculate the DMC energy.
+        This rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one. It is not required to calculate the DMC energy.
     * JASTROW coefficients optimization using some optimization plan  
         ```
         rule ALL_VMC_OPT:
@@ -90,7 +90,7 @@ Depending on the program used to generate "trial" WFN, the following rules are a
         Where:
         * __nstep__ - number of VMC statistic accumulation steps.
 
-        This rule is not required to calculate the DMC energy? but it may be required if you need the VMC energy with high accuracy.  
+        This rule is not required to calculate the DMC energy, but it may be required if you need the VMC energy with high accuracy.
     * FN-DMC energy calculation to achieve desired accuracy (specified in the variable STD_ERR).  
         ```
         rule ALL_VMC_DMC:
@@ -106,7 +106,9 @@ Depending on the program used to generate "trial" WFN, the following rules are a
             input: '{method}/{basis}/{molecule}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/out'
         ```
         Where:
-        * __backflow__ -
+        * __backflow__ - combination of {ETA-term}\_{MU-term}\_{PHI-term-electron-nucleus}{PHI-term-electron-electron} expansion orders:
+            - 3_3_00 - ETA-term expansion of order 3 and MU-term of order 3, no PHI-term
+            - 9_9_33 - ETA-term expansion of order 9 and MU-term of order 9, PHI-term with electron-nucleus and electron-electron expansion of order 3 both.
 
         It should be noted that the BACKFLOW transformation in CASINO is implemented only up to f-orbitals.  
     * VMC energy calculation with optimized JASTROW coefficients with BACKFLOW transformation.
