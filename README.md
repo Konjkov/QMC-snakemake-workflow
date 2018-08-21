@@ -73,7 +73,8 @@ Depending on the program used to generate "trial" WFN, the following rules are a
         Where:
         * __nstep__ - number of VMC statistic accumulation steps.
 
-        This rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one. It is not required to calculate the DMC energy.
+        This rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one.
+        It is not required to calculate the DMC energy.
     * JASTROW coefficients optimization using some optimization plan  
         ```
         rule ALL_VMC_OPT:
@@ -90,14 +91,14 @@ Depending on the program used to generate "trial" WFN, the following rules are a
         Where:
         * __nstep__ - number of VMC statistic accumulation steps.
 
-        This rule is not required to calculate the DMC energy, but it may be required if you need the VMC energy with high accuracy.
+        This rule is not required to calculate the DMC energy, but this may be necessary if you need the VMC energy with high accuracy.
     * FN-DMC energy calculation to achieve desired accuracy (specified in the variable STD_ERR).  
         ```
         rule ALL_VMC_DMC:
             input: '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/out' 
         ```
         Where:
-        * __dt__ - part of denominator (integer) to calculate the DMC time step using the formula 1.0/(max_Z**2 * 3.0 * __dt__).
+        * __dt__ - part of denominator (integer) to calculate the DMC time step using the formula 1.0/(max_Z^{2} * 3.0 * __dt__).
         * __nconfig__ - number of configuration in DMC colculation (1024 is recomended)
         * __i__ - stage of DMC calculation (1 - only DMC equilibration and fixed step (50000) of DMC accumulation run, 2 - additional DMC accumulation run to achieve desired accuracy)
     * JASTROW coefficients optimization using some optimization plan with BACKFLOW transformed WFN.
@@ -137,3 +138,10 @@ Test your configuration by performing a dry-run via
 Execute the workflow locally via
 
     snakemake <rule>
+
+## Examples
+
+To demonstrate the possibilities of this workflow, examples of calculations are given.
+
+### ORCA HF "trial" WFN for H-Ne atoms
+
