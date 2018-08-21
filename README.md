@@ -43,9 +43,10 @@ Depending on the program used to generate "trial" WFN, the following rules are a
     rule ALL_ORCA:
         input: '{method}/{basis}/{molecule}/gwfn.data'
     ```
-    __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N,M) for multideterminant extension.  
-    __basis__ - any basis available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).  
-    __molecule__ - molecular geometry file name in xyz-format (without extension) located in the `chem_database` directory.  
+    Where:
+    * __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N,M) for multideterminant extension.
+    * __basis__ - any basis available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).
+    * __molecule__ - molecular geometry file name in xyz-format (without extension) located in the `chem_database` directory.
 
 * __QCHEM rules__
     * calculation to generate gwfm.data file and in case of OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD correlation.data.
@@ -53,13 +54,14 @@ Depending on the program used to generate "trial" WFN, the following rules are a
     rule ALL_QCHEM:
         input: '{method}/{basis}/{molecule}/gwfn.data'
     ```
-    __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).  
+    Where:
+    * __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).  
     in case of OO-method T2-amplitudes where used as determinant's weights but some type of active space truncation should be specified:  
     It should be done with two ways:  
     __multideterminant method_X__ if X > 1 then first X active orbitals were taken.  
     __multideterminant method_X__ if X < 1 then all orbitals with T2-amplitudes greate then X were taken.  
-    __basis__ - any basis available in QCHEM (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).  
-    __molecule__ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.  
+    * __basis__ - any basis available in QCHEM (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).
+    * __molecule__ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.
 
 * __QMC rules__
     * pure VMC calculation (without JASTROW)  
@@ -67,50 +69,59 @@ Depending on the program used to generate "trial" WFN, the following rules are a
         rule ALL_VMC:
             input: '{method}/{basis}/{molecule}/VMC/{nstep}/out'
         ```
-    Where:  
-    __nstep__ - number of VMC statistic accumulation steps.  
-    This rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one.
-    It is not required to calculate the DMC energy.
+        Where:
+        * __nstep__ - number of VMC statistic accumulation steps.
+
+        This rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one.
+        It is not required to calculate the DMC energy.
     * JASTROW coefficients optimization using some optimization plan  
         ```
         rule ALL_VMC_OPT:
             input: '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/out'
         ```
-        __opt_plan__ - name (without extension) of CASINO input file in `opt_plan` directory which define JASTROW optimization plan.  
-        __jastrow__ - name (without extension) of template for `parameters.casl` file in `casl` directory.  
+        Where:
+        * __opt_plan__ - name (without extension) of CASINO input file in `opt_plan` directory which define JASTROW optimization plan.
+        * __jastrow__ - name (without extension) of template for `parameters.casl` file in `casl` directory.
     * VMC energy calculation with optimized JASTROW coefficients.  
         ```
         rule ALL_VMC_OPT_ENERGY:
             input: '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/out'
         ```
-        __nstep__ - number of VMC statistic accumulation steps.  
+        Where:
+        * __nstep__ - number of VMC statistic accumulation steps.
+
         This rule is not required to calculate the DMC energy? but it may be required if you need the VMC energy with high accuracy.  
     * FN-DMC energy calculation to achieve desired accuracy (specified in the variable STD_ERR).  
         ```
         rule ALL_VMC_DMC:
             input: '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/out' 
         ```
-        __dt__ - part of denominator (integer) to calculate the DMC time step using the formula 1.0/(max_Z**2 * 3.0 * __dt__).  
-        __nconfig__ - number of configuration in DMC colculation (1024 is recomended)  
-        __i__ - stage of DMC calculation (1 - only DMC equilibration and fixed step (50000) of DMC accumulation run, 2 - additional DMC accumulation run to achieve desired accuracy)  
-    * same actions as __ALL_VMC_OPT__ but with BACKFLOW transformed WFN.  
+        Where:
+        * __dt__ - part of denominator (integer) to calculate the DMC time step using the formula 1.0/(max_Z**2 * 3.0 * __dt__).
+        * __nconfig__ - number of configuration in DMC colculation (1024 is recomended)
+        * __i__ - stage of DMC calculation (1 - only DMC equilibration and fixed step (50000) of DMC accumulation run, 2 - additional DMC accumulation run to achieve desired accuracy)
+    * JASTROW coefficients optimization using some optimization plan with BACKFLOW transformed WFN.
         ```
         rule ALL_VMC_OPT_BF:
-            input: '{path}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/out'
+            input: '{method}/{basis}/{molecule}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/out'
         ```
-        __backflow__ -  
+        Where:
+        * __backflow__ -
+
         It should be noted that the BACKFLOW transformation in CASINO is implemented only up to f-orbitals.  
-    * same actions as __ALL_VMC_OPT_ENERGY__ but with BACKFLOW transformation.  
+    * VMC energy calculation with optimized JASTROW coefficients with BACKFLOW transformation.
         ```
         rule ALL_VMC_OPT_ENERGY_BF:
-            input: '{path}/VMC_OPT_ENERGY_BF/{opt_plan}/{jastrow}__{backflow}/{nstep}/out'
+            input: '{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/{opt_plan}/{jastrow}__{backflow}/{nstep}/out'
         ```
-        __nstep__ - number of VMC statistic accumulation steps.  
+        Where:
+        * __nstep__ - number of VMC statistic accumulation steps.
+
         This rule is not required to calculate the DMC energy.  
-    * same actions as __ALL_VMC_DMC__ but with BACKFLOW transformed WFN.
+    * FN-DMC energy calculation to achieve desired accuracy (specified in the variable STD_ERR) with BACKFLOW transformed WFN.
         ```
         rule ALL_VMC_DMC_BF:
-            input: '{path}/VMC_DMC_BF/{opt_plan}/{jastrow}__{backflow}/tmax_{dt}_{nconfig}_{i}/out'  
+            input: '{method}/{basis}/{molecule}/VMC_DMC_BF/{opt_plan}/{jastrow}__{backflow}/tmax_{dt}_{nconfig}_{i}/out'
         ```
 
 ### Step 3: Execute workflow
