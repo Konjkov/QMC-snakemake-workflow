@@ -101,7 +101,7 @@ It should be done with two ways:
         input: '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/out'
     ```
     Where:
-    * __dt__ - part of denominator (integer) to calculate the DMC time step using the formula $`1.0/(max_Z^2 * 3.0 * dt)`$.
+    * __dt__ - part of denominator (integer) to calculate the DMC time step using the formula $1.0/(max_Z^2 * 3.0 * dt)$.
     * __nconfig__ - number of configuration in DMC colculation (1024 is recomended)
     * __i__ - stage of DMC calculation (1 - only DMC equilibration and fixed step (50000) of DMC accumulation run, 2 - additional DMC accumulation run to achieve desired accuracy)
 * JASTROW coefficients optimization using some optimization plan with BACKFLOW transformed WFN.
@@ -150,20 +150,20 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
 #### HF "trial" WFN for H-Ne atoms
 
-* H $`(^2S)`$
+* H $(^2S)$
 
   "trial" WFN for the ground state of H-atom is nodeless, so DMC energy is exact, also as no electron correlations are present VMC energy is always exact. 
 
-* He $`(^1S)`$
+* He $(^1S)$
 
   spacial part of "trial" WFN for the ground state of He-atom is symmetric so has no nodal surface, thus DMC energy is exact.
 
-* Li $`(^2S)`$
+* Li $(^2S)$
 
-* Be $`(^1S)`$
+* Be $(^1S)$
 
-* B $`(^2P_{1/2})`$
+* B $(^2P_{1/2})$
 
-* C $`(^3P_0)`$
+* C $(^3P_0)$
 
 ### QCHEM
