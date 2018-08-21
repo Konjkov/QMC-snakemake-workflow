@@ -150,20 +150,43 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
 #### HF "trial" WFN for H-Ne atoms
 
-* H (<sup>2</sup>S)
+* H (<sup>2</sup>S<sub>1/2</sub>)
 
-  "trial" WFN for the ground state of H-atom is nodeless, so DMC energy is exact, also as no electron correlations are present VMC energy is always exact. 
+  The Hartree–Fock (HF) "trial" WFN for the ground state of H-atom is nodeless, so DMC energy is exact, also as no electron correlations are present VMC energy is always exact.
 
-* He (<sup>1</sup>S)
+* He (<sup>1</sup>S<sub>0</sub>)
 
-  spacial part of "trial" WFN for the ground state of He-atom is symmetric so has no nodal surface, thus DMC energy is exact.
+  Spacial part of The Hartree–Fock (HF) "trial" WFN for the ground state of He-atom is symmetric so has no nodal surface, thus DMC energy is exact.
 
-* Li (<sup>2</sup>S)
+* Li (<sup>2</sup>S<sub>1/2</sub>)
 
-* Be (<sup>1</sup>S)
+  For The Hartree–Fock (HF) "trial" WFN electrons nodal surface is determined by equation r<sub>1</sub> = r<sub>2</sub> when 1 and 2 label the electrons in the same spin channel.
+  &Phi<sub>HF</sub>(__R__) = det[&psi<sub>1s</sub>(r1), &psi<sub>2s</sub>(r2)] * &psi<sub>1s</sub>(r3)
+  The electron 1 therefore “sees” the node as a sphere which passes through the position of electron 2 and is centered around the nucleus.
+  The wave function will be equal to zero if electron 1 occupies any point on the spherical nodal surface.
+  For the correlated electrons this is not strictly exact, as the correlation with the electron in the spin-down channel will cause deformations away from a perfect sphere.
+  For example, the excitation 2s<sup>1</sup>2p<sup>2</sup> will have a contribution to the exact ground state and would in principle lead to a departure from the single particle node
+  (i.e., the sphere will slightly deform to ellipsoid or perhaps a more complicated surface that would depend on the position of the minorityspin electron).
+  It is therefore quite remarkable that the HF nodal surface seems to be so accurate: the total energy with the HF nodes, is accurate to ~ 0.05 mHa.
+
+* Be (<sup>1</sup>S<sub>0</sub>)
+
+  The Hartree–Fock (HF) "trial" WFN for Be is given by a Slater determinant which is block diagonal in spin so that it can be broken into a product of the spin channels.
+  &Psi<sub>HF</sub>(__R__) = det[&psi<sub>1s</sub>(r1), &psi<sub>2s</sub>(r2)] * det[&psi<sub>1s</sub>(r3), &psi<sub>2s</sub>(r4)]
+  nodal surface is determined by equation (r<sub>1</sub> - r<sub>2</sub>)(r<sub>3</sub> - r<sub>4</sub>) = 0 which clearly shows that there are 2 * 2 = 4 nodal pockets.
+  However, it has been found some time ago that for ground state the correct number of nodal domains is two.
+  The accurate nodal surface for this system is actually remarkably well described by a two configuration wave function where HF is augmented by adding 2s<sup>2</sup> -> 2p<sup>2</sup> double excitation which corresponds to a near-degeneracy effect.
 
 * B (<sup>2</sup>P<sub>1/2</sub>)
 
-* C (<sup>3</sup>P_0)
+* C (<sup>3</sup>P<sub>0</sub>)
+
+* N (<sup>4</sup>S<sub>3/2</sub>)
+
+* O (<sup>3</sup>P<sub>2</sub>)
+
+* F (<sup>2</sup>P<sub>3/2</sub>)
+
+* Ne (<sup>1</sup>S<sub>0</sub>)
 
 ### QCHEM
