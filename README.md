@@ -62,7 +62,7 @@ Where:
 in case of OO-method T2-amplitudes where used as determinant's weights but some type of active space truncation should be specified.\
 It should be done with two ways:
     - __OD_10__ first 10 active orbitals were taken.
-    - __OD\_\.01__ all orbitals with T2-amplitudes greater then 0.01 were taken.
+    - __OD\_\0.01__ all orbitals with T2-amplitudes greater then 0.01 were taken.
 * __basis__ - any basis available in QCHEM (i.e. cc-pVDZ, aug-cc-pVQZ, pc-1).
 * __molecule__ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.
 
@@ -161,7 +161,7 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 * Li (<sup>2</sup>S<sub>1/2</sub>)
 
   For The Hartree–Fock (HF) "trial" WFN electrons nodal surface is determined by equation r<sub>1</sub> = r<sub>2</sub> when 1 and 2 label the electrons in the same spin channel.
-  &Phi<sub>HF</sub>(__R__) = det[&psi<sub>1s</sub>(r1), &psi<sub>2s</sub>(r2)] * &psi<sub>1s</sub>(r3)
+  &Phi<sub>HF</sub>(__R__) = det[&psi<sub>1s</sub>(r<sub>1</sub>), &psi<sub>2s</sub>(r<sub>2</sub>)] * &psi<sub>1s</sub>(r<sub>3</sub>)
   The electron 1 therefore “sees” the node as a sphere which passes through the position of electron 2 and is centered around the nucleus.
   The wave function will be equal to zero if electron 1 occupies any point on the spherical nodal surface.
   For the correlated electrons this is not strictly exact, as the correlation with the electron in the spin-down channel will cause deformations away from a perfect sphere.
@@ -172,7 +172,7 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 * Be (<sup>1</sup>S<sub>0</sub>)
 
   The Hartree–Fock (HF) "trial" WFN for Be is given by a Slater determinant which is block diagonal in spin so that it can be broken into a product of the spin channels.
-  &Psi<sub>HF</sub>(__R__) = det[&psi<sub>1s</sub>(r1), &psi<sub>2s</sub>(r2)] * det[&psi<sub>1s</sub>(r3), &psi<sub>2s</sub>(r4)]
+  &Psi<sub>HF</sub>(__R__) = det[&psi<sub>1s</sub>(r<sub>1</sub>), &psi<sub>2s</sub>(r<sub>2</sub>)] * det[&psi<sub>1s</sub>(r<sub>3</sub>), &psi<sub>2s</sub>(r<sub>4</sub>)]
   nodal surface is determined by equation (r<sub>1</sub> - r<sub>2</sub>)(r<sub>3</sub> - r<sub>4</sub>) = 0 which clearly shows that there are 2 * 2 = 4 nodal pockets.
   However, it has been found some time ago that for ground state the correct number of nodal domains is two.
   The accurate nodal surface for this system is actually remarkably well described by a two configuration wave function where HF is augmented by adding 2s<sup>2</sup> -> 2p<sup>2</sup> double excitation which corresponds to a near-degeneracy effect.
