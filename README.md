@@ -150,19 +150,19 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
 #### (U)HF/cc-pVQZ "trial" WFN for H-Ne atoms
 
-* __H__ (<sup>2</sup>S<sub>1/2</sub>)
+* [__H__ (<sup>2</sup>S<sub>1/2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/H)
 
   The Hartree–Fock (HF) "trial" WFN for the ground state of H-atom is nodeless, so DMC energy is exact, also as no electron correlations are present VMC energy is also exact.
 
   &Psi;<sub>HF</sub>(R) = &psi;<sub>1s</sub>(r<sub>1</sub>)
 
-* __He__ (<sup>1</sup>S<sub>0</sub>)
+* [__He__ (<sup>1</sup>S<sub>0</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/He)
 
   Spacial part of The Hartree–Fock (HF) "trial" WFN for the ground state of He-atom is symmetric so has no nodal surface, thus DMC energy is exact.
 
   &Psi;<sub>HF</sub>(R) = &psi;<sub>1s</sub>(r<sub>1</sub>) &bull; &psi;<sub>1s</sub>(r<sub>2</sub>)
 
-* __Li__ (<sup>2</sup>S<sub>1/2</sub>)
+* [__Li__ (<sup>2</sup>S<sub>1/2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/Li)
 
   For The Hartree–Fock (HF) "trial" WFN electrons nodal surface is determined by equation r<sub>1</sub> = r<sub>2</sub> when 1 and 2 label the electrons in the same spin channel.
 
@@ -175,7 +175,7 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
   (i.e., the sphere will slightly deform to ellipsoid or perhaps a more complicated surface that would depend on the position of the minorityspin electron).
   It is therefore quite remarkable that the HF nodal surface seems to be so accurate: the total energy with the HF nodes, is accurate to ~ 0.05 mHa.
 
-* __Be__ (<sup>1</sup>S<sub>0</sub>)
+* [__Be__ (<sup>1</sup>S<sub>0</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/Be)
 
   The Hartree–Fock (HF) "trial" WFN for Be is given by a Slater determinant which is block diagonal in spin so it can be broken into a product of the spin channels.
 
@@ -183,9 +183,9 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
   nodal surface is determined by equation (r<sub>1</sub> - r<sub>2</sub>)(r<sub>3</sub> - r<sub>4</sub>) = 0 which clearly shows that there are 2 * 2 = 4 nodal pockets.
   However, it has been found that for ground state the correct number of nodal domains is two.
-  The accurate nodal surface for this system is actually remarkably well described by a two configuration wave function where HF is augmented by adding 1s<sup>2</sup>2p<sup>2</sup> double excitation which corresponds to a near-degeneracy effect.
+  The accurate nodal surface for this system is actually remarkably well described by a two configuration wave function where HF WFN is augmented by adding 1s<sup>2</sup>2p<sup>2</sup> double excitation which corresponds to a near-degeneracy effect.
 
-* __B__ (<sup>2</sup>P<sub>1/2</sub>)
+* [__B__ (<sup>2</sup>P<sub>1/2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/B)
 
     The Hartree–Fock (HF) "trial" WFN for B also should be improved by adding 1s<sup>2</sup>2p<sup>3</sup> configuration, however, even after this improvement accuracy is ~ 5 mHa and additional configurations is required to achieve chemical accuracy.
 
