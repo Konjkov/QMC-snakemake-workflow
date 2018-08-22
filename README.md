@@ -152,21 +152,21 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
 * __H__ (<sup>2</sup>S<sub>1/2</sub>)
 
-  The Hartree–Fock (HF) "trial" WFN for the ground state of H-atom is nodeless, so DMC energy is exact, also as no electron correlations are present VMC energy is always exact.
+  The Hartree–Fock (HF) "trial" WFN for the ground state of H-atom is nodeless, so DMC energy is exact, also as no electron correlations are present VMC energy is also exact.
 
-  &Psi;<sub>HF</sub>(__R__) = &psi;<sub>1s</sub>(r<sub>1</sub>)
+  &Psi;<sub>HF</sub>(R) = &psi;<sub>1s</sub>(r<sub>1</sub>)
 
 * __He__ (<sup>1</sup>S<sub>0</sub>)
 
   Spacial part of The Hartree–Fock (HF) "trial" WFN for the ground state of He-atom is symmetric so has no nodal surface, thus DMC energy is exact.
 
-  &Psi;<sub>HF</sub>(__R__) = &psi;<sub>1s</sub>(r<sub>1</sub>) * &psi;<sub>1s</sub>(r<sub>2</sub>)
+  &Psi;<sub>HF</sub>(R) = &psi;<sub>1s</sub>(r<sub>1</sub>) &bull; &psi;<sub>1s</sub>(r<sub>2</sub>)
 
 * __Li__ (<sup>2</sup>S<sub>1/2</sub>)
 
   For The Hartree–Fock (HF) "trial" WFN electrons nodal surface is determined by equation r<sub>1</sub> = r<sub>2</sub> when 1 and 2 label the electrons in the same spin channel.
 
-  &Psi;<sub>HF</sub>(__R__) = det[&psi;<sub>1s</sub>(r<sub>1</sub>), &psi;<sub>2s</sub>(r<sub>2</sub>)] * &psi;<sub>1s</sub>(r<sub>3</sub>)
+  &Psi;<sub>HF</sub>(R) = det[&psi;<sub>1s</sub>(r<sub>1</sub>), &psi;<sub>2s</sub>(r<sub>2</sub>)] &bull; &psi;<sub>1s</sub>(r<sub>3</sub>)
 
   The electron 1 therefore “sees” the node as a sphere which passes through the position of electron 2 and is centered around the nucleus.
   The wave function will be equal to zero if electron 1 occupies any point on the spherical nodal surface.
@@ -179,7 +179,7 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
   The Hartree–Fock (HF) "trial" WFN for Be is given by a Slater determinant which is block diagonal in spin so it can be broken into a product of the spin channels.
 
-  &Psi;<sub>HF</sub>(__R__) = det[&psi;<sub>1s</sub>(r<sub>1</sub>), &psi;<sub>2s</sub>(r<sub>2</sub>)] * det[&psi;<sub>1s</sub>(r<sub>3</sub>), &psi;<sub>2s</sub>(r<sub>4</sub>)]
+  &Psi;<sub>HF</sub>(R) = det[&psi;<sub>1s</sub>(r<sub>1</sub>), &psi;<sub>2s</sub>(r<sub>2</sub>)] &bull; det[&psi;<sub>1s</sub>(r<sub>3</sub>), &psi;<sub>2s</sub>(r<sub>4</sub>)]
 
   nodal surface is determined by equation (r<sub>1</sub> - r<sub>2</sub>)(r<sub>3</sub> - r<sub>4</sub>) = 0 which clearly shows that there are 2 * 2 = 4 nodal pockets.
   However, it has been found that for ground state the correct number of nodal domains is two.
