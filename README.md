@@ -44,7 +44,7 @@ Depending on the program used to generate "trial" WFN, the following rules are a
 rule ALL_ORCA:
     input: '{method}/{basis}/{molecule}/gwfn.data'
 ```
-Where:
+where:
 * __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0),
 OO-RI-MP2, CASSCF(N,M) for multideterminant extension. CASSCF(N,M) should be coded as CASSCF_N_M
 * __basis__ - any basis available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).
@@ -57,12 +57,12 @@ OO-RI-MP2, CASSCF(N,M) for multideterminant extension. CASSCF(N,M) should be cod
 rule ALL_QCHEM:
     input: '{method}/{basis}/{molecule}/gwfn.data'
 ```
-Where:
+where:
 * __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).
 in case of OO-method T2-amplitudes where used as determinant's weights but some type of active space truncation should be specified.\
 It should be done with two ways:
     - __OD_10__ first 10 active orbitals were taken.
-    - __OD\_\0.01__ all orbitals with T2-amplitudes greater then 0.01 were taken.
+    - __OD\_0.01__ all orbitals with T2-amplitudes greater than 0.01 were taken.
 * __basis__ - any basis available in QCHEM (i.e. cc-pVDZ, aug-cc-pVQZ, pc-1).
 * __molecule__ - molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory.
 
@@ -73,7 +73,7 @@ It should be done with two ways:
     rule ALL_VMC:
         input: '{method}/{basis}/{molecule}/VMC/{nstep}/out'
     ```
-    Where:
+    where:
     * __nstep__ - number of VMC statistic accumulation steps.
 
     This rule intended to check whether the conversion of the "trial" WFN to the CASINO format is correct and HF energy is equal to pure VMC one.
@@ -83,7 +83,7 @@ It should be done with two ways:
     rule ALL_VMC_OPT:
         input: '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/out'
     ```
-    Where:
+    where:
     * __opt_plan__ - name (without extension) of CASINO input file in `opt_plan` directory which define JASTROW optimization plan.
     * __jastrow__ - name (without extension) of template for `parameters.casl` file in `casl` directory.
 * VMC energy calculation with optimized JASTROW coefficients.
@@ -91,7 +91,7 @@ It should be done with two ways:
     rule ALL_VMC_OPT_ENERGY:
         input: '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/out'
     ```
-    Where:
+    where:
     * __nstep__ - number of VMC statistic accumulation steps.
 
     This rule is not required to calculate the DMC energy, but this may be necessary if you need the VMC energy with high accuracy.
@@ -100,7 +100,7 @@ It should be done with two ways:
     rule ALL_VMC_DMC:
         input: '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/out'
     ```
-    Where:
+    where:
     * __dt__ - part of denominator (integer) to calculate the DMC time step using the formula 1.0/(max_Z<sup>2</sup> * 3.0 * __dt__).
     * __nconfig__ - number of configuration in DMC colculation (1024 is recomended)
     * __i__ - stage of DMC calculation (1 - only DMC equilibration and fixed step (50000) of DMC accumulation run, 2 - additional DMC accumulation run to achieve desired accuracy)
@@ -109,7 +109,7 @@ It should be done with two ways:
     rule ALL_VMC_OPT_BF:
         input: '{method}/{basis}/{molecule}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/out'
     ```
-    Where:
+    where:
     * __backflow__ - combination of {ETA-term}\_{MU-term}\_{PHI-term-electron-nucleus}{PHI-term-electron-electron} expansion orders:
         - 3_3_00 - ETA-term expansion of order 3 and MU-term of order 3, no PHI-term
         - 9_9_33 - ETA-term expansion of order 9 and MU-term of order 9, PHI-term with electron-nucleus and electron-electron expansion of order 3 both.
@@ -120,7 +120,7 @@ It should be done with two ways:
     rule ALL_VMC_OPT_ENERGY_BF:
         input: '{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/{opt_plan}/{jastrow}__{backflow}/{nstep}/out'
     ```
-    Where:
+    where:
     * __nstep__ - number of VMC statistic accumulation steps.
 
     This rule is not required to calculate the DMC energy.
@@ -148,45 +148,55 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
 ### ORCA
 
-#### HF "trial" WFN for H-Ne atoms
+#### (U)HF/cc-pVQZ "trial" WFN for H-Ne atoms
 
-* H (<sup>2</sup>S<sub>1/2</sub>)
+* __H__ (<sup>2</sup>S<sub>1/2</sub>)
 
   The Hartree–Fock (HF) "trial" WFN for the ground state of H-atom is nodeless, so DMC energy is exact, also as no electron correlations are present VMC energy is always exact.
 
-* He (<sup>1</sup>S<sub>0</sub>)
+  &Psi;<sub>HF</sub>(__R__) = &psi;<sub>1s</sub>(r<sub>1</sub>)
+
+* __He__ (<sup>1</sup>S<sub>0</sub>)
 
   Spacial part of The Hartree–Fock (HF) "trial" WFN for the ground state of He-atom is symmetric so has no nodal surface, thus DMC energy is exact.
 
-* Li (<sup>2</sup>S<sub>1/2</sub>)
+  &Psi;<sub>HF</sub>(__R__) = &psi;<sub>1s</sub>(r<sub>1</sub>) * &psi;<sub>1s</sub>(r<sub>2</sub>)
+
+* __Li__ (<sup>2</sup>S<sub>1/2</sub>)
 
   For The Hartree–Fock (HF) "trial" WFN electrons nodal surface is determined by equation r<sub>1</sub> = r<sub>2</sub> when 1 and 2 label the electrons in the same spin channel.
-  &Phi<sub>HF</sub>(__R__) = det[&psi<sub>1s</sub>(r<sub>1</sub>), &psi<sub>2s</sub>(r<sub>2</sub>)] * &psi<sub>1s</sub>(r<sub>3</sub>)
+
+  &Psi;<sub>HF</sub>(__R__) = det[&psi;<sub>1s</sub>(r<sub>1</sub>), &psi;<sub>2s</sub>(r<sub>2</sub>)] * &psi;<sub>1s</sub>(r<sub>3</sub>)
+
   The electron 1 therefore “sees” the node as a sphere which passes through the position of electron 2 and is centered around the nucleus.
   The wave function will be equal to zero if electron 1 occupies any point on the spherical nodal surface.
   For the correlated electrons this is not strictly exact, as the correlation with the electron in the spin-down channel will cause deformations away from a perfect sphere.
-  For example, the excitation 2s<sup>1</sup>2p<sup>2</sup> will have a contribution to the exact ground state and would in principle lead to a departure from the single particle node
+  For example, the excitation 1s<sup>2</sup>2s<sup>1</sup>2p<sup>2</sup> will have a contribution to the exact ground state and would in principle lead to a departure from the single particle node
   (i.e., the sphere will slightly deform to ellipsoid or perhaps a more complicated surface that would depend on the position of the minorityspin electron).
   It is therefore quite remarkable that the HF nodal surface seems to be so accurate: the total energy with the HF nodes, is accurate to ~ 0.05 mHa.
 
-* Be (<sup>1</sup>S<sub>0</sub>)
+* __Be__ (<sup>1</sup>S<sub>0</sub>)
 
-  The Hartree–Fock (HF) "trial" WFN for Be is given by a Slater determinant which is block diagonal in spin so that it can be broken into a product of the spin channels.
-  &Psi<sub>HF</sub>(__R__) = det[&psi<sub>1s</sub>(r<sub>1</sub>), &psi<sub>2s</sub>(r<sub>2</sub>)] * det[&psi<sub>1s</sub>(r<sub>3</sub>), &psi<sub>2s</sub>(r<sub>4</sub>)]
+  The Hartree–Fock (HF) "trial" WFN for Be is given by a Slater determinant which is block diagonal in spin so it can be broken into a product of the spin channels.
+
+  &Psi;<sub>HF</sub>(__R__) = det[&psi;<sub>1s</sub>(r<sub>1</sub>), &psi;<sub>2s</sub>(r<sub>2</sub>)] * det[&psi;<sub>1s</sub>(r<sub>3</sub>), &psi;<sub>2s</sub>(r<sub>4</sub>)]
+
   nodal surface is determined by equation (r<sub>1</sub> - r<sub>2</sub>)(r<sub>3</sub> - r<sub>4</sub>) = 0 which clearly shows that there are 2 * 2 = 4 nodal pockets.
-  However, it has been found some time ago that for ground state the correct number of nodal domains is two.
-  The accurate nodal surface for this system is actually remarkably well described by a two configuration wave function where HF is augmented by adding 2s<sup>2</sup> -> 2p<sup>2</sup> double excitation which corresponds to a near-degeneracy effect.
+  However, it has been found that for ground state the correct number of nodal domains is two.
+  The accurate nodal surface for this system is actually remarkably well described by a two configuration wave function where HF is augmented by adding 1s<sup>2</sup>2p<sup>2</sup> double excitation which corresponds to a near-degeneracy effect.
 
-* B (<sup>2</sup>P<sub>1/2</sub>)
+* __B__ (<sup>2</sup>P<sub>1/2</sub>)
 
-* C (<sup>3</sup>P<sub>0</sub>)
+    The Hartree–Fock (HF) "trial" WFN for B also should be improved by adding 1s<sup>2</sup>2p<sup>3</sup> configuration, however, even after this improvement accuracy is ~ 5 mHa and additional configurations is required to achieve chemical accuracy.
 
-* N (<sup>4</sup>S<sub>3/2</sub>)
+* __C__ (<sup>3</sup>P<sub>0</sub>)
 
-* O (<sup>3</sup>P<sub>2</sub>)
+* __N__ (<sup>4</sup>S<sub>3/2</sub>)
 
-* F (<sup>2</sup>P<sub>3/2</sub>)
+* __O__ (<sup>3</sup>P<sub>2</sub>)
 
-* Ne (<sup>1</sup>S<sub>0</sub>)
+* __F__ (<sup>2</sup>P<sub>3/2</sub>)
+
+* __Ne__ (<sup>1</sup>S<sub>0</sub>)
 
 ### QCHEM
