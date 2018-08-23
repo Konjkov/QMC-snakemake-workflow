@@ -68,7 +68,7 @@ def get_ae_cutoffs(molecule):
         result.append('{i}         {i}         0.5                          0'.format(i=i+1))
     return '\n  '.join(result)
 
-def  casino_time(*path):
+def casino_time(*path):
     """Get CASINO time.
      Total CASINO CPU time  : : :      378.0500
     """
