@@ -103,7 +103,7 @@ It should be done with two ways:
     ```
     where:
     * __dt__ - part of denominator (integer) to calculate the DMC time step using the formula 1.0/(max_Z<sup>2</sup> * 3.0 * __dt__).
-    * __nconfig__ - number of configuration in DMC calculation (1024 is recomended)
+    * __nconfig__ - number of configuration in DMC calculation (1024 is recommended)
     * __i__ - stage of DMC calculation (1 - only DMC equilibration and fixed step (50000) of DMC accumulation run, 2 - additional DMC accumulation run to achieve desired accuracy)
 * JASTROW coefficients optimization using some optimization plan with BACKFLOW transformed WFN.
     ```
@@ -165,7 +165,8 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
 * [__Li__ (<sup>2</sup>S<sub>1/2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/Li)
 
-  For The Hartree–Fock (HF) "trial" WFN electrons nodal surface is determined by equation r<sub>1</sub> = r<sub>2</sub> when 1 and 2 label the electrons in the same spin channel.
+  For The Hartree–Fock (HF) "trial" WFN electrons nodal surface is determined by equation r<sub>1</sub> = r<sub>2</sub> 
+  when 1 and 2 label the electrons in the same spin channel [[1](https://doi.org/10.1103/PhysRevB.92.045122)].
 
   &Psi;<sub>HF</sub>(R) = det[&psi;<sub>1s</sub>(r<sub>1</sub>), &psi;<sub>2s</sub>(r<sub>2</sub>)] &bull; &psi;<sub>1s</sub>(r<sub>3</sub>)
 
@@ -173,12 +174,12 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
   The wave function will be equal to zero if electron 1 occupies any point on the spherical nodal surface.
   For the correlated electrons this is not strictly exact, as the correlation with the electron in the spin-down channel will cause deformations away from a perfect sphere.
   For example, the excitation 1s<sup>2</sup>2s<sup>1</sup>2p<sup>2</sup> will have a contribution to the exact ground state and would in principle lead to a departure from the single particle node
-  (i.e., the sphere will slightly deform to ellipsoid or perhaps a more complicated surface that would depend on the position of the minorityspin electron).
+  (i.e., the sphere will slightly deform to ellipsoid or perhaps a more complicated surface that would depend on the position of the minority spin electron).
   It is therefore quite remarkable that the HF nodal surface seems to be so accurate: the total energy with the HF nodes, is accurate to ~ 0.05 mHa.
 
 * [__Be__ (<sup>1</sup>S<sub>0</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/Be)
 
-  The Hartree–Fock (HF) "trial" WFN for Be is given by a Slater determinant which is block diagonal in spin so it can be broken into a product of the spin channels.
+  The Hartree–Fock (HF) "trial" WFN for Be is given by a Slater determinant which is block diagonal in spin so it can be broken into a product of the spin channels [[2](https://doi.org/10.1016/j.cplett.2012.01.016)].
 
   &Psi;<sub>HF</sub>(R) = det[&psi;<sub>1s</sub>(r<sub>1</sub>), &psi;<sub>2s</sub>(r<sub>2</sub>)] &bull; det[&psi;<sub>1s</sub>(r<sub>3</sub>), &psi;<sub>2s</sub>(r<sub>4</sub>)]
 
@@ -192,9 +193,9 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
     even after this improvement fixed node error is ~ 5 mHa and additional configurations is required to achieve chemical accuracy.
     1s<sup>2</sup>2s<sup>1</sup>2p<sup>1</sup>3d<sup>1</sup>
 
-* __C__ (<sup>3</sup>P<sub>0</sub>)
+* [__C__ (<sup>3</sup>P<sub>0</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/C)
 
-* __N__ (<sup>4</sup>S<sub>3/2</sub>)
+* [__N__ (<sup>4</sup>S<sub>3/2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/N)
 
 * __O__ (<sup>3</sup>P<sub>2</sub>)
 
