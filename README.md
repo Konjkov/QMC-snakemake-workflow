@@ -39,10 +39,10 @@ Depending on the program used to generate "trial" WFN, the following rules are a
 
 #### ORCA rules:
 
-* calculation to generate gwfn.data file and in case of CASSCF method correlation.data.
+* generation ORCA output file.
 ```
 rule ALL_ORCA:
-    input: '{method}/{basis}/{molecule}/gwfn.data'
+    input: '{method}/{basis}/{molecule}/mol.out'
 ```
 where:
 * __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0),
@@ -52,15 +52,16 @@ OO-RI-MP2, CASSCF(N,M) for multideterminant extension. CASSCF(N,M) should be cod
 
 #### QCHEM rules
 
-* calculation to generate gwfn.data file and in case of OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD correlation.data.
+* generation QCHEM output file.
 ```
 rule ALL_QCHEM:
-    input: '{method}/{basis}/{molecule}/gwfn.data'
+    input: '{method}/{basis}/{molecule}/mol.out'
 ```
 where:
 * __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).
-in case of OO-method T2-amplitudes where used as determinant's weights but some type of active space truncation should be specified.\
+in case of OO-method T2-amplitudes subsequently used as determinant's weights but some type of active space truncation should be specified.\
 It should be done with two ways:
+    - __OD__ all available T2-amplitudes were taken.
     - __OD_10__ first 10 active orbitals were taken.
     - __OD\_0.01__ all orbitals with T2-amplitudes greater than 0.01 were taken.
 * __basis__ - any basis available in QCHEM (i.e. cc-pVDZ, aug-cc-pVQZ, pc-1).
@@ -102,7 +103,7 @@ It should be done with two ways:
     ```
     where:
     * __dt__ - part of denominator (integer) to calculate the DMC time step using the formula 1.0/(max_Z<sup>2</sup> * 3.0 * __dt__).
-    * __nconfig__ - number of configuration in DMC colculation (1024 is recomended)
+    * __nconfig__ - number of configuration in DMC calculation (1024 is recomended)
     * __i__ - stage of DMC calculation (1 - only DMC equilibration and fixed step (50000) of DMC accumulation run, 2 - additional DMC accumulation run to achieve desired accuracy)
 * JASTROW coefficients optimization using some optimization plan with BACKFLOW transformed WFN.
     ```

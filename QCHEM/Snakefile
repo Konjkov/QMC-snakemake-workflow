@@ -1,5 +1,7 @@
 import re
 
+include: '../Snakefile'
+
 STD_ERR = 0.0001
 VMC_NCONFIG = 100000
 MOLECULES = ['H']
@@ -38,17 +40,6 @@ def get_up_down(*path):
                 ned = int(m.group('beta'))
     return neu, ned
 
-def if_md(rule):
-    """If multideterminant WFN."""
-    def correlation_rule(wildcards):
-        if wildcards.method.split('_')[0] in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
-            return expand(rule, **wildcards)
-        else:
-            return []
-    return correlation_rule
-
-include: '../Snakefile'
-
 wildcard_constraints:
     multideterminant_method='OD|OD\(2\)|VOD|VOD\(2\)|QCCD|QCCD\(2\)|VQCCD',
     order='\d+'
@@ -86,19 +77,22 @@ rule ALL_VMC:
 
 rule ALL_QCHEM:
     input:
-        expand('{method}/{basis}/{molecule}/gwfn.data', molecule=MOLECULES, basis=BASES, method=METHODS),
+        expand('{method}/{basis}/{molecule}/mol.out', molecule=MOLECULES, basis=BASES, method=METHODS),
 
 ###################################################################################################################
 
-rule MULTIDETERMINANT:
+rule MDET:
     input:      '{method}/{basis}/{molecule}/mol.out'
     output:     '{method}/{basis}/{molecule}/correlation.data'
     run:
-        value = wildcards.method.split('_')[1]
-        if float(value) < 1.0:
-            shell('cd "$(dirname "{output}")" && multideterminant.py 7 mol.out --amplitude "{value}"')
+        if wildcards.method.split('_')[0] in ('OD', 'OD(2)', 'VOD', 'VOD(2)', 'QCCD', 'QCCD(2)', 'VQCCD'):
+            value = wildcards.method.split('_')[1]
+            if float(value) < 1.0:
+                shell('cd "$(dirname "{output}")" && multideterminant.py 7 mol.out --amplitude "{value}"')
+            else:
+                shell('cd "$(dirname "{output}")" && multideterminant.py 7 mol.out --excitation "{value}"')
         else:
-            shell('cd "$(dirname "{output}")" && multideterminant.py 7 mol.out --excitation "{value}"')
+            shell('cd "$(dirname "{output}")" && multideterminant.py 7 mol.out')
 
 rule GWFN:
     input:      '{method}/{basis}/{molecule}/mol.molden'

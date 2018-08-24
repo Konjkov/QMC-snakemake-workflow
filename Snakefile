@@ -255,7 +255,7 @@ rule VMC_DMC_RUN:
     input:      '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/input',
                 '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/gwfn.data',
                 '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/parameters.casl',
-                if_md('{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/correlation.data'),
+                '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/correlation.data',
     output:     '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
@@ -332,7 +332,7 @@ rule VMC_OPT_ENERGY_RUN:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/input',
                 '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/gwfn.data',
                 '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/parameters.casl',
-                if_md('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/correlation.data'),
+                '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/correlation.data',
     output:     '{method}/{basis}/{molecule}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
@@ -370,7 +370,7 @@ rule VMC_OPT_RUN:
     input:      '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/input',
                 '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/gwfn.data',
                 '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/parameters.casl',
-                if_md('{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/correlation.data'),
+                '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/correlation.data',
     output:     '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc && ln -s "$(ls parameters.*.casl | sort -t. -k2,2 -g | tail -1)" parameters.final.casl'
 
@@ -411,7 +411,7 @@ rule VMC_OPT_GWFN:
 rule VMC_RUN:
     input:      '{method}/{basis}/{molecule}/VMC/{nstep}/input',
                 '{method}/{basis}/{molecule}/gwfn.data',
-                if_md('{method}/{basis}/{molecule}/VMC/{nstep}/correlation.data'),
+                '{method}/{basis}/{molecule}/VMC/{nstep}/correlation.data',
     output:     '{method}/{basis}/{molecule}/VMC/{nstep}/out'
     shell:      'cd "$(dirname "{output}")" && runqmc'
 
