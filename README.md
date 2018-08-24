@@ -187,7 +187,9 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
 * [__B__ (<sup>2</sup>P<sub>1/2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/B)
 
-    The Hartree–Fock (HF) "trial" WFN for B also should be improved by adding 1s<sup>2</sup>2p<sup>3</sup> configuration, however, even after this improvement accuracy is ~ 5 mHa and additional configurations is required to achieve chemical accuracy.
+    The Hartree–Fock (HF) "trial" WFN for B also should be improved by adding 1s<sup>2</sup>2p<sup>3</sup> configuration, however,
+    even after this improvement fixed node error is ~ 5 mHa and additional configurations is required to achieve chemical accuracy.
+    1s<sup>2</sup>2s<sup>1</sup>2p<sup>1</sup>3d<sup>1</sup>
 
 * __C__ (<sup>3</sup>P<sub>0</sub>)
 
