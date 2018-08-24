@@ -345,12 +345,12 @@ Convergence Tolerance:
 
 Diagonalization of the overlap matrix:
 Smallest eigenvalue                        ... 4.655e-02
-Time for diagonalization                   ...    0.001 sec
+Time for diagonalization                   ...    0.007 sec
 Threshold for overlap eigenvalues          ... 1.000e-08
 Number of eigenvalues below threshold      ... 0
 Time for construction of square roots      ...    0.000 sec
 Producing symmetrization matrix            ... done (   0.000 sec)
-Total time needed                          ...    0.002 sec
+Total time needed                          ...    0.007 sec
 
 -------------------
 DFT GRID GENERATION
@@ -381,7 +381,7 @@ Average number of large basis fcns per batch ...    23.60 (98.33%)
 Maximum spatial batch extension              ...  12.73, 21.59, 21.59 au
 Average spatial batch extension              ...   2.80,  5.45,  6.64 au
 
-Time for grid setup =    0.008 sec
+Time for grid setup =    0.011 sec
 
 ------------------------------
 INITIAL GUESS: MODEL POTENTIAL
@@ -458,7 +458,7 @@ ITER       Energy         Delta-E        Max-DP      RMS-DP      [F,P]     Damp
    Number of batches             ...     1
    Time for densities:     0.000
    Using LibInt in JK Direct
-   Time for J+K (Direct):     0.078
+   Time for J+K (Direct):     0.079
    Time for Sigma-Completion:     0.000
    Lowest Energy          :     0.016062196602
    Maximum Energy change  :     0.246523056346 (vector 2)
@@ -504,7 +504,7 @@ wave function in a separate calculation using the MOREAD guess feature.
 
 Obtain new guess               ... done 
 
-Total time for performing the stability analysis:     0.225sec
+Total time for performing the stability analysis:     0.226sec
 
 --------------------------
 SCF ITERATIONS (restarted)
@@ -814,18 +814,18 @@ TIMINGS
 
 Total SCF time: 0 days 0 hours 0 min 3 sec 
 
-Total time                  ....       3.012 sec
-Sum of individual times     ....       3.002 sec  ( 99.7%)
+Total time                  ....       3.017 sec
+Sum of individual times     ....       2.994 sec  ( 99.2%)
 
-Fock matrix formation       ....       2.603 sec  ( 86.4%)
+Fock matrix formation       ....       2.587 sec  ( 85.7%)
 Diagonalization             ....       0.008 sec  (  0.3%)
 Density matrix formation    ....       0.000 sec  (  0.0%)
-Population analysis         ....       0.001 sec  (  0.0%)
-Initial guess               ....       0.153 sec  (  5.1%)
+Population analysis         ....       0.003 sec  (  0.1%)
+Initial guess               ....       0.154 sec  (  5.1%)
 Orbital Transformation      ....       0.000 sec  (  0.0%)
 Orbital Orthonormalization  ....       0.000 sec  (  0.0%)
-DIIS solution               ....       0.003 sec  (  0.1%)
-SCF Stability Analysis      ....       0.225 sec  (  7.5%)
+DIIS solution               ....       0.005 sec  (  0.2%)
+SCF Stability Analysis      ....       0.226 sec  (  7.5%)
 
 -------------------------   --------------------
 FINAL SINGLE POINT ENERGY        -0.499945568609
@@ -868,8 +868,8 @@ Magnitude (Debye)      :      0.00000
 
 Timings for individual modules:
 
-Sum of individual times         ...        3.665 sec (=   0.061 min)
-GTO integral calculation        ...        0.433 sec (=   0.007 min)  11.8 %
-SCF iterations                  ...        3.232 sec (=   0.054 min)  88.2 %
+Sum of individual times         ...        4.396 sec (=   0.073 min)
+GTO integral calculation        ...        1.146 sec (=   0.019 min)  26.1 %
+SCF iterations                  ...        3.250 sec (=   0.054 min)  73.9 %
                              ****ORCA TERMINATED NORMALLY****
-TOTAL RUN TIME: 0 days 0 hours 0 minutes 4 seconds 51 msec
+TOTAL RUN TIME: 0 days 0 hours 0 minutes 4 seconds 857 msec
