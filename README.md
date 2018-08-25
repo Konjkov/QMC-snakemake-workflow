@@ -45,8 +45,7 @@ rule ALL_ORCA:
     input: '{method}/{basis}/{molecule}/mol.out'
 ```
 where:
-* __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0),
-OO-RI-MP2, CASSCF(N,M) for multideterminant extension. CASSCF(N,M) should be coded as CASSCF_N_M
+* __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N.M) for multideterminant extension.
 * __basis__ - any basis available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).
 * __molecule__ - molecular geometry file name in xyz-format (without extension) located in the `chem_database` directory.
 
@@ -197,10 +196,10 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 
 * [__N__ (<sup>4</sup>S<sub>3/2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/N)
 
-* __O__ (<sup>3</sup>P<sub>2</sub>)
+* [__O__ (<sup>3</sup>P<sub>2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/O)
 
-* __F__ (<sup>2</sup>P<sub>3/2</sub>)
+* [__F__ (<sup>2</sup>P<sub>3/2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/F)
 
-* __Ne__ (<sup>1</sup>S<sub>0</sub>)
+* [__Ne__ (<sup>1</sup>S<sub>0</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/cc-pVQZ/Ne)
 
 ### QCHEM
