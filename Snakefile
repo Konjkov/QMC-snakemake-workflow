@@ -314,7 +314,7 @@ rule VMC_DMC_INPUT:
 rule VMC_DMC_DATA_JASTROW:
     input:      '{path}/VMC_OPT/{opt_plan}/{jastrow}/out',
     output:     '{path}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_{i}/correlation.data'
-    shell:      'ln -rs "$(dirname "{input}")/correlation.out.9" "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")/correlation.out.final" "{output}"'
 
 rule VMC_DMC_CASL_JASTROW:
     input:      '{path}/VMC_OPT/{opt_plan}/{jastrow}/out',
@@ -352,7 +352,7 @@ rule VMC_OPT_ENERGY_INPUT:
 rule VMC_OPT_ENERGY_DATA_JASTROW:
     input:      '{path}/VMC_OPT/{opt_plan}/{jastrow}/out'
     output:     '{path}/VMC_OPT_ENERGY/{opt_plan}/{jastrow}/{nstep}/correlation.data'
-    shell:      'ln -rs "$(dirname "{input}")/correlation.out.9" "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")/correlation.out.final" "{output}"'
 
 rule VMC_OPT_ENERGY_CASL_JASTROW:
     input:      '{path}/VMC_OPT/{opt_plan}/{jastrow}/out'
@@ -372,7 +372,9 @@ rule VMC_OPT_RUN:
                 '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/parameters.casl',
                 '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/correlation.data',
     output:     '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/out'
-    shell:      'cd "$(dirname "{output}")" && runqmc && ln -s "$(ls parameters.*.casl | sort -t. -k2,2 -g | tail -1)" parameters.final.casl'
+    shell:      'cd "$(dirname "{output}")" && runqmc'
+                '&& ln -s "$(ls parameters.*.casl | sort -t. -k2,2 -g | tail -1)" parameters.final.casl'
+                '&& ln -s "$(ls correlation.out.* | sort -t. -k3,3 -g | tail -1)" correlation.out.final'
 
 rule VMC_OPT_INPUT:
     input:      '{method}/{basis}/{molecule}/VMC_OPT/{opt_plan}/{jastrow}/gwfn.data'
@@ -497,7 +499,7 @@ rule VMC_DMC_BF_INPUT:
 rule VMC_DMC_BF_DATA_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/out',
     output:     '{method}/{basis}/{molecule}/VMC_DMC_BF/{opt_plan}/{jastrow}__{backflow}/tmax_{dt}_{nconfig}_{i}/correlation.data'
-    shell:      'ln -rs "$(dirname "{input}")/correlation.out.9" "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")/correlation.out.final" "{output}"'
 
 rule VMC_DMC_BF_CASL_JASTROW:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/out',
@@ -530,7 +532,7 @@ rule VMC_OPT_BF_ENERGY_INPUT:
 rule VMC_OPT_BF_DATA_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/out'
     output:     '{path}/VMC_OPT_ENERGY_BF/{opt_plan}/{jastrow}__{backflow}/{nstep}/correlation.data'
-    shell:      'ln -rs "$(dirname "{input}")/correlation.out.9" "{output}"'
+    shell:      'ln -rs "$(dirname "{input}")/correlation.out.final" "{output}"'
 
 rule VMC_OPT_BF_CASL_ENERGY_JASTROW:
     input:      '{path}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/out'
@@ -550,7 +552,9 @@ rule VMC_OPT_BF_RUN:
                 '{path}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/correlation.data',
                 '{path}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/parameters.casl',
     output:     '{path}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/out'
-    shell:      'cd "$(dirname "{output}")" && runqmc && ln -s "$(ls parameters.*.casl | sort -t. -k2,2 -g | tail -1)" parameters.final.casl'
+    shell:      'cd "$(dirname "{output}")" && runqmc'
+                '&& ln -s "$(ls parameters.*.casl | sort -t. -k2,2 -g | tail -1)" parameters.final.casl'
+                '&& ln -s "$(ls correlation.out.* | sort -t. -k3,3 -g | tail -1)" correlation.out.final'
 
 rule VMC_OPT_BF_INPUT:
     input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/gwfn.data'
