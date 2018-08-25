@@ -147,7 +147,7 @@ rule ALL_ORCA:
         expand('{method}/{basis}/{molecule}/mol.out', method='MP2', basis=BASES, molecule=MOLECULES),
         expand('{method}/{basis}/{molecule}/mol.out', method='OO-RI-MP2', basis=BASES, molecule=MOLECULES),
         expand('{method}/{basis}/{molecule}/mol.out', method='OOCCD', basis=BASES, molecule=MOLECULES),
-        expand('{method}/{basis}/{molecule}/mol.out', method='DLPNO-CCSD_T', basis=BASES, molecule=MOLECULES),
+        expand('{method}/{basis}/{molecule}/mol.out', method='DLPNO-CCSD(T)', basis=BASES, molecule=MOLECULES),
 
 #####################################################################################################################
 
@@ -195,7 +195,7 @@ rule MOLDEN:
 rule ORCA_RUN:
     input:      '{path}/mol.inp'
     output:     '{path}/mol.out'
-    shell:      EXPORT_PATH + """cd {wildcards.path} && {ORCA_PATH}/orca mol.inp > mol.out"""
+    shell:      EXPORT_PATH + """cd "{wildcards.path}" && {ORCA_PATH}/orca mol.inp > mol.out"""
 
 extra_basis = (
 """%basis
@@ -250,7 +250,7 @@ rule ORCA_INPUT:
                     external_basis=external_basis,
                     external_ecp=external_ecp
                 ))
-            elif wildcards.method == 'DLPNO-CCSD_T':
+            elif wildcards.method == 'DLPNO-CCSD(T)':
                 f.write(open('orca_dlpno_ccsdt.tmpl').read().format(
                     basis=wildcards.basis,
                     aux_basis='cc-pVQZ/C',
