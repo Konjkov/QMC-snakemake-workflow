@@ -1,7 +1,7 @@
 CASINO v2.13.714 [Mike Towler] (24 May 2018)
 Running on vladimir-Kubuntu-16 [linuxpc-gcc-parallel.openblas]
 Binary compiled in opt mode
-Job started: Пт авг 17 15:52:33 +07 2018
+Job started: Вс авг 26 22:51:39 +07 2018
  ------------------------------------------------------------------------------
 
                    #####
@@ -25,7 +25,7 @@ Job started: Пт авг 17 15:52:33 +07 2018
                       Current contact: mdt26 at cam.ac.uk
 
  ------------------------------------------------------------------------------
- Started 2018/08/17 15:52:33.888
+ Started 2018/08/26 22:51:39.339
 
  Running in parallel using 8 MPI processes.
 
@@ -134,21 +134,32 @@ Job started: Пт авг 17 15:52:33 +07 2018
  Generator                                 :  RANLUX
  RANLUX luxury level                       :  3
  p value                                   :  223
- Value of random seed on MPI process 0     :  26355344
+ Value of random seed on MPI process 0     :  48902599
 
  Initialized with seed derived from timer.
 
  Reading correlation.data
  ========================
- No correlation.data file is present.
+ Header:
+   No title given.
+ Version of correlation.data : 1
+ Multideterminant/excitation data is present in correlation.data.
 
  Reading parameters.casl
  =======================
  Contents of parameters.casl:
   * JASTROW
 
- No multideterminant/excitation data supplied.
- Using ground state defined in xwfn.data file.
+ Reading multideterminant/excitation data from correlation.data.
+ ===============================================================
+ Title: multideterminant WFN generated from Orca output data
+ Multiple determinants will be used.
+ Number of determinants:  1
+ Determinant ;   Coefficient ;     Label ; Optimizable
+        1     1.0000000000E+00       1     Fixed
+
+ Excitation specifications (see manual):
+ No excitations specifed.
 
  Reading Gaussian wave function and associated data
  ==================================================
@@ -278,29 +289,29 @@ Job started: Пт авг 17 15:52:33 +07 2018
   Integer constants:
    C = 3
   Channel 1-1:
-   L (optimizable) =  4.08646208E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  4.12285337E+00 in [5.0000E-01, +Inf)
   Channel 1-2:
-   L (optimizable) =  4.32983508E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  4.28747090E+00 in [5.0000E-01, +Inf)
  Linear parameters:
   Number of linear parameters per channel: 8
   Channel 1-1:
    Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
-   c_2 (optimizable) =  2.02289021E-03
-   c_3 (optimizable) =  1.87039520E-03
-   c_4 (optimizable) = -4.20672400E-03
-   c_5 (optimizable) =  1.89816242E-03
-   c_6 (optimizable) =  5.39949122E-04
-   c_7 (optimizable) = -5.08155126E-04
-   c_8 (optimizable) =  8.55387342E-05
+   c_2 (optimizable) =  2.00197785E-03
+   c_3 (optimizable) =  1.31517898E-03
+   c_4 (optimizable) = -3.24891479E-03
+   c_5 (optimizable) =  1.21237868E-03
+   c_6 (optimizable) =  7.86438307E-04
+   c_7 (optimizable) = -5.54752007E-04
+   c_8 (optimizable) =  8.92519384E-05
   Channel 1-2:
    Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
-   c_2 (optimizable) = -2.10992977E-04
-   c_3 (optimizable) =  3.17371363E-03
-   c_4 (optimizable) = -6.05594775E-03
-   c_5 (optimizable) =  5.68565655E-03
-   c_6 (optimizable) = -2.60719891E-03
-   c_7 (optimizable) =  5.70160358E-04
-   c_8 (optimizable) = -4.70050667E-05
+   c_2 (optimizable) = -8.46064549E-05
+   c_3 (optimizable) =  3.34455426E-03
+   c_4 (optimizable) = -6.84047946E-03
+   c_5 (optimizable) =  6.92690037E-03
+   c_6 (optimizable) = -3.39405263E-03
+   c_7 (optimizable) =  7.90265384E-04
+   c_8 (optimizable) = -6.89758589E-05
 
  Term 2
  ------
@@ -314,18 +325,18 @@ Job started: Пт авг 17 15:52:33 +07 2018
   Integer constants:
    C = 3
   Channel 1-n1:
-   L (optimizable) =  3.77342587E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  3.73053565E+00 in [5.0000E-01, +Inf)
  Linear parameters:
   Number of linear parameters per channel: 8
   Channel 1-n1:
    Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
-   c_2 (optimizable) = -2.73980704E-02
-   c_3 (optimizable) =  7.77637432E-04
-   c_4 (optimizable) = -2.09822146E-02
-   c_5 (optimizable) =  1.27621162E-02
-   c_6 (optimizable) =  8.84425478E-04
-   c_7 (optimizable) = -2.94197116E-03
-   c_8 (optimizable) =  5.93187906E-04
+   c_2 (optimizable) = -2.86910776E-02
+   c_3 (optimizable) = -1.63065346E-04
+   c_4 (optimizable) = -1.97781269E-02
+   c_5 (optimizable) =  8.79970994E-03
+   c_6 (optimizable) =  5.20723127E-03
+   c_7 (optimizable) = -4.88572390E-03
+   c_8 (optimizable) =  8.81499644E-04
 
  Term 3
  ------
@@ -344,37 +355,37 @@ Job started: Пт авг 17 15:52:33 +07 2018
   Integer constants:
    C = 3
   Channel 1-n1:
-   L (optimizable) =  3.45240020E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  3.41186861E+00 in [5.0000E-01, +Inf)
  Linear parameters:
   Number of linear parameters per channel: 64
   Channel 1-1-n1:
    Constraints: 45 equations (0r+24s+0u+21c), 38 parameters determined
-   c_1,2,2 (optimizable) = -8.94747605E-06
-   c_1,3,2 (optimizable) = -1.59783281E-03
-   c_1,3,3 (optimizable) =  2.96063585E-03
-   c_1,4,2 (optimizable) =  9.95714706E-04
-   c_1,4,3 (optimizable) = -1.61591422E-03
-   c_1,4,4 (optimizable) =  7.38632346E-04
-   c_2,3,1 (optimizable) = -8.92049874E-04
-   c_2,4,2 (optimizable) = -1.71034956E-04
-   c_3,1,1 (optimizable) = -3.18533004E-04
-   c_3,2,1 (optimizable) = -1.56740250E-05
-   c_3,2,2 (optimizable) = -7.84761316E-04
-   c_3,3,1 (optimizable) =  2.37364216E-04
-   c_3,3,2 (optimizable) =  3.66435691E-04
-   c_3,3,3 (optimizable) =  1.02864269E-04
-   c_3,4,2 (optimizable) = -9.82517149E-05
-   c_3,4,3 (optimizable) =  8.22339305E-05
-   c_3,4,4 (optimizable) = -9.51073630E-05
-   c_4,1,1 (optimizable) =  3.75888949E-04
-   c_4,2,1 (optimizable) = -2.97627323E-04
-   c_4,2,2 (optimizable) =  2.27577053E-04
-   c_4,3,1 (optimizable) =  1.23844124E-04
-   c_4,3,2 (optimizable) =  1.94643918E-05
-   c_4,3,3 (optimizable) = -2.84709310E-04
-   c_4,4,2 (optimizable) = -5.67811485E-06
-   c_4,4,3 (optimizable) =  6.82241095E-05
-   c_4,4,4 (optimizable) = -8.76026120E-06
+   c_1,2,2 (optimizable) = -7.89285506E-06
+   c_1,3,2 (optimizable) = -1.86441788E-03
+   c_1,3,3 (optimizable) =  3.46912271E-03
+   c_1,4,2 (optimizable) =  1.16184466E-03
+   c_1,4,3 (optimizable) = -1.86695380E-03
+   c_1,4,4 (optimizable) =  8.39609530E-04
+   c_2,3,1 (optimizable) = -1.04583903E-03
+   c_2,4,2 (optimizable) = -1.94182348E-04
+   c_3,1,1 (optimizable) = -3.69369147E-04
+   c_3,2,1 (optimizable) = -3.45926398E-05
+   c_3,2,2 (optimizable) = -8.24040629E-04
+   c_3,3,1 (optimizable) =  3.45699690E-04
+   c_3,3,2 (optimizable) =  3.43200287E-04
+   c_3,3,3 (optimizable) =  8.43592934E-05
+   c_3,4,2 (optimizable) = -1.07807478E-04
+   c_3,4,3 (optimizable) =  1.25991980E-04
+   c_3,4,4 (optimizable) = -1.20227893E-04
+   c_4,1,1 (optimizable) =  4.83695215E-04
+   c_4,2,1 (optimizable) = -4.23539386E-04
+   c_4,2,2 (optimizable) =  3.42334602E-04
+   c_4,3,1 (optimizable) =  1.68813302E-04
+   c_4,3,2 (optimizable) =  1.56369281E-05
+   c_4,3,3 (optimizable) = -3.28139259E-04
+   c_4,4,2 (optimizable) = -7.41644549E-06
+   c_4,4,3 (optimizable) =  7.44888405E-05
+   c_4,4,4 (optimizable) = -8.02580243E-06
 
 
  Finished General Jastrow setup.
@@ -394,8 +405,8 @@ Job started: Пт авг 17 15:52:33 +07 2018
 
  Running VMC equilibration (5000 moves).
   Performing time-step optimization.
-  DTVMC #1:   1.6873E-01 (optimized)
-  DTVMC #2:   8.5106E-02 (optimized)
+  DTVMC #1:   1.6854E-01 (optimized)
+  DTVMC #2:   7.8244E-02 (optimized)
  Done. [total CPU time: 0s]
 
  Finding optimal inner loop length (500 additional moves).
@@ -412,75 +423,75 @@ Job started: Пт авг 17 15:52:33 +07 2018
  =========================================================================
  In block : 1
 
- Acceptance ratio #1 <level 1>        (%)  =  51.8311
- Acceptance ratio #2 <level 1>        (%)  =  50.9473
- Acceptance ratio #1 <levels 1-2>     (%)  =  49.9609
- Acceptance ratio #2 <levels 1-2>     (%)  =  49.1016
- Diffusion constant #1           (Bohr^2)  = 2.5947E-02
- Diffusion constant #2           (Bohr^2)  = 1.3340E-02
- Correlation time                 (steps)  = 1.9091E+00 +- 3.7497E-01
- Efficiency                  (au^-2 s^-1)  = 8.4461E+04
+ Acceptance ratio #1 <level 1>        (%)  =  51.4258
+ Acceptance ratio #2 <level 1>        (%)  =  51.7480
+ Acceptance ratio #1 <levels 1-2>     (%)  =  49.5654
+ Acceptance ratio #2 <levels 1-2>     (%)  =  50.2344
+ Diffusion constant #1           (Bohr^2)  = 2.5226E-02
+ Diffusion constant #2           (Bohr^2)  = 1.3102E-02
+ Correlation time                 (steps)  = 1.8211E+00 +- 3.3205E-01
+ Efficiency                  (au^-2 s^-1)  = 2.4465E+04
  No. of VMC steps per MPI process          = 128
 
   Block average energies (au)
 
-  Total energy                       (au) =         -37.855589199801
-  Standard error                        +/-           0.016187077836
+  Total energy                       (au) =         -37.764261271173
+  Standard error                        +/-           0.027956542595
 
-  Kinetic energy KEI (used in Total) (au) =          41.894593925054
-  Standard error                        +/-           1.767126418602
+  Kinetic energy KEI (used in Total) (au) =          38.355000237584
+  Standard error                        +/-           1.152769862774
 
-  Kinetic energy TI                  (au) =          39.619358852030
-  Standard error                        +/-           0.900250633383
+  Kinetic energy TI                  (au) =          37.819993945949
+  Standard error                        +/-           0.602938015076
 
-  Kinetic energy FISQ                (au) =          37.344123779006
-  Standard error                        +/-           0.281120586530
+  Kinetic energy FISQ                (au) =          37.284987654314
+  Standard error                        +/-           0.318815633144
 
-  Potential energy                   (au) =         -79.750183124855
-  Standard error                        +/-           1.763825119380
+  Potential energy                   (au) =         -76.119261508756
+  Standard error                        +/-           1.152468552587
 
-  e-e interaction                    (au) =          12.646157744671
-  Standard error                        +/-           0.110700281402
+  e-e interaction                    (au) =          12.670081979416
+  Standard error                        +/-           0.143239283416
 
-  e-n interaction                    (au) =         -92.396340869526
-  Standard error                        +/-           1.785410847758
+  e-n interaction                    (au) =         -88.789343488172
+  Standard error                        +/-           1.184172367768
 
-  Variance of local energy           (au) =           0.317531595603
-  Standard error                        +/-           0.021896465410
+  Variance of local energy           (au) =           0.766137838358
+  Standard error                        +/-           0.351374310321
 
-  Maximum distance from origin       (au) =           5.023928934358
+  Maximum distance from origin       (au) =           5.551571506114
 
 
- Time taken in block    : : :        0.0200
+ Time taken in block    : : :        0.0300
 
  =========================================================================
  FINAL RESULT:
 
   VMC energy (au)    Standard error      Correction for serial correlation
 
- -37.855589199801 +/- 0.016187077836      No correction
- -37.855589199801 +/- 0.022365702806      Correlation time method
- -37.855589199801 +/- 0.015682425866      On-the-fly reblocking method
+ -37.764261271173 +/- 0.027956542595      No correction
+ -37.764261271173 +/- 0.037726370010      Correlation time method
+ -37.764261271173 +/- 0.043910014053      On-the-fly reblocking method
 
  Bad reblock convergence - probably not enough data samples.
 
  Dumping reblock data for energy:
-      mean:    -37.855589199801 +/-       0.015682425866
-    stderr:      0.015682425866 +/-       0.002863206134
-    errfac:      0.968823775708 +/-       0.176882212067
-    N_corr:      0.938619508377 +/-       0.342735385102
+      mean:    -37.764261271173 +/-       0.043910014053
+    stderr:      0.043910014053 +/-       0.011735444888
+    errfac:      1.570652519133 +/-       0.419774542876
+    N_corr:      2.466949335858 +/-       1.318639886473
    ------------------------------------------------------
     Block len      Std error   Err in error
-            1   1.618708E-02   1.015668E-03
-            2   1.795187E-02   1.599280E-03
-            4   1.715786E-02   2.179051E-03
-            8   1.568243E-02   2.863206E-03  *** BEST ***
-           16   1.607050E-02   4.295021E-03
-           32   1.947004E-02   7.948613E-03
-           64   6.846192E-03   4.840989E-03
+            1   2.795654E-02   1.754149E-03
+            2   2.938684E-02   2.617988E-03
+            4   3.361072E-02   4.268566E-03
+            8   3.855568E-02   7.039271E-03
+           16   4.391001E-02   1.173544E-02  *** BEST ***
+           32   2.979266E-02   1.216280E-02
+           64   4.708427E-03   3.329361E-03
    ------------------------------------------------------
 
-  Sample variance of E_L (au^2/sim.cell) : 0.317531595603
+  Sample variance of E_L (au^2/sim.cell) : 0.766137838358
 
  =========================================================================
 
@@ -497,21 +508,21 @@ Job started: Пт авг 17 15:52:33 +07 2018
 
  Random number generator reset to state in config.in.
 
- EBEST = -37.855589199801187 (au/prim cell inc. N-N)
- EREF  = -37.855589199801187
+ EBEST = -37.764261271172558 (au/prim cell inc. N-N)
+ EREF  = -37.764261271172558
 
  =========================================================================
  In block : 1
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.656
- Number of config transfers               : 11238
- Acceptance ratio (%)                     : 98.270
- New best estimate of DMC energy (au)     : -37.82437428
- Max no of attempts before accept move    : 6
- Maximum distance from origin (au)        : 8.89666139
+ Load-balancing efficiency (%)            : 99.662
+ Number of config transfers               : 11570
+ Acceptance ratio (%)                     : 98.282
+ New best estimate of DMC energy (au)     : -37.83597202
+ Max no of attempts before accept move    : 7
+ Maximum distance from origin (au)        : 9.58903227
 
- Time taken in block    : : :      158.7400
+ Time taken in block    : : :      145.9800
 
 
  *     *     *     *     *     *     *     *     *     *     *     *
@@ -526,8 +537,8 @@ Job started: Пт авг 17 15:52:33 +07 2018
 
  Random number generator reset to state in config.in.
 
- EBEST = -37.824374281633389 (au/prim cell inc. N-N)
- EREF  = -37.796328298596855
+ EBEST = -37.835972017422016 (au/prim cell inc. N-N)
+ EREF  = -37.826957868625627
 
  Number of previous DMC stats accumulation moves : 0
 
@@ -535,71 +546,71 @@ Job started: Пт авг 17 15:52:33 +07 2018
  In block : 1
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.653
- Number of config transfers               : 11164
- Acceptance ratio (%)                     : 98.271
- New best estimate of DMC energy (au)     : -37.82977776
- Max no of attempts before accept move    : 6
- New best estimate of effective time step : 0.00901134
- Maximum distance from origin (au)        : 8.58025727
+ Load-balancing efficiency (%)            : 99.665
+ Number of config transfers               : 11526
+ Acceptance ratio (%)                     : 98.273
+ New best estimate of DMC energy (au)     : -37.82900957
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901171
+ Maximum distance from origin (au)        : 8.05673278
 
- Time taken in block    : : :      160.4800
+ Time taken in block    : : :      157.9500
 
  =========================================================================
  In block : 2
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.658
- Number of config transfers               : 11432
- Acceptance ratio (%)                     : 98.280
- New best estimate of DMC energy (au)     : -37.82959344
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00901143
- Maximum distance from origin (au)        : 8.73729129
+ Load-balancing efficiency (%)            : 99.661
+ Number of config transfers               : 11289
+ Acceptance ratio (%)                     : 98.283
+ New best estimate of DMC energy (au)     : -37.82965797
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901166
+ Maximum distance from origin (au)        : 8.20493537
 
- Time taken in block    : : :      162.6600
+ Time taken in block    : : :      161.3100
 
  =========================================================================
  In block : 3
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.654
- Number of config transfers               : 11309
- Acceptance ratio (%)                     : 98.269
- New best estimate of DMC energy (au)     : -37.82979624
- Max no of attempts before accept move    : 7
- New best estimate of effective time step : 0.00901130
- Maximum distance from origin (au)        : 9.83603488
+ Load-balancing efficiency (%)            : 99.658
+ Number of config transfers               : 11439
+ Acceptance ratio (%)                     : 98.273
+ New best estimate of DMC energy (au)     : -37.82953129
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901167
+ Maximum distance from origin (au)        : 9.41480588
 
- Time taken in block    : : :      162.9000
+ Time taken in block    : : :      159.5000
 
  =========================================================================
  In block : 4
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.659
- Number of config transfers               : 11329
- Acceptance ratio (%)                     : 98.276
- New best estimate of DMC energy (au)     : -37.82999030
+ Load-balancing efficiency (%)            : 99.660
+ Number of config transfers               : 11383
+ Acceptance ratio (%)                     : 98.275
+ New best estimate of DMC energy (au)     : -37.82977774
  Max no of attempts before accept move    : 7
- New best estimate of effective time step : 0.00901128
- Maximum distance from origin (au)        : 9.11949453
+ New best estimate of effective time step : 0.00901168
+ Maximum distance from origin (au)        : 9.65432719
 
- Time taken in block    : : :      162.8800
+ Time taken in block    : : :      161.4100
 
  =========================================================================
  In block : 5
 
  Number of moves in block                 : 10000
  Load-balancing efficiency (%)            : 99.657
- Number of config transfers               : 11350
- Acceptance ratio (%)                     : 98.264
- New best estimate of DMC energy (au)     : -37.82991033
- Max no of attempts before accept move    : 6
- New best estimate of effective time step : 0.00901130
- Maximum distance from origin (au)        : 8.50429895
+ Number of config transfers               : 11352
+ Acceptance ratio (%)                     : 98.273
+ New best estimate of DMC energy (au)     : -37.82970273
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901167
+ Maximum distance from origin (au)        : 8.84331955
 
- Time taken in block    : : :      162.6700
+ Time taken in block    : : :      162.1300
 
 
  Mixed estimators of the energies at the end of the run
@@ -607,64 +618,64 @@ Job started: Пт авг 17 15:52:33 +07 2018
  [All energies given in (au)]
  [All error bars obtained by reblocking]
 
- Total energy                 =      -37.829910330471 +/-        0.000262648355
- Kinetic energy (TI)          =       37.904070398761 +/-        0.010353455972
- Kinetic energy (KEI)         =       37.871016191898 +/-        0.013571515580
- Kinetic energy (FISQ)        =       37.937124605626 +/-        0.015909865096
- e-e interac. (Ewald/Coulomb) =       12.539657701233 +/-        0.004514172620
- e-i interaction (local)      =      -88.240584223602 +/-        0.014313809778
+ Total energy                 =      -37.829702734448 +/-        0.000272356472
+ Kinetic energy (TI)          =       37.889915919771 +/-        0.010320177255
+ Kinetic energy (KEI)         =       37.849215303497 +/-        0.013316464971
+ Kinetic energy (FISQ)        =       37.930616536045 +/-        0.015878108316
+ e-e interac. (Ewald/Coulomb) =       12.532028764928 +/-        0.004118635813
+ e-i interaction (local)      =      -88.210946802873 +/-        0.015781958217
 
  Dump of raw reblock data
  ------------------------
  Number of data points collected = 50000
  Dumping reblock data for energy:
-      mean:    -37.829910330471 +/-       0.000262648355
-    stderr:      0.000262648355 +/-       0.000013323224
-    errfac:      3.013669054560 +/-       0.152872789784
-    N_corr:      9.082201170415 +/-       0.921415991712
+      mean:    -37.829702734448 +/-       0.000272356472
+    stderr:      0.000272356472 +/-       0.000013815682
+    errfac:      3.127855445739 +/-       0.158665062213
+    N_corr:      9.783479689442 +/-       0.992562757783
    ------------------------------------------------------
     Block len      Std error   Err in error
-            1   8.715236E-05   2.756027E-07
-            2   1.048983E-04   4.691288E-07
-            4   1.269712E-04   8.030687E-07
-            8   1.519929E-04   1.359574E-06
-           16   1.793165E-04   2.268558E-06
-           32   2.047690E-04   3.664192E-06
-           64   2.264794E-04   5.733196E-06
-          128   2.413319E-04   8.645225E-06
-          256   2.626484E-04   1.332322E-05  *** BEST ***
-          512   2.726622E-04   1.961079E-05
-         1024   2.557036E-04   2.614449E-05
-         2048   2.665722E-04   3.895484E-05
-         4096   2.620281E-04   5.534617E-05
-         8192   3.318967E-04   1.038851E-04
-        16384   3.361453E-04   1.659392E-04
+            1   8.707451E-05   2.753565E-07
+            2   1.053494E-04   4.711463E-07
+            4   1.274502E-04   8.060983E-07
+            8   1.531230E-04   1.369683E-06
+           16   1.781501E-04   2.253800E-06
+           32   2.044126E-04   3.657815E-06
+           64   2.291098E-04   5.799782E-06
+          128   2.515591E-04   9.011593E-06
+          256   2.723565E-04   1.381568E-05  *** BEST ***
+          512   2.707829E-04   1.947562E-05
+         1024   2.908078E-04   2.973373E-05
+         2048   3.299381E-04   4.821466E-05
+         4096   2.743202E-04   5.794254E-05
+         8192   1.893792E-04   5.927650E-05
+        16384   1.283762E-04   6.337333E-05
    ------------------------------------------------------
 
  Analysis of statistical efficiency -- see PRB 81, 035119 (2010).
  ------------------------------------------------------------------
- Int corr length (steps)      =        9.082201170415 +/-        0.921415991712
+ Int corr length (steps)      =        9.783479689442 +/-        0.992562757783
  DMC time step (au)           =        0.009260000000
- Int correlation time (au)    =        0.084101182838 +/-        0.008532312083
- Var of loc en (au / simcell) =        0.382596982053 +/-        0.000229736752
- Std dev of local energy      =        0.618544244216
+ Int correlation time (au)    =        0.090595021924 +/-        0.009191131137
+ Var of loc en (au / simcell) =        0.383999749512 +/-        0.000232120126
+ Std dev of local energy      =        0.619677133282
  Number of steps of accum data=    50000.000000000000
- Effective number of steps    =    49990.566849625575
+ Effective number of steps    =    49990.273641569227
  Target weight                =     1024.000000000000
- Average population           =     1023.232580000000 +/-        0.063396095549
- Effective population         =     1007.755681072673
- Stat inefficiency (est)      =        1.020969941135 +/-        0.002155975639
- Stat inefficiency (measured) =        1.015549385417
+ Average population           =     1023.772340000000 +/-        0.064402489226
+ Effective population         =     1071.208953263795
+ Stat inefficiency (est)      =        1.022649169533 +/-        0.002330574867
+ Stat inefficiency (measured) =        0.955902699621
 
  =========================================================================
 
- Total CASINO CPU time  : : :      970.6199
- Total CASINO real time : : :      970.9130
+ Total CASINO CPU time  : : :      948.5700
+ Total CASINO real time : : :      951.2761
 
 
  Subroutine timers deactivated (use TIMING_INFO input keyword)
 
  =========================================================================
- Ends 2018/08/17 16:08:44.800
+ Ends 2018/08/26 23:07:30.614
 
-Job finished: Пт авг 17 16:08:44 +07 2018
+Job finished: Вс авг 26 23:07:30 +07 2018
