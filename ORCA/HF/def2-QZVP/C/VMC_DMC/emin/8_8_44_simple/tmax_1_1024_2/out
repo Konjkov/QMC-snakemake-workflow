@@ -1,0 +1,851 @@
+CASINO v2.13.714 [Mike Towler] (24 May 2018)
+Running on vladimir-Kubuntu-16 [linuxpc-gcc-parallel.openblas]
+Binary compiled in opt mode
+Job started: Чт авг 30 09:02:08 +07 2018
+ ------------------------------------------------------------------------------
+
+                   #####
+                  ##   ##    ##     ####   ##  #   ##   ####
+                  ##        ####   ##      ##  ##  ##  ##  ##
+                  ##       ##  ##   ####   ##  ### ##  ##  ##
+                  ##       ######      ##  ##  ## ###  ##  ##
+                  ##   ##  ##  ##  ##  ##  ##  ##  ##  ##  ##
+                   #####   ##  ##   ####   ##  ##   #   ####
+
+                     The Cambridge Quantum Monte Carlo Code
+                  CASINO v2.13.714 [Mike Towler] (24 May 2018)
+
+      Main Authors : R.J.Needs, M.D.Towler, N.D.Drummond and P.Lopez Rios
+
+            Theory of Condensed Matter Group, Cavendish Laboratory,
+                University of Cambridge, Cambridge, CB3 OHE, UK.
+
+                     CASINO web page: vallico.net/casinoqmc
+
+                      Current contact: mdt26 at cam.ac.uk
+
+ ------------------------------------------------------------------------------
+ Started 2018/08/30 09:02:08.503
+
+ Running in parallel using 8 MPI processes.
+
+ General input parameters
+ ========================
+ NEU (num up spin electrons)              :  4
+ NED (num down spin electrons)            :  2
+ RUNTYPE (type of run)                    :  dmc_stats
+ PSI_S  (form for [anti]symmetrizing wfn) :  slater
+ ATOM_BASIS_TYPE (atom-centred orb basis) :  gaussian
+ INTERACTION (interaction type)           :  coulomb
+ TESTRUN (read input data,print and stop) :  F
+ PERIODIC                                 :  F
+ COMPLEX_WF (complex Slater wave fn.)     :  F
+ NEIGHPRINT (neighbour analysis)          :  0
+ USE_JASTROW (use Jastrow factor)         :  T
+ BACKFLOW (use backflow corrections)      :  F
+ DBARRC (DBAR recalculation period)       :  100000
+ USE_ORBMODS (use orbitals modifications) :  F
+ CUSP_CORRECTION                          :  T
+ MOLGSCREENING                            :  F
+ NON_LOCAL_GRID (NL integration grid)     :  4
+ E_OFFSET (energy offset)                 :  0.0000
+ ESUPERCELL                               :  F
+ GAUTOL  (Gaussian evaluation tolerance)  :  7.0
+ SPARSE                                   :  F
+ DIPOLE_MOMENT                            :  F
+ CHECKPOINT (checkpointing level)         :  1
+ CHECKPOINT_NCPU (chkpnt group size)      :  8
+ CON_LOC (Dir to read/write config.*)     :  ./
+ RELATIVISTIC                             :  F
+
+ DMC input parameters
+ ====================
+ NEWRUN (start new run)                   :  F
+ DMC_TARGET_WEIGHT                        :  1024.00
+ DMC_MD                                   :  F
+ DMC_STATS_NSTEP (num stats steps)        :  270000
+ DMC_STATS_NBLOCK (num blocks)            :  27
+ DMC_DECORR_PERIOD (length of inner loop) :  1
+ DMC_AVE_PERIOD (hist reduction factor)   :  1
+ DMC_TRIP_WEIGHT (catastrophe thres)      :  0.00
+ EBEST_AV_WINDOW (running av for energy)  :  25
+ DMC_METHOD (choice of DMC algorithm)     :  1
+ DMC_REWEIGHT_CONF (Update weights)       :  F
+ DMC_SPACEWARPING (adjust e to new wfn)   :  F
+ REDIST_GRP_SIZE (size of redist groups)  :  500
+ DTDMC (DMC time step)                    :  9.26000E-03
+ TPDMC (DMC T_p parameter)                :  0
+ CEREFDMC (constant for EREF [DMC])       :  1.000
+ LIMDMC (limit type for drift vel/energy) :  4
+ NUCLEUS_GF_MODS (DMC GF mods for nuclei) :  T
+ ALIMIT                                   :  0.500
+ IACCUM (flag for statistics run [DMC])   :  T
+ IBRAN (flag to enable branching [DMC])   :  T
+ LWDMC (flag for enabling weighted DMC)   :  F
+ LWDMC_FIXPOP (fixed population LWDMC)    :  F
+ DMC_NORM_CONSERVE                        :  F
+ DMC_POPRENORM (renormalize config popn)  :  F
+ GROWTH_ESTIMATOR (calc growth estimator) :  F
+ USE_TMOVE                                :  F
+ FUTURE WALKING                           :  F
+ SMALL_TRANSFER (redist. transf. size)    :  F
+ ORBBUF (orbital buffering)               :  T
+ JASBUF (Jastrow buffering)               :  T
+ MAKEMOVIE                                :  F
+ FORCES                                   :  F
+
+ Particles
+ =========
+ Particle name                 Charge        Mass         Spin   Type
+ -------------------------------------------------------------------------
+ 1: Spin-up electron          -1.00000       1.0000000     0.5   Fermion
+ 2: Spin-down electron        -1.00000       1.0000000    -0.5   Fermion
+ -------------------------------------------------------------------------
+
+ Number of diffusion types : 2
+
+ Single-particle groupings
+ -------------------------
+ Spin dep. 0 : (1,2) [F] [E]
+ Spin dep. 1 : (1) (2)
+
+ NB, partitions defining spin-[F]amilies and [E]quivalent particles flagged.
+
+ Particle-pair groupings
+ -----------------------
+ Spin-pair dep. 0 : (1-1,1-2,2-2)
+ Spin-pair dep. 1 : (1-1,2-2) (1-2)
+ Spin-pair dep. 2 : (1-1) (1-2) (2-2)
+
+ Initialize random number generator
+ ==================================
+ Generator                                 :  RANLUX
+ RANLUX luxury level                       :  3
+ p value                                   :  223
+ Value of random seed on MPI process 0     :  4874984
+
+ Initialized with seed derived from timer.
+
+ Reading correlation.data
+ ========================
+ Header:
+   No title given.
+ Version of correlation.data : 1
+ Multideterminant/excitation data is present in correlation.data.
+
+ Reading parameters.casl
+ =======================
+ Contents of parameters.casl:
+  * JASTROW
+
+ Reading multideterminant/excitation data from correlation.data.
+ ===============================================================
+ Title: multideterminant WFN generated from Orca output data
+ Multiple determinants will be used.
+ Number of determinants:  1
+ Determinant ;   Coefficient ;     Label ; Optimizable
+        1     1.0000000000E+00       1     Fixed
+
+ Excitation specifications (see manual):
+ No excitations specifed.
+
+ Reading Gaussian wave function and associated data
+ ==================================================
+
+ Title : TITLE
+
+ Generating code                           :  molden2qmc version: 4.0
+ Method                                    :
+ DFT functional                            :
+ Periodicity                               :  0 (molecule)
+ Spin restricted?                          :  No
+
+ Total number of electrons                 :  6
+
+ Basis set information
+
+ Number of atoms                           :  1
+ Number of shells                          :  17
+ Number of basis fns                       :  57
+ Number of primitives                      :  29
+ Highest ang momentum                      :  5
+
+ Gaussian basis sets:
+ ------------------------------------------------------------------
+   Atom  x(au)  y(au)  z(au)    No. Type  Exponent    Coefficients
+ ------------------------------------------------------------------
+   1 C     0.000    0.000    0.000
+                             1-   1  s
+                                         6.703E+04     2.108E-01
+                                         1.004E+04     3.944E-01
+                                         2.285E+03     6.815E-01
+                                         6.471E+02     1.108E+00
+                                         2.111E+02     1.690E+00
+                                         7.618E+01     2.372E+00
+                                         2.963E+01     2.880E+00
+                                         1.219E+01     2.751E+00
+                             2-   2  s
+                                         5.303E+01     1.280E+00
+                                         1.526E+01     5.110E+00
+                             3-   3  s
+                                         5.240E+00     2.469E+00
+                             4-   4  s
+                                         2.291E+00     1.327E+00
+                             5-   5  s
+                                         6.967E-01     5.435E-01
+                             6-   6  s
+                                         2.760E-01     2.714E-01
+                             7-   7  s
+                                         1.074E-01     1.337E-01
+                             8-  10  p
+                                         1.051E+02     1.198E+00
+                                         2.488E+01     1.549E+00
+                                         7.864E+00     1.667E+00
+                                         2.841E+00     1.550E+00
+                                         1.123E+00     1.158E+00
+                            11-  13  p
+                                         4.605E-01     5.407E-01
+                            14-  16  p
+                                         1.894E-01     1.781E-01
+                            17-  19  p
+                                         7.598E-02     5.686E-02
+                            20-  24  d
+                                         1.848E+00     4.821E+00
+                            25-  29  d
+                                         6.490E-01     7.724E-01
+                            30-  34  d
+                                         2.280E-01     1.238E-01
+                            35-  41  f
+                                         1.419E+00     3.235E+00
+                            42-  48  f
+                                         4.850E-01     2.890E-01
+                            49-  57  g
+                                         1.011E+00     1.147E+00
+ ------------------------------------------------------------------
+ Single determinant :
+
+ Det 1 spin 1           : ground state
+ Det 1 spin 2           : ground state
+ Det 1 coefficient      : 1.00000000
+
+ Pseudopotentials
+ ================
+ No pseudopotential for C - treating as all-electron.
+
+ Geometry derived from information in gwfn.data
+ ==============================================
+
+ Simulation cell : Finite (atomic/molecular geometry)
+
+ Atom Atno  Type              Position (Cartesian au)
+ -------------------------------------------------------------
+    1   6   1         0.00000000     0.00000000     0.00000000
+
+
+ Neighbour analysis of single atom not required.
+
+ Gaussian cusp correction
+ ========================
+ Activated.
+
+ Expectation values
+ ==================
+ None requested.
+
+ Interactions
+ ============
+ Interaction type: Coulomb
+ System is aperiodic. Using 1/r only.
+
+ General Jastrow setup
+ =====================
+
+ Title: 'Standard JASTROW'
+ Reading 3 Jastrow factor terms.
+
+ Term 1
+ ------
+ Rank(e)             : 2
+ Rank(n)             : 0
+ e-e basis:
+  Functional basis   : natural power
+  Expansion order    : 8
+ e-e cutoff:
+  Functional basis   : alt polynomial
+  Integer constants:
+   C = 3
+  Channel 1-1:
+   L (optimizable) =  3.97110238E+00 in [5.0000E-01, +Inf)
+  Channel 1-2:
+   L (optimizable) =  4.37946837E+00 in [5.0000E-01, +Inf)
+ Linear parameters:
+  Number of linear parameters per channel: 8
+  Channel 1-1:
+   Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
+   c_2 (optimizable) =  2.34545830E-03
+   c_3 (optimizable) =  2.16401292E-03
+   c_4 (optimizable) = -4.69071103E-03
+   c_5 (optimizable) =  2.12918983E-03
+   c_6 (optimizable) =  6.56781984E-04
+   c_7 (optimizable) = -6.09747050E-04
+   c_8 (optimizable) =  1.04850018E-04
+  Channel 1-2:
+   Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
+   c_2 (optimizable) = -2.10677950E-04
+   c_3 (optimizable) =  3.10662071E-03
+   c_4 (optimizable) = -6.19353682E-03
+   c_5 (optimizable) =  6.03492187E-03
+   c_6 (optimizable) = -2.86186530E-03
+   c_7 (optimizable) =  6.46193632E-04
+   c_8 (optimizable) = -5.48296400E-05
+
+ Term 2
+ ------
+ Rank(e)             : 1
+ Rank(n)             : 1
+ e-n basis:
+  Functional basis   : natural power
+  Expansion order    : 8
+ e-n cutoff:
+  Functional basis   : alt polynomial
+  Integer constants:
+   C = 3
+  Channel 1-n1:
+   L (optimizable) =  3.81631151E+00 in [5.0000E-01, +Inf)
+ Linear parameters:
+  Number of linear parameters per channel: 8
+  Channel 1-n1:
+   Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
+   c_2 (optimizable) = -2.58249723E-02
+   c_3 (optimizable) =  1.51036924E-03
+   c_4 (optimizable) = -2.25413395E-02
+   c_5 (optimizable) =  1.60204491E-02
+   c_6 (optimizable) = -1.94051569E-03
+   c_7 (optimizable) = -1.78894216E-03
+   c_8 (optimizable) =  4.25124052E-04
+
+ Term 3
+ ------
+ Rank(e)             : 2
+ Rank(n)             : 1
+ e-e basis:
+  Functional basis   : natural power
+  Expansion order    : 4 (of 8 in shared basis)
+ e-e cutoff:
+  Functional basis   : none
+ e-n basis:
+  Functional basis   : natural power
+  Expansion order    : 4 (of 8 in shared basis)
+ e-n cutoff:
+  Functional basis   : alt polynomial
+  Integer constants:
+   C = 3
+  Channel 1-n1:
+   L (optimizable) =  3.43581325E+00 in [5.0000E-01, +Inf)
+ Linear parameters:
+  Number of linear parameters per channel: 64
+  Channel 1-1-n1:
+   Constraints: 45 equations (0r+24s+0u+21c), 38 parameters determined
+   c_1,2,2 (optimizable) = -3.96871113E-06
+   c_1,3,2 (optimizable) = -1.73427926E-03
+   c_1,3,3 (optimizable) =  3.24604692E-03
+   c_1,4,2 (optimizable) =  1.08507393E-03
+   c_1,4,3 (optimizable) = -1.76450311E-03
+   c_1,4,4 (optimizable) =  8.04097989E-04
+   c_2,3,1 (optimizable) = -9.63741776E-04
+   c_2,4,2 (optimizable) = -1.81313997E-04
+   c_3,1,1 (optimizable) = -3.44511978E-04
+   c_3,2,1 (optimizable) = -1.01338241E-05
+   c_3,2,2 (optimizable) = -8.18737289E-04
+   c_3,3,1 (optimizable) =  2.80276862E-04
+   c_3,3,2 (optimizable) =  3.46971490E-04
+   c_3,3,3 (optimizable) =  8.67153475E-05
+   c_3,4,2 (optimizable) = -1.03061313E-04
+   c_3,4,3 (optimizable) =  1.15077824E-04
+   c_3,4,4 (optimizable) = -1.17172486E-04
+   c_4,1,1 (optimizable) =  4.21656027E-04
+   c_4,2,1 (optimizable) = -3.53512940E-04
+   c_4,2,2 (optimizable) =  2.78414563E-04
+   c_4,3,1 (optimizable) =  1.41180690E-04
+   c_4,3,2 (optimizable) =  2.37580009E-05
+   c_4,3,3 (optimizable) = -3.04202795E-04
+   c_4,4,2 (optimizable) = -7.12737339E-06
+   c_4,4,3 (optimizable) =  6.78711388E-05
+   c_4,4,4 (optimizable) = -5.67458336E-06
+
+
+ Finished General Jastrow setup.
+
+
+ Setup complete.
+
+ Time taken in setup    : : :        0.0400
+
+ ============================================================
+ PERFORMING A SINGLE DMC STATISTICS-ACCUMULATION CALCULATION.
+ ============================================================
+
+ Warning: [CHECK_HIST_HEADER] no dmc.hist file exists. Will create one.
+
+
+ BEGIN DMC CALCULATION
+ =====================
+
+ Random number generator reset to state in config.in.
+
+ EBEST = -37.829356270992328 (au/prim cell inc. N-N)
+ EREF  = -37.825239148029354
+
+ Number of previous DMC stats accumulation moves : 50000
+
+ =========================================================================
+ In block : 1
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.659
+ Number of config transfers               : 10639
+ Acceptance ratio (%)                     : 98.284
+ New best estimate of DMC energy (au)     : -37.82936393
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901134
+ Maximum distance from origin (au)        : 8.69635029
+
+ Time taken in block    : : :      151.0000
+
+ =========================================================================
+ In block : 2
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.660
+ Number of config transfers               : 10675
+ Acceptance ratio (%)                     : 98.274
+ New best estimate of DMC energy (au)     : -37.82935943
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901136
+ Maximum distance from origin (au)        : 9.91628206
+
+ Time taken in block    : : :      158.5800
+
+ =========================================================================
+ In block : 3
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.662
+ Number of config transfers               : 10641
+ Acceptance ratio (%)                     : 98.275
+ New best estimate of DMC energy (au)     : -37.82936030
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00901137
+ Maximum distance from origin (au)        : 9.26590669
+
+ Time taken in block    : : :      159.6400
+
+ =========================================================================
+ In block : 4
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.657
+ Number of config transfers               : 10707
+ Acceptance ratio (%)                     : 98.283
+ New best estimate of DMC energy (au)     : -37.82945480
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901137
+ Maximum distance from origin (au)        : 8.78031208
+
+ Time taken in block    : : :      160.1700
+
+ =========================================================================
+ In block : 5
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.656
+ Number of config transfers               : 10630
+ Acceptance ratio (%)                     : 98.279
+ New best estimate of DMC energy (au)     : -37.82944456
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901140
+ Maximum distance from origin (au)        : 9.35407394
+
+ Time taken in block    : : :      160.0000
+
+ =========================================================================
+ In block : 6
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.664
+ Number of config transfers               : 10755
+ Acceptance ratio (%)                     : 98.276
+ New best estimate of DMC energy (au)     : -37.82947712
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901139
+ Maximum distance from origin (au)        : 8.80980121
+
+ Time taken in block    : : :      160.7100
+
+ =========================================================================
+ In block : 7
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.658
+ Number of config transfers               : 10714
+ Acceptance ratio (%)                     : 98.280
+ New best estimate of DMC energy (au)     : -37.82955958
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901143
+ Maximum distance from origin (au)        : 8.52302288
+
+ Time taken in block    : : :      160.4500
+
+ =========================================================================
+ In block : 8
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.659
+ Number of config transfers               : 10583
+ Acceptance ratio (%)                     : 98.281
+ New best estimate of DMC energy (au)     : -37.82946926
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901140
+ Maximum distance from origin (au)        : 9.46862134
+
+ Time taken in block    : : :      163.1899
+
+ =========================================================================
+ In block : 9
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.658
+ Number of config transfers               : 10604
+ Acceptance ratio (%)                     : 98.276
+ New best estimate of DMC energy (au)     : -37.82950231
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901138
+ Maximum distance from origin (au)        : 10.81618997
+
+ Time taken in block    : : :      162.3901
+
+ =========================================================================
+ In block : 10
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.661
+ Number of config transfers               : 10730
+ Acceptance ratio (%)                     : 98.272
+ New best estimate of DMC energy (au)     : -37.82945968
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901138
+ Maximum distance from origin (au)        : 8.86627408
+
+ Time taken in block    : : :      161.9399
+
+ =========================================================================
+ In block : 11
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.656
+ Number of config transfers               : 10687
+ Acceptance ratio (%)                     : 98.275
+ New best estimate of DMC energy (au)     : -37.82950950
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901140
+ Maximum distance from origin (au)        : 10.49401338
+
+ Time taken in block    : : :      161.2800
+
+ =========================================================================
+ In block : 12
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.655
+ Number of config transfers               : 10702
+ Acceptance ratio (%)                     : 98.279
+ New best estimate of DMC energy (au)     : -37.82945987
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901141
+ Maximum distance from origin (au)        : 9.66955098
+
+ Time taken in block    : : :      161.1200
+
+ =========================================================================
+ In block : 13
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.658
+ Number of config transfers               : 10582
+ Acceptance ratio (%)                     : 98.272
+ New best estimate of DMC energy (au)     : -37.82942618
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901143
+ Maximum distance from origin (au)        : 8.49179341
+
+ Time taken in block    : : :      161.8401
+
+ =========================================================================
+ In block : 14
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.656
+ Number of config transfers               : 10505
+ Acceptance ratio (%)                     : 98.278
+ New best estimate of DMC energy (au)     : -37.82942746
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901145
+ Maximum distance from origin (au)        : 9.68766654
+
+ Time taken in block    : : :      161.8499
+
+ =========================================================================
+ In block : 15
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.659
+ Number of config transfers               : 10754
+ Acceptance ratio (%)                     : 98.274
+ New best estimate of DMC energy (au)     : -37.82940979
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901145
+ Maximum distance from origin (au)        : 8.94859494
+
+ Time taken in block    : : :      162.9600
+
+ =========================================================================
+ In block : 16
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.662
+ Number of config transfers               : 10700
+ Acceptance ratio (%)                     : 98.276
+ New best estimate of DMC energy (au)     : -37.82940661
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00901144
+ Maximum distance from origin (au)        : 9.34363476
+
+ Time taken in block    : : :      161.5801
+
+ =========================================================================
+ In block : 17
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.662
+ Number of config transfers               : 10722
+ Acceptance ratio (%)                     : 98.271
+ New best estimate of DMC energy (au)     : -37.82940159
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00901145
+ Maximum distance from origin (au)        : 9.79362312
+
+ Time taken in block    : : :      162.1099
+
+ =========================================================================
+ In block : 18
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.660
+ Number of config transfers               : 10658
+ Acceptance ratio (%)                     : 98.274
+ New best estimate of DMC energy (au)     : -37.82935878
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901144
+ Maximum distance from origin (au)        : 9.02513571
+
+ Time taken in block    : : :      161.8101
+
+ =========================================================================
+ In block : 19
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.660
+ Number of config transfers               : 10625
+ Acceptance ratio (%)                     : 98.272
+ New best estimate of DMC energy (au)     : -37.82935182
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901145
+ Maximum distance from origin (au)        : 8.52293709
+
+ Time taken in block    : : :      161.3000
+
+ =========================================================================
+ In block : 20
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.658
+ Number of config transfers               : 10568
+ Acceptance ratio (%)                     : 98.278
+ New best estimate of DMC energy (au)     : -37.82934837
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00901145
+ Maximum distance from origin (au)        : 8.59444746
+
+ Time taken in block    : : :      162.1799
+
+ =========================================================================
+ In block : 21
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.658
+ Number of config transfers               : 10746
+ Acceptance ratio (%)                     : 98.274
+ New best estimate of DMC energy (au)     : -37.82938813
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901143
+ Maximum distance from origin (au)        : 10.64942710
+
+ Time taken in block    : : :      161.9402
+
+ =========================================================================
+ In block : 22
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.663
+ Number of config transfers               : 10634
+ Acceptance ratio (%)                     : 98.279
+ New best estimate of DMC energy (au)     : -37.82936183
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901142
+ Maximum distance from origin (au)        : 9.45948679
+
+ Time taken in block    : : :      162.1897
+
+ =========================================================================
+ In block : 23
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.656
+ Number of config transfers               : 10665
+ Acceptance ratio (%)                     : 98.275
+ New best estimate of DMC energy (au)     : -37.82938713
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901143
+ Maximum distance from origin (au)        : 8.96737323
+
+ Time taken in block    : : :      161.9502
+
+ =========================================================================
+ In block : 24
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.660
+ Number of config transfers               : 10539
+ Acceptance ratio (%)                     : 98.267
+ New best estimate of DMC energy (au)     : -37.82939535
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901143
+ Maximum distance from origin (au)        : 10.38696178
+
+ Time taken in block    : : :      163.0498
+
+ =========================================================================
+ In block : 25
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.663
+ Number of config transfers               : 10819
+ Acceptance ratio (%)                     : 98.270
+ New best estimate of DMC energy (au)     : -37.82937404
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00901144
+ Maximum distance from origin (au)        : 9.12328824
+
+ Time taken in block    : : :      162.7903
+
+ =========================================================================
+ In block : 26
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.664
+ Number of config transfers               : 10477
+ Acceptance ratio (%)                     : 98.270
+ New best estimate of DMC energy (au)     : -37.82936696
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901143
+ Maximum distance from origin (au)        : 9.27311522
+
+ Time taken in block    : : :      161.8000
+
+ =========================================================================
+ In block : 27
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 99.662
+ Number of config transfers               : 10598
+ Acceptance ratio (%)                     : 98.271
+ New best estimate of DMC energy (au)     : -37.82936508
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00901143
+ Maximum distance from origin (au)        : 8.73295544
+
+ Time taken in block    : : :      161.9399
+
+
+ Mixed estimators of the energies at the end of the run
+ ------------------------------------------------------
+ [All energies given in (au)]
+ [All error bars obtained by reblocking]
+
+ Total energy                 =      -37.829365076422 +/-        0.000104497495
+ Kinetic energy (TI)          =       37.919347550301 +/-        0.019731522726
+ Kinetic energy (KEI)         =       37.857172664058 +/-        0.005512614293
+ Kinetic energy (FISQ)        =       37.981522436545 +/-        0.038939716989
+ e-e interac. (Ewald/Coulomb) =       12.537498922055 +/-        0.001743311686
+ e-i interaction (local)      =      -88.224036662532 +/-        0.006530313529
+
+ Dump of raw reblock data
+ ------------------------
+ Number of data points collected = 320000
+ Dumping reblock data for energy:
+      mean:    -37.829365076422 +/-       0.000104497495
+    stderr:      0.000104497495 +/-       0.000002958003
+    errfac:      3.472759411665 +/-       0.098303143173
+    N_corr:     12.060057931306 +/-       0.682766331304
+   ------------------------------------------------------
+    Block len      Std error   Err in error
+            1   3.009062E-05   3.761334E-08
+            2   3.743455E-05   6.617576E-08
+            4   4.661840E-05   1.165467E-07
+            8   5.725826E-05   2.024411E-07
+           16   6.824175E-05   3.412173E-07
+           32   7.817917E-05   5.528379E-07
+           64   8.723825E-05   8.724698E-07
+          128   9.544838E-05   1.350114E-06
+          256   1.017902E-04   2.036619E-06
+          512   1.044975E-04   2.958003E-06  *** BEST ***
+         1024   1.064158E-04   4.263460E-06
+         2048   1.086855E-04   6.167951E-06
+         4096   9.957927E-05   8.017821E-06
+         8192   9.754085E-05   1.117951E-05
+        16384   6.836903E-05   1.123032E-05
+        32768   7.217227E-05   1.723709E-05
+        65536   4.690803E-05   1.683290E-05
+       131072   6.020088E-05   3.545640E-05
+   ------------------------------------------------------
+
+ Analysis of statistical efficiency -- see PRB 81, 035119 (2010).
+ ------------------------------------------------------------------
+ Int corr length (steps)      =       12.060057931306 +/-        0.682766331304
+ DMC time step (au)           =        0.009260000000
+ Int correlation time (au)    =        0.111676136444 +/-        0.006322416228
+ Var of loc en (au / simcell) =        0.292032777036 +/-        0.000079531762
+ Std dev of local energy      =        0.540400570906
+ Number of steps of accum data=   320000.000000000000
+ Effective number of steps    =   319946.232043309486
+ Target weight                =     1024.000000000000
+ Average population           =     1023.970640625000 +/-        0.023663465538
+ Effective population         =     1016.446193236797
+ Stat inefficiency (est)      =        1.024368275434 +/-        0.001399614367
+ Stat inefficiency (measured) =        1.007571998284
+
+ =========================================================================
+
+ Total CASINO CPU time  : : :     4351.8101
+ Total CASINO real time : : :     4359.5322
+
+ Cumulative CPU time    : : :     5331.3398
+ (summed over restarts)
+
+
+ Subroutine timers deactivated (use TIMING_INFO input keyword)
+
+ =========================================================================
+ Ends 2018/08/30 10:14:48.034
+
+Job finished: Чт авг 30 10:14:48 +07 2018

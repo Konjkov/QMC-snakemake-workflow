@@ -1,0 +1,94 @@
+JASTROW:
+  Title: 'Standard JASTROW'
+  TERM 1:
+    Rank: [ 2, 0 ]
+    Rules: [ 1-1=2-2 ]
+    e-e basis:
+      Type: natural power
+      Order: 8
+    e-e cusp: T
+    e-e cutoff:
+      Type: alt polynomial
+      Constants:
+        C: 3
+      Parameters:
+        Channel 1-2:
+          L: [ 3.0000000000000000, optimizable, limits: [ 0.50000000000000000, 
+               +Inf ] ]
+    Linear parameters:
+      Channel 1-2:
+        c_2: [ 1.5768934343927507E-003, optimizable ]
+        c_3: [ 4.3456573779427918E-003, optimizable ]
+        c_4: [ -2.0981506532538516E-003, optimizable ]
+        c_5: [ 8.0088914580249502E-004, optimizable ]
+        c_6: [ 1.2446267149239609E-003, optimizable ]
+        c_7: [ -9.5787000708679826E-004, optimizable ]
+        c_8: [ 2.4650236420348275E-004, optimizable ]
+  TERM 2:
+    Rank: [ 1, 1 ]
+    Rules: [ Z, 1=2 ]
+    e-n basis:
+      Type: natural power
+      Order: 8
+    e-n cutoff:
+      Type: alt polynomial
+      Constants:
+        C: 3
+      Parameters:
+        Channel 1-n1:
+          L: [ 3.0000000000000000, optimizable, limits: [ 0.50000000000000000, 
+               +Inf ] ]
+    Linear parameters:
+      Channel 1-n1:
+        c_2: [ -2.3035424161339028E-002, optimizable ]
+        c_3: [ -5.8931275409343292E-003, optimizable ]
+        c_4: [ -3.0336402162025006E-003, optimizable ]
+        c_5: [ 3.5786364011965627E-004, optimizable ]
+        c_6: [ 1.7695398399744369E-003, optimizable ]
+        c_7: [ -1.9824120374657994E-003, optimizable ]
+        c_8: [ 6.1411566147916131E-004, optimizable ]
+  TERM 3:
+    Rank: [ 2, 1 ]
+    Rules: [ Z, 1=2 ]
+    e-e basis:
+      Type: natural power
+      Order: 4
+    e-n basis:
+      Type: natural power
+      Order: 4
+    e-n cutoff:
+      Type: alt polynomial
+      Constants:
+        C: 3
+      Parameters:
+        Channel 1-n1:
+          L: [ 3.0000000000000000, optimizable, limits: [ 0.50000000000000000, 
+               +Inf ] ]
+    Linear parameters:
+      Channel 1-2-n1:
+        c_1,2,2: [ -7.3302292935378897E-004, optimizable ]
+        c_1,3,2: [ -1.6818234164180602E-003, optimizable ]
+        c_1,3,3: [ 1.4119525074413636E-003, optimizable ]
+        c_1,4,2: [ 9.3126564932009099E-004, optimizable ]
+        c_1,4,3: [ -1.4116383334726174E-003, optimizable ]
+        c_1,4,4: [ 3.3342767895527104E-004, optimizable ]
+        c_2,3,1: [ -6.9049514762737079E-004, optimizable ]
+        c_2,4,2: [ -3.7403790696936856E-004, optimizable ]
+        c_3,1,1: [ -3.6867669204358695E-004, optimizable ]
+        c_3,2,1: [ 1.4379697341889279E-004, optimizable ]
+        c_3,2,2: [ -6.8973773388569760E-004, optimizable ]
+        c_3,3,1: [ 3.1892661223739720E-004, optimizable ]
+        c_3,3,2: [ -2.4686158704344637E-004, optimizable ]
+        c_3,3,3: [ 2.7108054694176362E-004, optimizable ]
+        c_3,4,2: [ -1.3649497415078282E-004, optimizable ]
+        c_3,4,3: [ 3.2265411651617167E-004, optimizable ]
+        c_3,4,4: [ -2.7907770218447975E-004, optimizable ]
+        c_4,1,1: [ 3.9536149294515550E-004, optimizable ]
+        c_4,2,1: [ -3.7999166137425499E-004, optimizable ]
+        c_4,2,2: [ 4.9899440541804766E-004, optimizable ]
+        c_4,3,1: [ 3.7625499504263337E-005, optimizable ]
+        c_4,3,2: [ 2.1203585044358544E-004, optimizable ]
+        c_4,3,3: [ -6.3628564253584733E-004, optimizable ]
+        c_4,4,2: [ -1.4079107819570348E-005, optimizable ]
+        c_4,4,3: [ 6.7975141744870506E-005, optimizable ]
+        c_4,4,4: [ 6.3475418400479191E-005, optimizable ]

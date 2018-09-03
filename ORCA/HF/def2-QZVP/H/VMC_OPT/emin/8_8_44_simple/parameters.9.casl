@@ -1,0 +1,53 @@
+JASTROW:
+  Title: 'Standard JASTROW'
+  TERM 1:
+    Rank: [ 2, 0 ]
+    Rules: [ 1-1=2-2 ]
+    e-e basis:
+      Type: natural power
+      Order: 8
+    e-e cusp: T
+    e-e cutoff:
+      Type: alt polynomial
+      Constants:
+        C: 3
+  TERM 2:
+    Rank: [ 1, 1 ]
+    Rules: [ Z, 1=2 ]
+    e-n basis:
+      Type: natural power
+      Order: 8
+    e-n cutoff:
+      Type: alt polynomial
+      Constants:
+        C: 3
+      Parameters:
+        Channel 1-n1:
+          L: [ 2.7705882291274104, optimizable, limits: [ 0.50000000000000000, 
+               +Inf ] ]
+    Linear parameters:
+      Channel 1-n1:
+        c_2: [ -8.3377235514214587E-005, optimizable ]
+        c_3: [ 1.4308726486294467E-003, optimizable ]
+        c_4: [ -9.2281788018676800E-003, optimizable ]
+        c_5: [ 2.3284173892805390E-002, optimizable ]
+        c_6: [ -2.5750322605627700E-002, optimizable ]
+        c_7: [ 1.2752289776797225E-002, optimizable ]
+        c_8: [ -2.3131902621394821E-003, optimizable ]
+  TERM 3:
+    Rank: [ 2, 1 ]
+    Rules: [ Z, 1=2 ]
+    e-e basis:
+      Type: natural power
+      Order: 4
+    e-n basis:
+      Type: natural power
+      Order: 4
+    e-n cutoff:
+      Type: alt polynomial
+      Constants:
+        C: 3
+      Parameters:
+        Channel 1-n1:
+          L: [ 3.0000000000000009, optimizable, limits: [ 0.50000000000000000, 
+               +Inf ] ]

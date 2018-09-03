@@ -1,0 +1,33 @@
+#-------------------#
+# CASINO input file #
+#-------------------#
+
+# Li molecule (ground state)
+
+# SYSTEM
+neu               : 2              #*! Number of up electrons (Integer)
+ned               : 1              #*! Number of down electrons (Integer)
+periodic          : F              #*! Periodic boundary conditions (Boolean)
+atom_basis_type   : gaussian       #*! Basis set type (text)
+
+# RUN
+runtype           : dmc_stats      #*! Type of calculation (Text)
+newrun            : F              #*! New run or continue old (Boolean)
+testrun           : F              #*! Test run flag (Boolean)
+
+# VMC
+vmc_nstep         : 2048           #*! Number of steps (Integer)
+
+# DMC
+dmc_equil_nstep   : 10000          #*! Number of steps (Integer)
+dmc_equil_nblock  : 1              #*! Number of checkpoints (Integer)
+dmc_stats_nstep   : 290000         #*! Number of steps (Integer)
+dmc_stats_nblock  : 29             #*! Number of checkpoints (Integer)
+dmc_target_weight : 2048.0         #*! Total target weight in DMC (Real)
+dtdmc             : 0.01852        #*! DMC time step (Real)
+use_tmove         : F              #*! Casula nl pp for DMC (Boolean)
+popstats          : T              #*! Collect population statistics (Boolean)
+
+# GENERAL PARAMETERS
+use_gjastrow      : T              #*! Use a Jastrow function (Boolean)
+backflow          : F              #*! Use backflow corrections (Boolean)
