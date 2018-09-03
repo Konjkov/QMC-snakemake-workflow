@@ -6,15 +6,13 @@ PROCS = multiprocessing.cpu_count()
 
 include: '../Snakefile'
 
-ORCA_PATH = os.getenv('HOME') + '/bin/orca_4_0_1_2_linux_x86-64_shared_openmpi202'
-ORCA_LIBS = os.getenv('HOME') + '/ORCA_EXT_LIBS'
-EXPORT_PATH = "export PATH={ORCA_PATH}:{ORCA_LIBS}/bin:$PATH && export LD_LIBRARY_PATH={ORCA_LIBS}/lib:{ORCA_PATH} && ".format(ORCA_PATH=ORCA_PATH, ORCA_LIBS=ORCA_LIBS)
-
 STD_ERR = 0.0001
 VMC_NCONFIG = 100000
-MOLECULES = ['H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na']
+MOLECULES = ['H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar']
+#MOLECULES += ['K', 'Ca', 'Sc'] #, 'Ti', 'V']
+#MOLECULES += ['Cr', 'Kr', 'Xe']
 METHODS = ['HF']
-BASES = ['cc-pVQZ']
+BASES = ['def2-QZVP']
 JASTROWS = ['8_8_44_simple']
 MOLECULES_2_2 = []
 MOLECULES_2_4 = ['Be']
@@ -72,18 +70,18 @@ def get_nelec(*path):
 
 rule ALL:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_1/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_1/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_1/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_1/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_1/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_1024_1/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_1/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_1/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_1/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_1/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_1/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_1/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_DMC:
     input:
@@ -171,31 +169,31 @@ rule MOLDEN:
     output:     '{method}/{basis}/{molecule}/mol.molden.input'
     run:
         if wildcards.method == 'OO-RI-MP2' and wildcards.molecule != 'h':
-            shell(EXPORT_PATH + """
+            shell("""
                   cd "$(dirname "{output}")" &&
                   ln -s mol.mp2nat mol.mp2nat.gbw &&
-                  {ORCA_PATH}/orca_2mkl mol.mp2nat -molden &&
+                  $(which orca_2mkl) mol.mp2nat -molden &&
                   ln -s mol.mp2nat.molden.input mol.molden.input""")
         elif wildcards.method == 'OOCCD':
-            shell(EXPORT_PATH + """
+            shell("""
                   cd "$(dirname "{output}")" &&
                   ln -s mol.mdci.optorb mol.mdci.gbw &&
-                  {ORCA_PATH}/orca_2mkl mol.mdci -molden &&
+                  $(which orca_2mkl) mol.mdci -molden &&
                   ln -s mol.mdci.molden.input mol.molden.input""")
         elif wildcards.method.startswith('CASSCF'):
-            shell(EXPORT_PATH + """
+            shell("""
                   cd "$(dirname "{output}")" &&
-                  {ORCA_PATH}/orca_2mkl mol_job2 -molden &&
+                  $(which orca_2mkl) mol_job2 -molden &&
                   ln -s mol_job2.molden.input mol.molden.input""")
         else:
-            shell(EXPORT_PATH +  """
+            shell("""
                   cd "$(dirname "{output}")" &&
-                  {ORCA_PATH}/orca_2mkl mol -molden""")
+                  $(which orca_2mkl) mol -molden""")
 
 rule ORCA_RUN:
     input:      '{path}/mol.inp'
     output:     '{path}/mol.out'
-    shell:      EXPORT_PATH + """cd "{wildcards.path}" && {ORCA_PATH}/orca mol.inp > mol.out"""
+    shell:      'cd "{wildcards.path}" && $(which orca) mol.inp > mol.out'
 
 extra_basis = (
 """%basis
