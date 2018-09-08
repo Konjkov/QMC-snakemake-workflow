@@ -1,12 +1,6 @@
-INPUTS_DIR: '../chem_database'
-
-METHODS:
-    - 'B3LYP'
-
-BASES:
-    - 'cc-pVDZ'
-
-JASTROW_RANKS:
-    - '8_8_44'
-
-STABILITY_ANALYSIS: 'false'
+STD_ERR: 0.0001
+VMC_NCONFIG: 100000
+MOLECULES: ['B', 'C', 'N', 'O', 'F', 'Ne']
+METHODS: ['HF']
+BASES: ['aug-cc-pVQZ-CDF']
+JASTROW_RANKS: ['8_8_44_simple']

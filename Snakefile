@@ -45,6 +45,27 @@ def get_max_Z(molecule):
     """Get maximal Z for atoms in molecule."""
     return max(Z for Z, _ in get_XYZ(molecule))
 
+def charge_pseudo_atom(Z):
+    """Get charge for pseudoatom."""
+    if Z <= 2:     # H-He
+        return Z
+    elif Z <= 10:  # Li-Ne
+        return Z - 2
+    elif Z <= 18:  # Na-Ar
+        return Z - 10
+    elif Z <= 30:  # K-Zn
+        return Z - 18
+    elif Z <= 36:  # Ga-Kr
+        return Z - 28
+    elif Z <= 48:  # Rb-Cd
+        return Z - 36
+    elif Z <= 54:  # In-Xe
+        return Z - 46
+    elif Z <= 71:  # Cs-Lu
+        return Z - 54
+    elif Z <= 80:  # Hf-Hg
+        return Z - 68
+
 def get_lebel_set(molecule):
     """Get set of lebels from xyz-file for every atom type"""
     with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
@@ -273,7 +294,10 @@ rule DMC_STATS_INPUT:
     run:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         stderr, _ = dmc_stderr(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_DMC', wildcards.opt_plan, wildcards.jastrow, 'tmax_{dt}_{nconfig}_1'.format(dt=wildcards.dt, nconfig=wildcards.nconfig))
-        dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * int(wildcards.dt))
+        max_Z = get_max_Z(wildcards.molecule)
+        if pp_basis(wildcards.basis):
+            max_Z = charge_pseudo_atom(max_Z)
+        dtdmc = 1.0/(max_Z**2 * 3.0 * int(wildcards.dt))
         if STD_ERR > stderr:
             nstep = 10000
         else:
@@ -288,6 +312,11 @@ rule DMC_STATS_INPUT:
                 neu=neu, ned=ned, nconfig=wildcards.nconfig, dtdmc=dtdmc, molecule=wildcards.molecule, nstep=nstep, nblock=nstep//10000,
                 tmove=tmove, backflow='F'
             ))
+        # workaround in pseudopotential
+        if pp_basis(wildcards.basis):
+            for symbol in get_atomic_symbols(wildcards.molecule):
+                symbol = symbol.lower()
+                shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
 
 rule DMC_STATS_CONFIG:
     input:      '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_1/out',
@@ -299,7 +328,10 @@ rule VMC_DMC_INPUT:
     output:     '{method}/{basis}/{molecule}/VMC_DMC/{opt_plan}/{jastrow}/tmax_{dt}_{nconfig}_1/input'
     run:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
-        dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * int(wildcards.dt))
+        max_Z = get_max_Z(wildcards.molecule)
+        if pp_basis(wildcards.basis):
+            max_Z = charge_pseudo_atom(max_Z)
+        dtdmc = 1.0/(max_Z**2 * 3.0 * int(wildcards.dt))
         nstep = 50000
         if pp_basis(wildcards.basis):
             tmove = 'T'

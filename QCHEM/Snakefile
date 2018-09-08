@@ -2,12 +2,12 @@ import re
 
 include: '../Snakefile'
 
-STD_ERR = 0.0001
-VMC_NCONFIG = 100000
-MOLECULES = ['H']
-METHODS = ['HF']
-BASES = ['cc-pVQZ']
-JASTROWS = ['8_8_44']
+STD_ERR = config['STD_ERR']
+VMC_NCONFIG = config['VMC_NCONFIG']
+MOLECULES = config['MOLECULES']
+METHODS = config['METHODS']
+BASES = config['BASES']
+JASTROWS = config['JASTROWS']
 STABILITY_ANALYSIS = False
 
 def hf_energy(*path):
