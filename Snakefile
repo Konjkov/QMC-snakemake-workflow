@@ -5,6 +5,7 @@ from collections import defaultdict
 from operator import itemgetter
 from datetime import timedelta
 
+configfile: "config.yaml"
 
 def atom_charge(symbol):
     periodic = ['X', 'H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne']
@@ -178,6 +179,10 @@ def get_all_inputs():
     "get file names of all *.xyz input files"
     return sorted((os.path.splitext(filename)[0] for filename in os.listdir(INPUTS_DIR) if os.path.splitext(filename)[1] == '.xyz'))
 
+def pp_basis(basis):
+    "check if basis is pseudopotential basis"
+    return basis in ('aug-cc-pVDZ-CDF', 'aug-cc-pVTZ-CDF', 'aug-cc-pVQZ-CDF', 'aug-cc-pV5Z-CDF')
+
 wildcard_constraints:
     i = '\d',
     molecule='[-\w+=.]+',
@@ -274,7 +279,7 @@ rule DMC_STATS_INPUT:
         else:
             nstep = ((stderr/STD_ERR)**2 - 1) * 50000
             nstep = int(round(nstep + 5000, -4))
-        if wildcards.basis.endswith('_PP'):
+        if pp_basis(wildcards.basis):
             tmove = 'T'
         else:
             tmove = 'F'
@@ -296,7 +301,7 @@ rule VMC_DMC_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * int(wildcards.dt))
         nstep = 50000
-        if wildcards.basis.endswith('_PP'):
+        if pp_basis(wildcards.basis):
             tmove = 'T'
         else:
             tmove = 'F'
@@ -306,7 +311,7 @@ rule VMC_DMC_INPUT:
                 tmove=tmove, backflow='F'
             ))
         # workaround in pseudopotential
-        if wildcards.basis.endswith('_PP'):
+        if pp_basis(wildcards.basis):
             for symbol in get_atomic_symbols(wildcards.molecule):
                 symbol = symbol.lower()
                 shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
@@ -344,7 +349,7 @@ rule VMC_OPT_ENERGY_INPUT:
         with open(output[0], 'w') as f:
             f.write(open('../vmc_opt_energy.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, nstep=wildcards.nstep, backflow='F'))
         # workaround in pseudopotential
-        if wildcards.basis.endswith('_PP'):
+        if pp_basis(wildcards.basis):
             for symbol in get_atomic_symbols(wildcards.molecule):
                 symbol = symbol.lower()
                 shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
@@ -386,7 +391,7 @@ rule VMC_OPT_INPUT:
                 neu=neu, ned=ned, nstep=VMC_NCONFIG*10, nconfig=VMC_NCONFIG, molecule=wildcards.molecule, backflow='F'
             ))
         # workaround in pseudopotential
-        if wildcards.basis.endswith('_PP'):
+        if pp_basis(wildcards.basis):
             for symbol in get_atomic_symbols(wildcards.molecule):
                 symbol = symbol.lower()
                 shell('cd "$(dirname "{output}")" && ln -s ../../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
@@ -425,7 +430,7 @@ rule VMC_INPUT:
         with open(output[0], 'w') as f:
             f.write(open('../vmc.tmpl').read().format(neu=neu, ned=ned, molecule=wildcards.molecule, nstep=wildcards.nstep))
         # workaround in pseudopotential
-        if wildcards.basis.endswith('_PP'):
+        if pp_basis(wildcards.basis):
             for symbol in get_atomic_symbols(wildcards.molecule):
                 symbol = symbol.lower()
                 shell('cd "$(dirname "{output}")" && ln -s ../../../../../../ppotential/DiracFock_AREP/{symbol}_pp.data')
@@ -464,7 +469,7 @@ rule DMC_STATS_BF_INPUT:
         else:
             nstep = ((stderr/STD_ERR)**2 - 1) * 50000
             nstep = int(round(nstep + 5000, -4))
-        if wildcards.basis.endswith('_PP'):
+        if pp_basis(wildcards.basis):
             tmove = 'T'
         else:
             tmove = 'F'
@@ -486,7 +491,7 @@ rule VMC_DMC_BF_INPUT:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * int(wildcards.dt))
         nstep = 50000
-        if wildcards.basis.endswith('_PP'):
+        if pp_basis(wildcards.basis):
             tmove = 'T'
         else:
             tmove = 'F'

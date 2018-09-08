@@ -6,18 +6,12 @@ PROCS = multiprocessing.cpu_count()
 
 include: '../Snakefile'
 
-STD_ERR = 0.0001
-VMC_NCONFIG = 100000
-MOLECULES = ['H', 'He', 'Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Na', 'Mg', 'Al', 'Si', 'P', 'S', 'Cl', 'Ar']
-#MOLECULES += ['K', 'Ca', 'Sc'] #, 'Ti', 'V']
-#MOLECULES += ['Cr', 'Kr', 'Xe']
-METHODS = ['HF']
-BASES = ['def2-QZVP']
-JASTROWS = ['8_8_44_simple']
-MOLECULES_2_2 = []
-MOLECULES_2_4 = ['Be']
-MOLECULES_3_4 = ['B']
-MOLECULES_4_4 = ['C']
+STD_ERR = config['STD_ERR']
+VMC_NCONFIG = config['VMC_NCONFIG']
+MOLECULES = config['MOLECULES']
+METHODS = config['METHODS']
+BASES = config['BASES']
+JASTROWS = config['JASTROWS']
 
 
 def hf_energy(*path):
@@ -70,74 +64,37 @@ def get_nelec(*path):
 
 rule ALL:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_1/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_1/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_1/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_1/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_1/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_1/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
 
 rule ALL_VMC_DMC:
     input:
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method='CASSCF(2.2)', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_DMC_BF:
     input:
         expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method='CASSCF(2.2)', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
         expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method='CASSCF(2.2)', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_ENERGY_BF:
     input:
         expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method='CASSCF(2.2)', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY_BF/emin_BF/{jastrow}__9_9_33/1000000/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT:
     input:
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method='CASSCF(2.2)', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_BF:
     input:
         expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method='CASSCF(2.2)', basis=BASES, molecule=MOLECULES_2_2, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4, jastrow=JASTROWS),
 
 rule ALL_VMC:
     input:
         expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, basis=BASES, molecule=MOLECULES),
-        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF(2.2)', basis=BASES, molecule=MOLECULES_2_2),
-        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF(2.4)', basis=BASES, molecule=MOLECULES_2_4),
-        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF(3.4)', basis=BASES, molecule=MOLECULES_3_4),
-        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method='CASSCF(4.4)', basis=BASES, molecule=MOLECULES_4_4),
 
 rule ALL_ORCA:
     input:
@@ -159,7 +116,7 @@ rule GWFN:
     output:     '{method}/{basis}/{molecule}/gwfn.data'
     run:
         # workaround for pseudopotential
-        if wildcards.basis.endswith('_PP'):
+        if pp_basis(wildcards.basis):
             shell('molden2qmc.py 3 "{input}" "{output}" --pseudoatoms all')
         else:
             shell('molden2qmc.py 3 "{input}" "{output}"')
@@ -170,24 +127,24 @@ rule MOLDEN:
     run:
         if wildcards.method == 'OO-RI-MP2' and wildcards.molecule != 'h':
             shell("""
-                  cd "$(dirname "{output}")" &&
+                  cd "$(dirname "{output}")"
                   ln -s mol.mp2nat mol.mp2nat.gbw &&
                   $(which orca_2mkl) mol.mp2nat -molden &&
                   ln -s mol.mp2nat.molden.input mol.molden.input""")
         elif wildcards.method == 'OOCCD':
             shell("""
-                  cd "$(dirname "{output}")" &&
+                  cd "$(dirname "{output}")"
                   ln -s mol.mdci.optorb mol.mdci.gbw &&
                   $(which orca_2mkl) mol.mdci -molden &&
                   ln -s mol.mdci.molden.input mol.molden.input""")
         elif wildcards.method.startswith('CASSCF'):
             shell("""
-                  cd "$(dirname "{output}")" &&
+                  cd "$(dirname "{output}")"
                   $(which orca_2mkl) mol_job2 -molden &&
                   ln -s mol_job2.molden.input mol.molden.input""")
         else:
             shell("""
-                  cd "$(dirname "{output}")" &&
+                  cd "$(dirname "{output}")"
                   $(which orca_2mkl) mol -molden""")
 
 rule ORCA_RUN:
@@ -219,14 +176,9 @@ rule ORCA_INPUT:
                     nel=wildcards.method[7:-1].split('.')[0],
                     norb=wildcards.method[7:-1].split('.')[1]
                 ))
-            elif wildcards.basis.endswith('_PP'):
-                basis = wildcards.basis.split('_')[0]
-                if basis in ('aug-cc-pVDZ-CDF', 'aug-cc-pVTZ-CDF', 'aug-cc-pVQZ-CDF', 'aug-cc-pV5Z-CDF'):
-                    external_basis = """GTOName = "../../../basis/{}.bas";""".format(basis)
-                    basis = 'cc-pVDZ'
-                else:
-                    external_basis = ""
-
+            elif pp_basis(wildcards.basis):
+                external_basis = """GTOName = "../../../basis/{}.bas";""".format(wildcards.basis)
+                basis = 'cc-pVDZ'
                 flag = False
                 external_ecp = ''
                 with open('ppotential/DiracFock_AREP_gaussian.bas') as ecp:

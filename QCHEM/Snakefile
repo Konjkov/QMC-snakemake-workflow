@@ -128,7 +128,7 @@ rule QCHEM_RUN:
             with open(input[0], 'r') as f:
                 f.readline()                   # skip first line
                 molecule_data = f.read()[:-1]  # skip last NL
-            if wildcards.basis.endswith('_PP'):
+            if pp_basis(wildcards.basis):
                 basis = wildcards.basis.split('_')[0]
                 template = 'qchem_ecp.tmpl'
 
