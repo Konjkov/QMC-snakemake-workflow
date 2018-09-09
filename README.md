@@ -25,7 +25,11 @@ Choose program to generate "trial" WFN (QCHEM > 4.0 or ORCA 4.0.1) and install i
 
 Configure the workflow according to your needs via editing the file `ORCA/Snakefile` or `QCHEM/Snakefile` depending on what program you will use.
 
-The basic information necessary for calculations is contained in global variables:
+The basic information necessary for calculations is contained in `config.yaml` file:
+
+* STD_ERR: desireable accuracy of DMC energy
+
+* VMC_NCONFIG is a number of VMC config in VMC otimization step
 
 * MOLECULES is a list of molecular geometry file names in xyz-format (without extension) located in the `chem_database` directory for which the calculation will be performed.
 
@@ -149,6 +153,12 @@ To demonstrate the possibilities of this workflow, examples of calculations are 
 ### ORCA
 
 #### (U)HF/def2-QZVP "trial" WFN for H-Ne atoms
+
+Since the DMC calculation time for achieving a given accuracy increases ~ Z<sup>5.5</sup>, I used several configuration files to perform calculations:
+[config_00001.yaml](https://github.com/Konjkov/snakerules/tree/master/ORCA/config_00001.yaml) for He-Li,
+[config_0001.yaml](https://github.com/Konjkov/snakerules/tree/master/ORCA/config_0001.yaml) for Be-N,
+[config_003.yaml](https://github.com/Konjkov/snakerules/tree/master/ORCA/config_0003.yaml) for O-Si,
+[config_001.yaml](https://github.com/Konjkov/snakerules/tree/master/ORCA/config_001.yaml) for P-Ar.
 
 * [__H__ (<sup>2</sup>S<sub>1/2</sub>)](https://github.com/Konjkov/snakerules/tree/master/ORCA/HF/def2-QZVP/H)
 
