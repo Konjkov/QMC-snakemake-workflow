@@ -49,11 +49,15 @@ rule ALL:
 
 rule ALL_VMC_DMC:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
 
 rule ALL_VMC_DMC_BF:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_1024_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_1_1024_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_2048_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_4_4096_2/out', molecule=MOLECULES, basis=BASES, method=METHODS, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
