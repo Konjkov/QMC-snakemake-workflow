@@ -1,0 +1,105 @@
+JASTROW:
+  Title: 'Standard JASTROW'
+  TERM 1:
+    Rank: [ 2, 0 ]
+    Rules: [ 1-1=2-2 ]
+    e-e basis:
+      Type: natural power
+      Order: 8
+    e-e cusp: T
+    e-e cutoff:
+      Type: alt polynomial
+      Constants:
+        C: 3
+      Parameters:
+        Channel 1-1:
+          L: [ 3.0582531834801441, optimizable, limits: [ 0.50000000000000000, 
+               +Inf ] ]
+        Channel 1-2:
+          L: [ 3.1002253688111359, optimizable, limits: [ 0.50000000000000000, 
+               +Inf ] ]
+    Linear parameters:
+      Channel 1-1:
+        c_2: [ 8.0190231316227545E-003, optimizable ]
+        c_3: [ -3.6887609454255878E-003, optimizable ]
+        c_4: [ -1.5285909606058757E-003, optimizable ]
+        c_5: [ 6.5699362997647262E-003, optimizable ]
+        c_6: [ -4.2386338987677958E-003, optimizable ]
+        c_7: [ 7.0866762190074353E-004, optimizable ]
+        c_8: [ 5.4578454430270281E-005, optimizable ]
+      Channel 1-2:
+        c_2: [ 1.3336993291632822E-003, optimizable ]
+        c_3: [ 1.5072580580956917E-002, optimizable ]
+        c_4: [ -3.6910091080374963E-002, optimizable ]
+        c_5: [ 4.6033430029800648E-002, optimizable ]
+        c_6: [ -2.8439030142241528E-002, optimizable ]
+        c_7: [ 8.2807258743786989E-003, optimizable ]
+        c_8: [ -8.6407915191928295E-004, optimizable ]
+  TERM 2:
+    Rank: [ 1, 1 ]
+    Rules: [ Z, 1=2 ]
+    e-n basis:
+      Type: natural power
+      Order: 8
+    e-n cutoff:
+      Type: alt polynomial
+      Constants:
+        C: 3
+      Parameters:
+        Channel 1-n1:
+          L: [ 3.1150170501511258, optimizable, limits: [ 0.50000000000000000, 
+               +Inf ] ]
+    Linear parameters:
+      Channel 1-n1:
+        c_2: [ -9.0296877683241503E-002, optimizable ]
+        c_3: [ -4.2444513920474715E-003, optimizable ]
+        c_4: [ 3.2590266522950002E-002, optimizable ]
+        c_5: [ 3.4486651081472912E-002, optimizable ]
+        c_6: [ -0.10356334251963846, optimizable ]
+        c_7: [ 5.4942756846604747E-002, optimizable ]
+        c_8: [ -1.0678301704405957E-002, optimizable ]
+  TERM 3:
+    Rank: [ 2, 1 ]
+    Rules: [ Z, 1=2 ]
+    e-e basis:
+      Type: natural power
+      Order: 4
+    e-n basis:
+      Type: natural power
+      Order: 4
+    e-n cutoff:
+      Type: alt polynomial
+      Constants:
+        C: 3
+      Parameters:
+        Channel 1-n1:
+          L: [ 3.1261230511177529, optimizable, limits: [ 0.50000000000000000, 
+               +Inf ] ]
+    Linear parameters:
+      Channel 1-1-n1:
+        c_1,2,2: [ 1.0819554233107668E-004, optimizable ]
+        c_1,3,2: [ -1.7245514855361750E-003, optimizable ]
+        c_1,3,3: [ 3.0170041141011970E-003, optimizable ]
+        c_1,4,2: [ 1.2453078982303861E-003, optimizable ]
+        c_1,4,3: [ -2.0900396710299943E-003, optimizable ]
+        c_1,4,4: [ 1.1587692684103127E-003, optimizable ]
+        c_2,3,1: [ -6.4468657405065044E-004, optimizable ]
+        c_2,4,2: [ -3.1597069882344448E-004, optimizable ]
+        c_3,1,1: [ -9.2750906847523153E-004, optimizable ]
+        c_3,2,1: [ -8.9543752039630310E-005, optimizable ]
+        c_3,2,2: [ 1.0949128106682469E-004, optimizable ]
+        c_3,3,1: [ 9.7770990492542279E-004, optimizable ]
+        c_3,3,2: [ -1.3600717826149490E-003, optimizable ]
+        c_3,3,3: [ -3.7934045856371888E-004, optimizable ]
+        c_3,4,2: [ 7.9925345819364929E-005, optimizable ]
+        c_3,4,3: [ 5.2214604235299223E-004, optimizable ]
+        c_3,4,4: [ -4.5016248393964123E-004, optimizable ]
+        c_4,1,1: [ 1.0664502098063511E-003, optimizable ]
+        c_4,2,1: [ -1.0699006755069474E-003, optimizable ]
+        c_4,2,2: [ 9.9182880169357973E-004, optimizable ]
+        c_4,3,1: [ 2.6146268436483153E-004, optimizable ]
+        c_4,3,2: [ 1.3110589641629979E-004, optimizable ]
+        c_4,3,3: [ 2.4347753104558092E-005, optimizable ]
+        c_4,4,2: [ -3.6670578172541723E-005, optimizable ]
+        c_4,4,3: [ -1.1248563375760217E-004, optimizable ]
+        c_4,4,4: [ 1.1391583581992996E-004, optimizable ]
