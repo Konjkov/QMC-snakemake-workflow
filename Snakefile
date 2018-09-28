@@ -494,7 +494,7 @@ rule DMC_STATS_BF_INPUT:
     output:     '{method}/{basis}/{molecule}/VMC_DMC_BF/{opt_plan}/{jastrow}__{backflow}/tmax_{dt}_{nconfig}_2/input'
     run:
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
-        stderr, _ = dmc_stderr(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_DMC_BF', wildcards.opt_plan, wildcards.jastrow + '__' + wildcards.backflow, 'tmax_{dt}_{nconfig.format(dt=wildcards.dt, nconfig=wildcards.nconfig)}_1')
+        stderr, _ = dmc_stderr(wildcards.method, wildcards.basis, wildcards.molecule, 'VMC_DMC_BF', wildcards.opt_plan, wildcards.jastrow + '__' + wildcards.backflow, 'tmax_{dt}_{nconfig}_1'.format(dt=wildcards.dt, nconfig=wildcards.nconfig))
         dtdmc = 1.0/(get_max_Z(wildcards.molecule)**2 * 3.0 * int(wildcards.dt))
         if STD_ERR > stderr:
             nstep = 10000
