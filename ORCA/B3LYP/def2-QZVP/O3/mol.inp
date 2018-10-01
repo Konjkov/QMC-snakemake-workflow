@@ -1,0 +1,22 @@
+# ================================================================
+# Orca input file
+# ================================================================
+! UKS B3LYP def2-QZVP VeryTightSCF
+
+! PAL4
+
+%scf
+  STABPerform true
+end
+
+* xyzfile 0 1 ../../../../chem_database/O3.xyz
+
+$new_job
+! UKS B3LYP def2-QZVP VeryTightSCF
+
+%scf
+  STABPerform true
+end
+
+
+* xyzfile 0 1 ../../../../chem_database/O3.xyz
