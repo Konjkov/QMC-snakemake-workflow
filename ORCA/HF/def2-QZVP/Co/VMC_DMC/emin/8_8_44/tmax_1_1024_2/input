@@ -2,11 +2,11 @@
 # CASINO input file #
 #-------------------#
 
-# Ni molecule (ground state)
+# Co molecule (ground state)
 
 # SYSTEM
 neu               : 15             #*! Number of up electrons (Integer)
-ned               : 13             #*! Number of down electrons (Integer)
+ned               : 12             #*! Number of down electrons (Integer)
 periodic          : F              #*! Periodic boundary conditions (Boolean)
 atom_basis_type   : gaussian       #*! Basis set type (text)
 
@@ -16,15 +16,15 @@ newrun            : F              #*! New run or continue old (Boolean)
 testrun           : F              #*! Test run flag (Boolean)
 
 # VMC
-vmc_nstep         : 4096           #*! Number of steps (Integer)
+vmc_nstep         : 1024           #*! Number of steps (Integer)
 
 # DMC
 dmc_equil_nstep   : 10000          #*! Number of steps (Integer)
 dmc_equil_nblock  : 1              #*! Number of checkpoints (Integer)
-dmc_stats_nstep   : 370000         #*! Number of steps (Integer)
-dmc_stats_nblock  : 37             #*! Number of checkpoints (Integer)
-dmc_target_weight : 4096.0         #*! Total target weight in DMC (Real)
-dtdmc             : 0.000106       #*! DMC time step (Real)
+dmc_stats_nstep   : 410000         #*! Number of steps (Integer)
+dmc_stats_nblock  : 41             #*! Number of checkpoints (Integer)
+dmc_target_weight : 1024.0         #*! Total target weight in DMC (Real)
+dtdmc             : 0.000457       #*! DMC time step (Real)
 use_tmove         : F              #*! Casula nl pp for DMC (Boolean)
 popstats          : T              #*! Collect population statistics (Boolean)
 

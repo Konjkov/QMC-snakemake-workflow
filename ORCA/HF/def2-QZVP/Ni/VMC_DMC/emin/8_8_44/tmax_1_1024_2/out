@@ -1,7 +1,7 @@
 CASINO v2.13.728 [Mike Towler] (13 September 2018)
 Running on Helium [linuxpc-gcc-parallel]
 Binary compiled in opt mode
-Job started: Wed Sep 26 23:41:41 EDT 2018
+Job started: Fri Sep 28 17:09:31 EDT 2018
  ------------------------------------------------------------------------------
 
                    #####
@@ -25,14 +25,14 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
                       Current contact: mdt26 at cam.ac.uk
 
  ------------------------------------------------------------------------------
- Started 2018/09/26 23:41:41.842
+ Started 2018/09/28 17:09:32.128
 
  Running in parallel using 32 MPI processes.
 
  General input parameters
  ========================
  NEU (num up spin electrons)              :  15
- NED (num down spin electrons)            :  12
+ NED (num down spin electrons)            :  13
  RUNTYPE (type of run)                    :  dmc_stats
  PSI_S  (form for [anti]symmetrizing wfn) :  slater
  ATOM_BASIS_TYPE (atom-centred orb basis) :  gaussian
@@ -63,8 +63,8 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
  NEWRUN (start new run)                   :  F
  DMC_TARGET_WEIGHT                        :  1024.00
  DMC_MD                                   :  F
- DMC_STATS_NSTEP (num stats steps)        :  410000
- DMC_STATS_NBLOCK (num blocks)            :  41
+ DMC_STATS_NSTEP (num stats steps)        :  550000
+ DMC_STATS_NBLOCK (num blocks)            :  55
  DMC_DECORR_PERIOD (length of inner loop) :  1
  DMC_AVE_PERIOD (hist reduction factor)   :  1
  DMC_TRIP_WEIGHT (catastrophe thres)      :  0.00
@@ -73,7 +73,7 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
  DMC_REWEIGHT_CONF (Update weights)       :  F
  DMC_SPACEWARPING (adjust e to new wfn)   :  F
  REDIST_GRP_SIZE (size of redist groups)  :  500
- DTDMC (DMC time step)                    :  4.57000E-04
+ DTDMC (DMC time step)                    :  4.25000E-04
  TPDMC (DMC T_p parameter)                :  0
  CEREFDMC (constant for EREF [DMC])       :  1.000
  LIMDMC (limit type for drift vel/energy) :  4
@@ -122,7 +122,7 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
  Generator                                 :  RANLUX
  RANLUX luxury level                       :  3
  p value                                   :  223
- Value of random seed on MPI process 0     :  823135957
+ Value of random seed on MPI process 0     :  972406244
 
  Initialized with seed derived from timer.
 
@@ -160,7 +160,7 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
  Periodicity                               :  0 (molecule)
  Spin restricted?                          :  No
 
- Total number of electrons                 :  27
+ Total number of electrons                 :  28
 
  Basis set information
 
@@ -174,89 +174,89 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
  ------------------------------------------------------------------
    Atom  x(au)  y(au)  z(au)    No. Type  Exponent    Coefficients
  ------------------------------------------------------------------
-   1 Co    0.000    0.000    0.000
+   1 Ni    0.000    0.000    0.000
                              1-   1  s
-                                         4.658E+06     6.484E-01
-                                         6.976E+05     1.214E+00
-                                         1.588E+05     2.102E+00
-                                         4.497E+04     3.442E+00
-                                         1.467E+04     5.380E+00
-                                         5.296E+03     8.036E+00
-                                         2.065E+03     1.132E+01
-                                         8.559E+02     1.452E+01
-                                         3.725E+02     1.577E+01
-                                         1.685E+02     1.252E+01
-                                         7.813E+01     5.451E+00
+                                         5.038E+06     6.838E-01
+                                         7.542E+05     1.280E+00
+                                         1.716E+05     2.217E+00
+                                         4.862E+04     3.630E+00
+                                         1.586E+04     5.674E+00
+                                         5.726E+03     8.475E+00
+                                         2.233E+03     1.194E+01
+                                         9.255E+02     1.534E+01
+                                         4.028E+02     1.668E+01
+                                         1.822E+02     1.327E+01
+                                         8.449E+01     5.805E+00
                              2-   2  s
-                                         1.535E+03     1.327E+00
-                                         4.755E+02     5.404E+00
-                                         1.825E+02     1.200E+01
-                                         7.892E+01     1.192E+01
+                                         1.678E+03     1.382E+00
+                                         5.192E+02     5.668E+00
+                                         1.990E+02     1.270E+01
+                                         8.590E+01     1.278E+01
                              3-   3  s
-                                         3.550E+01     1.037E+01
+                                         3.844E+01     1.100E+01
                              4-   4  s
-                                         1.679E+01     5.912E+00
+                                         1.825E+01     6.294E+00
                              5-   5  s
-                                         8.024E+00     3.398E+00
+                                         8.728E+00     3.619E+00
                              6-   6  s
-                                         3.457E+00     1.807E+00
+                                         3.762E+00     1.925E+00
                              7-   7  s
-                                         1.660E+00     1.042E+00
+                                         1.803E+00     1.109E+00
                              8-   8  s
-                                         7.338E-01     5.651E-01
+                                         7.951E-01     6.001E-01
                              9-   9  s
-                                         1.588E-01     1.793E-01
+                                         1.703E-01     1.890E-01
                             10-  10  s
-                                         7.454E-02     1.017E-01
+                                         7.897E-02     1.062E-01
                             11-  11  s
-                                         3.287E-02     5.502E-02
+                                         3.450E-02     5.706E-02
                             12-  14  p
-                                         8.425E+03     2.016E+01
-                                         1.996E+03     2.929E+01
-                                         6.478E+02     4.001E+01
-                                         2.469E+02     4.932E+01
-                                         1.040E+02     5.241E+01
-                                         4.683E+01     4.401E+01
-                                         2.193E+01     2.590E+01
-                                         1.054E+01     8.392E+00
-                                         4.982E+00     9.293E-01
+                                         9.157E+03     2.219E+01
+                                         2.169E+03     3.225E+01
+                                         7.040E+02     4.410E+01
+                                         2.684E+02     5.447E+01
+                                         1.131E+02     5.804E+01
+                                         5.096E+01     4.892E+01
+                                         2.390E+01     2.885E+01
+                                         1.150E+01     9.344E+00
+                                         5.441E+00     1.035E+00
                             15-  17  p
-                                         6.927E+01    -1.377E+00
-                                         2.458E+01    -1.829E+00
-                                         4.856E+00     2.369E+00
-                                         2.248E+00     1.880E+00
-                                         1.011E+00     5.606E-01
+                                         7.594E+01    -1.551E+00
+                                         2.704E+01    -2.083E+00
+                                         5.340E+00     2.681E+00
+                                         2.470E+00     2.117E+00
+                                         1.110E+00     6.273E-01
                             18-  20  p
-                                         4.192E-01     4.808E-01
+                                         4.590E-01     5.385E-01
                             21-  23  p
-                                         1.750E-01     1.613E-01
+                                         1.870E-01     1.753E-01
                             24-  26  p
-                                         7.300E-02     5.409E-02
+                                         7.620E-02     5.707E-02
                             27-  29  p
-                                         3.000E-02     1.780E-02
+                                         3.100E-02     1.854E-02
                             30-  34  d
-                                         2.376E+02     3.699E+01
-                                         7.109E+01     3.828E+01
-                                         2.712E+01     3.225E+01
-                                         1.145E+01     2.164E+01
-                                         5.139E+00     1.103E+01
-                                         2.332E+00     3.853E+00
+                                         2.581E+02     4.340E+01
+                                         7.725E+01     4.504E+01
+                                         2.950E+01     3.811E+01
+                                         1.248E+01     2.560E+01
+                                         5.607E+00     1.290E+01
+                                         2.543E+00     4.438E+00
                             35-  39  d
-                                         1.034E+00     1.745E+00
+                                         1.124E+00     2.019E+00
                             40-  44  d
-                                         4.379E-01     3.879E-01
+                                         4.736E-01     4.450E-01
                             45-  49  d
-                                         1.690E-01     7.328E-02
+                                         1.816E-01     8.316E-02
                             50-  54  d
-                                         6.600E-02     1.415E-02
+                                         7.100E-02     1.607E-02
                             55-  61  f
-                                         5.975E+00     8.217E+01
+                                         6.758E+00     1.084E+02
                             62-  68  f
-                                         1.903E+00     6.262E+00
+                                         2.174E+00     8.449E+00
                             69-  75  f
-                                         5.940E-01     4.560E-01
+                                         6.810E-01     6.202E-01
                             76-  84  g
-                                         2.500E+00     1.383E+01
+                                         2.872E+00     2.025E+01
  ------------------------------------------------------------------
  Single determinant :
 
@@ -266,7 +266,7 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
 
  Pseudopotentials
  ================
- No pseudopotential for Co - treating as all-electron.
+ No pseudopotential for Ni - treating as all-electron.
 
  Geometry derived from information in gwfn.data
  ==============================================
@@ -275,7 +275,7 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
 
  Atom Atno  Type              Position (Cartesian au)
  -------------------------------------------------------------
-    1  27   1         0.00000000     0.00000000     0.00000000
+    1  28   1         0.00000000     0.00000000     0.00000000
 
 
  Neighbour analysis of single atom not required.
@@ -311,29 +311,29 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
   Integer constants:
    C = 3
   Channel 1-1:
-   L (optimizable) =  2.54620595E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  2.69471234E+00 in [5.0000E-01, +Inf)
   Channel 1-2:
-   L (optimizable) =  2.39128350E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  2.23456414E+00 in [5.0000E-01, +Inf)
  Linear parameters:
   Number of linear parameters per channel: 8
   Channel 1-1:
    Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
-   c_2 (optimizable) =  8.25643479E-03
-   c_3 (optimizable) = -3.51840202E-03
-   c_4 (optimizable) = -1.80889899E-02
-   c_5 (optimizable) =  4.80325257E-02
-   c_6 (optimizable) = -4.90488671E-02
-   c_7 (optimizable) =  2.36855966E-02
-   c_8 (optimizable) = -4.26792352E-03
+   c_2 (optimizable) =  3.32411830E-03
+   c_3 (optimizable) = -4.81990386E-03
+   c_4 (optimizable) = -4.59352307E-03
+   c_5 (optimizable) =  1.45260791E-02
+   c_6 (optimizable) = -1.33443734E-02
+   c_7 (optimizable) =  5.75451453E-03
+   c_8 (optimizable) = -9.61518924E-04
   Channel 1-2:
    Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
-   c_2 (optimizable) = -1.78453786E-03
-   c_3 (optimizable) =  5.31193038E-02
-   c_4 (optimizable) = -1.24396603E-01
-   c_5 (optimizable) =  1.42319093E-01
-   c_6 (optimizable) = -7.24007287E-02
-   c_7 (optimizable) =  1.20899256E-02
-   c_8 (optimizable) =  1.45069771E-03
+   c_2 (optimizable) = -5.60189932E-03
+   c_3 (optimizable) =  7.36807824E-02
+   c_4 (optimizable) = -1.88102434E-01
+   c_5 (optimizable) =  2.37885285E-01
+   c_6 (optimizable) = -1.39346559E-01
+   c_7 (optimizable) =  3.15391051E-02
+   c_8 (optimizable) =  3.72235269E-04
 
  Term 2
  ------
@@ -347,18 +347,18 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
   Integer constants:
    C = 3
   Channel 1-n1:
-   L (optimizable) =  3.30796280E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  3.10882832E+00 in [5.0000E-01, +Inf)
  Linear parameters:
   Number of linear parameters per channel: 8
   Channel 1-n1:
    Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
-   c_2 (optimizable) = -2.31979020E-01
-   c_3 (optimizable) = -1.79764485E-02
-   c_4 (optimizable) = -1.46084898E-01
-   c_5 (optimizable) =  1.97606054E-01
-   c_6 (optimizable) = -1.77268516E-01
-   c_7 (optimizable) =  7.79266627E-02
-   c_8 (optimizable) = -1.14775751E-02
+   c_2 (optimizable) = -3.44607531E-01
+   c_3 (optimizable) = -8.44677418E-02
+   c_4 (optimizable) = -1.93723764E-01
+   c_5 (optimizable) =  2.17862841E-01
+   c_6 (optimizable) = -2.24687411E-01
+   c_7 (optimizable) =  1.01248346E-01
+   c_8 (optimizable) = -1.61326965E-02
 
  Term 3
  ------
@@ -377,37 +377,37 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
   Integer constants:
    C = 3
   Channel 1-n1:
-   L (optimizable) =  3.32274506E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  3.41916918E+00 in [5.0000E-01, +Inf)
  Linear parameters:
   Number of linear parameters per channel: 64
   Channel 1-1-n1:
    Constraints: 45 equations (0r+24s+0u+21c), 38 parameters determined
-   c_1,2,2 (optimizable) = -9.14855351E-05
-   c_1,3,2 (optimizable) = -1.08578203E-03
-   c_1,3,3 (optimizable) =  1.88377538E-03
-   c_1,4,2 (optimizable) =  5.64357303E-04
-   c_1,4,3 (optimizable) = -8.55860979E-04
-   c_1,4,4 (optimizable) =  1.77949941E-04
-   c_2,3,1 (optimizable) = -2.67159340E-04
-   c_2,4,2 (optimizable) = -1.58452411E-05
-   c_3,1,1 (optimizable) = -6.00113440E-04
-   c_3,2,1 (optimizable) =  1.84110183E-04
-   c_3,2,2 (optimizable) =  7.42460953E-05
-   c_3,3,1 (optimizable) = -1.35661699E-04
-   c_3,3,2 (optimizable) = -2.29135503E-04
-   c_3,3,3 (optimizable) =  2.36295919E-04
-   c_3,4,2 (optimizable) = -2.15550111E-06
-   c_3,4,3 (optimizable) =  7.84968857E-05
-   c_3,4,4 (optimizable) = -6.60226827E-05
-   c_4,1,1 (optimizable) =  4.42833474E-04
-   c_4,2,1 (optimizable) = -2.18694708E-04
-   c_4,2,2 (optimizable) =  4.77844027E-05
-   c_4,3,1 (optimizable) =  6.05278579E-05
-   c_4,3,2 (optimizable) =  6.76970610E-05
-   c_4,3,3 (optimizable) = -1.05710516E-04
-   c_4,4,2 (optimizable) = -5.31154755E-06
-   c_4,4,3 (optimizable) = -2.81045440E-06
-   c_4,4,4 (optimizable) =  1.70366242E-05
+   c_1,2,2 (optimizable) = -1.12761969E-04
+   c_1,3,2 (optimizable) = -9.56445782E-04
+   c_1,3,3 (optimizable) =  1.75024371E-03
+   c_1,4,2 (optimizable) =  5.02640031E-04
+   c_1,4,3 (optimizable) = -8.88674372E-04
+   c_1,4,4 (optimizable) =  2.45534467E-04
+   c_2,3,1 (optimizable) = -2.06838704E-04
+   c_2,4,2 (optimizable) =  9.22440678E-06
+   c_3,1,1 (optimizable) = -4.79115714E-04
+   c_3,2,1 (optimizable) =  2.23933611E-04
+   c_3,2,2 (optimizable) =  3.46823597E-05
+   c_3,3,1 (optimizable) = -1.36801685E-04
+   c_3,3,2 (optimizable) = -2.40427543E-04
+   c_3,3,3 (optimizable) =  2.90956373E-04
+   c_3,4,2 (optimizable) =  2.69445069E-06
+   c_3,4,3 (optimizable) =  8.88804915E-05
+   c_3,4,4 (optimizable) = -9.13275359E-05
+   c_4,1,1 (optimizable) =  3.35251085E-04
+   c_4,2,1 (optimizable) = -1.80543406E-04
+   c_4,2,2 (optimizable) =  3.11598667E-05
+   c_4,3,1 (optimizable) =  5.24268040E-05
+   c_4,3,2 (optimizable) =  6.42820890E-05
+   c_4,3,3 (optimizable) = -8.93861195E-05
+   c_4,4,2 (optimizable) = -5.37369636E-06
+   c_4,4,3 (optimizable) = -1.55876269E-05
+   c_4,4,4 (optimizable) =  2.60298806E-05
 
 
  Finished General Jastrow setup.
@@ -415,7 +415,7 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
 
  Setup complete.
 
- Time taken in setup    : : :        0.0800
+ Time taken in setup    : : :        0.0900
 
  ============================================================
  PERFORMING A SINGLE DMC STATISTICS-ACCUMULATION CALCULATION.
@@ -429,8 +429,8 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
 
  Random number generator reset to state in config.in.
 
- EBEST = -1382.6247158950900 (au/prim cell inc. N-N)
- EREF  = -1382.5529733520393
+ EBEST = -1508.1782884989184 (au/prim cell inc. N-N)
+ EREF  = -1508.1753260568596
 
  Number of previous DMC stats accumulation moves : 50000
 
@@ -438,575 +438,771 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
  In block : 1
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.396
- Number of config transfers               : 9103
- Acceptance ratio (%)                     : 99.245
- New best estimate of DMC energy (au)     : -1382.62284008
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.05384944
+ Load-balancing efficiency (%)            : 98.443
+ Number of config transfers               : 9367
+ Acceptance ratio (%)                     : 99.257
+ New best estimate of DMC energy (au)     : -1508.17964918
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.13473387
 
- Time taken in block    : : :      624.2800
+ Time taken in block    : : :      672.3800
 
  =========================================================================
  In block : 2
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.485
- Number of config transfers               : 9566
- Acceptance ratio (%)                     : 99.234
- New best estimate of DMC energy (au)     : -1382.62426156
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.28155271
+ Load-balancing efficiency (%)            : 98.505
+ Number of config transfers               : 9078
+ Acceptance ratio (%)                     : 99.249
+ New best estimate of DMC energy (au)     : -1508.17967487
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.66413710
 
- Time taken in block    : : :      637.2401
+ Time taken in block    : : :      647.4400
 
  =========================================================================
  In block : 3
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.408
- Number of config transfers               : 9373
- Acceptance ratio (%)                     : 99.239
- New best estimate of DMC energy (au)     : -1382.62290299
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.74885855
+ Load-balancing efficiency (%)            : 98.506
+ Number of config transfers               : 9517
+ Acceptance ratio (%)                     : 99.252
+ New best estimate of DMC energy (au)     : -1508.18173687
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.64003612
 
- Time taken in block    : : :      631.8099
+ Time taken in block    : : :      680.0500
 
  =========================================================================
  In block : 4
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.441
- Number of config transfers               : 9153
- Acceptance ratio (%)                     : 99.240
- New best estimate of DMC energy (au)     : -1382.62038639
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.73894116
+ Load-balancing efficiency (%)            : 98.543
+ Number of config transfers               : 9426
+ Acceptance ratio (%)                     : 99.255
+ New best estimate of DMC energy (au)     : -1508.18351996
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.72749007
 
- Time taken in block    : : :      614.0398
+ Time taken in block    : : :      679.8799
 
  =========================================================================
  In block : 5
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.517
- Number of config transfers               : 9442
- Acceptance ratio (%)                     : 99.240
- New best estimate of DMC energy (au)     : -1382.62127669
- Max no of attempts before accept move    : 10
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 12.59712658
+ Load-balancing efficiency (%)            : 98.458
+ Number of config transfers               : 9243
+ Acceptance ratio (%)                     : 99.248
+ New best estimate of DMC energy (au)     : -1508.18371810
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.28766758
 
- Time taken in block    : : :      638.3403
+ Time taken in block    : : :      668.4900
 
  =========================================================================
  In block : 6
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.390
- Number of config transfers               : 9112
- Acceptance ratio (%)                     : 99.230
- New best estimate of DMC energy (au)     : -1382.61969508
+ Load-balancing efficiency (%)            : 98.394
+ Number of config transfers               : 8867
+ Acceptance ratio (%)                     : 99.251
+ New best estimate of DMC energy (au)     : -1508.18447349
  Max no of attempts before accept move    : 7
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.01570828
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.61590397
 
- Time taken in block    : : :      614.4697
+ Time taken in block    : : :      642.2000
 
  =========================================================================
  In block : 7
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.471
- Number of config transfers               : 9300
- Acceptance ratio (%)                     : 99.235
- New best estimate of DMC energy (au)     : -1382.61943767
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.84211825
+ Load-balancing efficiency (%)            : 98.465
+ Number of config transfers               : 9274
+ Acceptance ratio (%)                     : 99.256
+ New best estimate of DMC energy (au)     : -1508.18514968
+ Max no of attempts before accept move    : 10
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.11830835
 
- Time taken in block    : : :      628.1104
+ Time taken in block    : : :      666.3899
 
  =========================================================================
  In block : 8
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.633
- Number of config transfers               : 9539
- Acceptance ratio (%)                     : 99.236
- New best estimate of DMC energy (au)     : -1382.61986633
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.89337635
+ Load-balancing efficiency (%)            : 98.595
+ Number of config transfers               : 9668
+ Acceptance ratio (%)                     : 99.256
+ New best estimate of DMC energy (au)     : -1508.18454127
+ Max no of attempts before accept move    : 10
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.16785913
 
- Time taken in block    : : :      647.7397
+ Time taken in block    : : :      692.4902
 
  =========================================================================
  In block : 9
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.460
- Number of config transfers               : 9393
- Acceptance ratio (%)                     : 99.239
- New best estimate of DMC energy (au)     : -1382.62094889
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.79288999
+ Load-balancing efficiency (%)            : 98.497
+ Number of config transfers               : 9139
+ Acceptance ratio (%)                     : 99.251
+ New best estimate of DMC energy (au)     : -1508.18492090
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.87421953
 
- Time taken in block    : : :      643.8101
+ Time taken in block    : : :      658.1597
 
  =========================================================================
  In block : 10
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.538
- Number of config transfers               : 9726
- Acceptance ratio (%)                     : 99.243
- New best estimate of DMC energy (au)     : -1382.62070135
+ Load-balancing efficiency (%)            : 98.411
+ Number of config transfers               : 9057
+ Acceptance ratio (%)                     : 99.250
+ New best estimate of DMC energy (au)     : -1508.18431089
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.98890833
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.52585376
 
- Time taken in block    : : :      642.4502
+ Time taken in block    : : :      657.0303
 
  =========================================================================
  In block : 11
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.506
- Number of config transfers               : 9318
- Acceptance ratio (%)                     : 99.238
- New best estimate of DMC energy (au)     : -1382.62159610
+ Load-balancing efficiency (%)            : 98.503
+ Number of config transfers               : 9359
+ Acceptance ratio (%)                     : 99.255
+ New best estimate of DMC energy (au)     : -1508.18382715
  Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.69158692
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.54061520
 
- Time taken in block    : : :      633.5298
+ Time taken in block    : : :      669.5698
 
  =========================================================================
  In block : 12
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.532
- Number of config transfers               : 9502
- Acceptance ratio (%)                     : 99.235
- New best estimate of DMC energy (au)     : -1382.62153765
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.84788936
+ Load-balancing efficiency (%)            : 98.492
+ Number of config transfers               : 9252
+ Acceptance ratio (%)                     : 99.254
+ New best estimate of DMC energy (au)     : -1508.18413249
+ Max no of attempts before accept move    : 10
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.92223950
 
- Time taken in block    : : :      644.8701
+ Time taken in block    : : :      665.5205
 
  =========================================================================
  In block : 13
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.548
- Number of config transfers               : 9625
- Acceptance ratio (%)                     : 99.231
- New best estimate of DMC energy (au)     : -1382.62189144
+ Load-balancing efficiency (%)            : 98.513
+ Number of config transfers               : 9327
+ Acceptance ratio (%)                     : 99.254
+ New best estimate of DMC energy (au)     : -1508.18420873
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 13.14740740
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.85759930
 
- Time taken in block    : : :      654.3501
+ Time taken in block    : : :      683.6699
 
  =========================================================================
  In block : 14
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.601
- Number of config transfers               : 9393
- Acceptance ratio (%)                     : 99.237
- New best estimate of DMC energy (au)     : -1382.62166185
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 12.48004947
+ Load-balancing efficiency (%)            : 98.502
+ Number of config transfers               : 9211
+ Acceptance ratio (%)                     : 99.251
+ New best estimate of DMC energy (au)     : -1508.18390491
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.48580967
 
- Time taken in block    : : :      641.9297
+ Time taken in block    : : :      650.5693
 
  =========================================================================
  In block : 15
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.580
- Number of config transfers               : 9688
- Acceptance ratio (%)                     : 99.238
- New best estimate of DMC energy (au)     : -1382.62124407
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.61914282
+ Load-balancing efficiency (%)            : 98.472
+ Number of config transfers               : 9109
+ Acceptance ratio (%)                     : 99.254
+ New best estimate of DMC energy (au)     : -1508.18383466
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.61381648
 
- Time taken in block    : : :      656.3506
+ Time taken in block    : : :      652.9004
 
  =========================================================================
  In block : 16
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.518
- Number of config transfers               : 9479
- Acceptance ratio (%)                     : 99.232
- New best estimate of DMC energy (au)     : -1382.62151715
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.61093288
+ Load-balancing efficiency (%)            : 98.476
+ Number of config transfers               : 9181
+ Acceptance ratio (%)                     : 99.254
+ New best estimate of DMC energy (au)     : -1508.18369429
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.95689559
 
- Time taken in block    : : :      633.3604
+ Time taken in block    : : :      658.1699
 
  =========================================================================
  In block : 17
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.487
- Number of config transfers               : 9600
- Acceptance ratio (%)                     : 99.235
- New best estimate of DMC energy (au)     : -1382.62146926
+ Load-balancing efficiency (%)            : 98.527
+ Number of config transfers               : 8975
+ Acceptance ratio (%)                     : 99.255
+ New best estimate of DMC energy (au)     : -1508.18426611
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.50696606
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.11139360
 
- Time taken in block    : : :      662.8691
+ Time taken in block    : : :      647.2002
 
  =========================================================================
  In block : 18
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.547
- Number of config transfers               : 9542
- Acceptance ratio (%)                     : 99.242
- New best estimate of DMC energy (au)     : -1382.62140081
- Max no of attempts before accept move    : 7
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.99459925
+ Load-balancing efficiency (%)            : 98.460
+ Number of config transfers               : 9610
+ Acceptance ratio (%)                     : 99.250
+ New best estimate of DMC energy (au)     : -1508.18472827
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.22280328
 
- Time taken in block    : : :      636.7500
+ Time taken in block    : : :      682.2998
 
  =========================================================================
  In block : 19
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.344
- Number of config transfers               : 8865
- Acceptance ratio (%)                     : 99.240
- New best estimate of DMC energy (au)     : -1382.62146025
+ Load-balancing efficiency (%)            : 98.478
+ Number of config transfers               : 9174
+ Acceptance ratio (%)                     : 99.248
+ New best estimate of DMC energy (au)     : -1508.18475000
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.24066503
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.73259622
 
- Time taken in block    : : :      598.5801
+ Time taken in block    : : :      651.6406
 
  =========================================================================
  In block : 20
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.526
- Number of config transfers               : 9831
- Acceptance ratio (%)                     : 99.243
- New best estimate of DMC energy (au)     : -1382.62133562
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.70345484
+ Load-balancing efficiency (%)            : 98.568
+ Number of config transfers               : 9570
+ Acceptance ratio (%)                     : 99.259
+ New best estimate of DMC energy (au)     : -1508.18536162
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.78462322
 
- Time taken in block    : : :      666.4795
+ Time taken in block    : : :      697.5293
 
  =========================================================================
  In block : 21
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.550
- Number of config transfers               : 9431
- Acceptance ratio (%)                     : 99.236
- New best estimate of DMC energy (au)     : -1382.62153318
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.26635179
+ Load-balancing efficiency (%)            : 98.538
+ Number of config transfers               : 9242
+ Acceptance ratio (%)                     : 99.250
+ New best estimate of DMC energy (au)     : -1508.18566547
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.16248197
 
- Time taken in block    : : :      639.6797
+ Time taken in block    : : :      667.2305
 
  =========================================================================
  In block : 22
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.364
- Number of config transfers               : 9111
- Acceptance ratio (%)                     : 99.228
- New best estimate of DMC energy (au)     : -1382.62096734
+ Load-balancing efficiency (%)            : 98.513
+ Number of config transfers               : 9412
+ Acceptance ratio (%)                     : 99.252
+ New best estimate of DMC energy (au)     : -1508.18539399
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.59893715
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.02623368
 
- Time taken in block    : : :      611.6309
+ Time taken in block    : : :      671.7793
 
  =========================================================================
  In block : 23
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.557
- Number of config transfers               : 9743
- Acceptance ratio (%)                     : 99.244
- New best estimate of DMC energy (au)     : -1382.62039101
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.28567243
+ Load-balancing efficiency (%)            : 98.548
+ Number of config transfers               : 9462
+ Acceptance ratio (%)                     : 99.257
+ New best estimate of DMC energy (au)     : -1508.18532648
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.42917981
 
- Time taken in block    : : :      648.4199
+ Time taken in block    : : :      685.2803
 
  =========================================================================
  In block : 24
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.483
- Number of config transfers               : 9199
- Acceptance ratio (%)                     : 99.238
- New best estimate of DMC energy (au)     : -1382.61974591
- Max no of attempts before accept move    : 10
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.43027388
+ Load-balancing efficiency (%)            : 98.431
+ Number of config transfers               : 9351
+ Acceptance ratio (%)                     : 99.245
+ New best estimate of DMC energy (au)     : -1508.18532525
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.80618913
 
- Time taken in block    : : :      617.8203
+ Time taken in block    : : :      663.2900
 
  =========================================================================
  In block : 25
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.423
- Number of config transfers               : 9267
- Acceptance ratio (%)                     : 99.235
- New best estimate of DMC energy (au)     : -1382.61991545
+ Load-balancing efficiency (%)            : 98.615
+ Number of config transfers               : 9542
+ Acceptance ratio (%)                     : 99.258
+ New best estimate of DMC energy (au)     : -1508.18582038
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.90675894
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.48649742
 
- Time taken in block    : : :      614.6602
+ Time taken in block    : : :      685.8691
 
  =========================================================================
  In block : 26
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.535
- Number of config transfers               : 9733
- Acceptance ratio (%)                     : 99.235
- New best estimate of DMC energy (au)     : -1382.61960153
+ Load-balancing efficiency (%)            : 98.552
+ Number of config transfers               : 9841
+ Acceptance ratio (%)                     : 99.246
+ New best estimate of DMC energy (au)     : -1508.18624275
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.71764406
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.40530517
 
- Time taken in block    : : :      655.1895
+ Time taken in block    : : :      700.5215
 
  =========================================================================
  In block : 27
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.522
- Number of config transfers               : 9610
- Acceptance ratio (%)                     : 99.242
- New best estimate of DMC energy (au)     : -1382.61939823
- Max no of attempts before accept move    : 7
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.11069675
+ Load-balancing efficiency (%)            : 98.543
+ Number of config transfers               : 9551
+ Acceptance ratio (%)                     : 99.249
+ New best estimate of DMC energy (au)     : -1508.18677901
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.13462497
 
- Time taken in block    : : :      643.0801
+ Time taken in block    : : :      680.6289
 
  =========================================================================
  In block : 28
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.455
- Number of config transfers               : 9501
- Acceptance ratio (%)                     : 99.235
- New best estimate of DMC energy (au)     : -1382.61950799
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.44325819
+ Load-balancing efficiency (%)            : 98.419
+ Number of config transfers               : 8971
+ Acceptance ratio (%)                     : 99.260
+ New best estimate of DMC energy (au)     : -1508.18700825
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.40879033
 
- Time taken in block    : : :      632.7793
+ Time taken in block    : : :      642.0312
 
  =========================================================================
  In block : 29
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.480
- Number of config transfers               : 9431
- Acceptance ratio (%)                     : 99.236
- New best estimate of DMC energy (au)     : -1382.61927951
+ Load-balancing efficiency (%)            : 98.434
+ Number of config transfers               : 9093
+ Acceptance ratio (%)                     : 99.255
+ New best estimate of DMC energy (au)     : -1508.18734007
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.85476057
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.78579428
 
- Time taken in block    : : :      630.0723
+ Time taken in block    : : :      647.0098
 
  =========================================================================
  In block : 30
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.577
- Number of config transfers               : 10008
- Acceptance ratio (%)                     : 99.240
- New best estimate of DMC energy (au)     : -1382.61936002
+ Load-balancing efficiency (%)            : 98.543
+ Number of config transfers               : 9478
+ Acceptance ratio (%)                     : 99.259
+ New best estimate of DMC energy (au)     : -1508.18722988
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.82708064
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.86253051
 
- Time taken in block    : : :      674.9883
+ Time taken in block    : : :      676.6191
 
  =========================================================================
  In block : 31
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.495
- Number of config transfers               : 9535
- Acceptance ratio (%)                     : 99.235
- New best estimate of DMC energy (au)     : -1382.61906880
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.36745483
+ Load-balancing efficiency (%)            : 98.573
+ Number of config transfers               : 9454
+ Acceptance ratio (%)                     : 99.248
+ New best estimate of DMC energy (au)     : -1508.18708506
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.24365036
 
- Time taken in block    : : :      632.7793
+ Time taken in block    : : :      677.6523
 
  =========================================================================
  In block : 32
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.525
- Number of config transfers               : 9871
- Acceptance ratio (%)                     : 99.239
- New best estimate of DMC energy (au)     : -1382.61910589
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.33560458
+ Load-balancing efficiency (%)            : 98.477
+ Number of config transfers               : 9320
+ Acceptance ratio (%)                     : 99.251
+ New best estimate of DMC energy (au)     : -1508.18724581
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.82525182
 
- Time taken in block    : : :      657.1602
+ Time taken in block    : : :      668.0195
 
  =========================================================================
  In block : 33
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.514
- Number of config transfers               : 9723
- Acceptance ratio (%)                     : 99.229
- New best estimate of DMC energy (au)     : -1382.61899451
+ Load-balancing efficiency (%)            : 98.475
+ Number of config transfers               : 9228
+ Acceptance ratio (%)                     : 99.252
+ New best estimate of DMC energy (au)     : -1508.18708633
  Max no of attempts before accept move    : 7
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.66575724
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.20591367
 
- Time taken in block    : : :      658.9609
+ Time taken in block    : : :      656.6992
 
  =========================================================================
  In block : 34
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.532
- Number of config transfers               : 9539
- Acceptance ratio (%)                     : 99.234
- New best estimate of DMC energy (au)     : -1382.61893141
+ Load-balancing efficiency (%)            : 98.463
+ Number of config transfers               : 9407
+ Acceptance ratio (%)                     : 99.254
+ New best estimate of DMC energy (au)     : -1508.18751495
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.19838400
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.31037395
 
- Time taken in block    : : :      634.8281
+ Time taken in block    : : :      689.6699
 
  =========================================================================
  In block : 35
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.615
- Number of config transfers               : 9834
- Acceptance ratio (%)                     : 99.246
- New best estimate of DMC energy (au)     : -1382.61949456
+ Load-balancing efficiency (%)            : 98.333
+ Number of config transfers               : 8914
+ Acceptance ratio (%)                     : 99.247
+ New best estimate of DMC energy (au)     : -1508.18771685
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.42775979
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.45558817
 
- Time taken in block    : : :      658.3027
+ Time taken in block    : : :      637.6895
 
  =========================================================================
  In block : 36
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.645
- Number of config transfers               : 10057
- Acceptance ratio (%)                     : 99.240
- New best estimate of DMC energy (au)     : -1382.61994327
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.14028410
+ Load-balancing efficiency (%)            : 98.455
+ Number of config transfers               : 9131
+ Acceptance ratio (%)                     : 99.256
+ New best estimate of DMC energy (au)     : -1508.18810969
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.99666657
 
- Time taken in block    : : :      666.5781
+ Time taken in block    : : :      652.6113
 
  =========================================================================
  In block : 37
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.497
- Number of config transfers               : 9642
- Acceptance ratio (%)                     : 99.241
- New best estimate of DMC energy (au)     : -1382.62010782
- Max no of attempts before accept move    : 7
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.45041692
+ Load-balancing efficiency (%)            : 98.347
+ Number of config transfers               : 9020
+ Acceptance ratio (%)                     : 99.252
+ New best estimate of DMC energy (au)     : -1508.18791647
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.12143621
 
- Time taken in block    : : :      651.7715
+ Time taken in block    : : :      640.0488
 
  =========================================================================
  In block : 38
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.390
- Number of config transfers               : 9316
- Acceptance ratio (%)                     : 99.234
- New best estimate of DMC energy (au)     : -1382.62021768
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.76229709
+ Load-balancing efficiency (%)            : 98.517
+ Number of config transfers               : 9589
+ Acceptance ratio (%)                     : 99.250
+ New best estimate of DMC energy (au)     : -1508.18790382
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 8.68101687
 
- Time taken in block    : : :      628.0586
+ Time taken in block    : : :      693.3496
 
  =========================================================================
  In block : 39
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.519
- Number of config transfers               : 9413
- Acceptance ratio (%)                     : 99.236
- New best estimate of DMC energy (au)     : -1382.62027514
- Max no of attempts before accept move    : 9
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 11.81329927
+ Load-balancing efficiency (%)            : 98.514
+ Number of config transfers               : 9573
+ Acceptance ratio (%)                     : 99.253
+ New best estimate of DMC energy (au)     : -1508.18805240
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.69497821
 
- Time taken in block    : : :      636.4902
+ Time taken in block    : : :      694.3203
 
  =========================================================================
  In block : 40
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.479
- Number of config transfers               : 9416
- Acceptance ratio (%)                     : 99.237
- New best estimate of DMC energy (au)     : -1382.62030970
+ Load-balancing efficiency (%)            : 98.578
+ Number of config transfers               : 9488
+ Acceptance ratio (%)                     : 99.243
+ New best estimate of DMC energy (au)     : -1508.18797434
  Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 9.76152787
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 8.73090974
 
- Time taken in block    : : :      625.1504
+ Time taken in block    : : :      679.8105
 
  =========================================================================
  In block : 41
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 98.467
- Number of config transfers               : 9381
- Acceptance ratio (%)                     : 99.240
- New best estimate of DMC energy (au)     : -1382.62027130
- Max no of attempts before accept move    : 8
- New best estimate of effective time step : 0.00045103
- Maximum distance from origin (au)        : 10.18789569
+ Load-balancing efficiency (%)            : 98.446
+ Number of config transfers               : 9211
+ Acceptance ratio (%)                     : 99.254
+ New best estimate of DMC energy (au)     : -1508.18766943
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.01954131
 
- Time taken in block    : : :      627.3984
+ Time taken in block    : : :      655.8809
+
+ =========================================================================
+ In block : 42
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.487
+ Number of config transfers               : 9294
+ Acceptance ratio (%)                     : 99.249
+ New best estimate of DMC energy (au)     : -1508.18760736
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.73418786
+
+ Time taken in block    : : :      667.7676
+
+ =========================================================================
+ In block : 43
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.454
+ Number of config transfers               : 9563
+ Acceptance ratio (%)                     : 99.249
+ New best estimate of DMC energy (au)     : -1508.18766158
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.63351737
+
+ Time taken in block    : : :      689.9414
+
+ =========================================================================
+ In block : 44
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.535
+ Number of config transfers               : 9744
+ Acceptance ratio (%)                     : 99.249
+ New best estimate of DMC energy (au)     : -1508.18773937
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 12.01221484
+
+ Time taken in block    : : :      700.9492
+
+ =========================================================================
+ In block : 45
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.524
+ Number of config transfers               : 9837
+ Acceptance ratio (%)                     : 99.246
+ New best estimate of DMC energy (au)     : -1508.18807765
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.63748125
+
+ Time taken in block    : : :      713.5215
+
+ =========================================================================
+ In block : 46
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.458
+ Number of config transfers               : 9281
+ Acceptance ratio (%)                     : 99.247
+ New best estimate of DMC energy (au)     : -1508.18820787
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.39125991
+
+ Time taken in block    : : :      652.1191
+
+ =========================================================================
+ In block : 47
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.554
+ Number of config transfers               : 9311
+ Acceptance ratio (%)                     : 99.250
+ New best estimate of DMC energy (au)     : -1508.18838208
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.41386051
+
+ Time taken in block    : : :      680.1289
+
+ =========================================================================
+ In block : 48
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.507
+ Number of config transfers               : 9046
+ Acceptance ratio (%)                     : 99.253
+ New best estimate of DMC energy (au)     : -1508.18818136
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.75999592
+
+ Time taken in block    : : :      658.9102
+
+ =========================================================================
+ In block : 49
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.430
+ Number of config transfers               : 8906
+ Acceptance ratio (%)                     : 99.255
+ New best estimate of DMC energy (au)     : -1508.18816557
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.29559952
+
+ Time taken in block    : : :      643.2520
+
+ =========================================================================
+ In block : 50
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.522
+ Number of config transfers               : 9200
+ Acceptance ratio (%)                     : 99.251
+ New best estimate of DMC energy (au)     : -1508.18808923
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.01980619
+
+ Time taken in block    : : :      657.4180
+
+ =========================================================================
+ In block : 51
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.398
+ Number of config transfers               : 8789
+ Acceptance ratio (%)                     : 99.262
+ New best estimate of DMC energy (au)     : -1508.18789398
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.89923516
+
+ Time taken in block    : : :      629.2500
+
+ =========================================================================
+ In block : 52
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.523
+ Number of config transfers               : 9146
+ Acceptance ratio (%)                     : 99.252
+ New best estimate of DMC energy (au)     : -1508.18777043
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 11.39930229
+
+ Time taken in block    : : :      660.7422
+
+ =========================================================================
+ In block : 53
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.429
+ Number of config transfers               : 9175
+ Acceptance ratio (%)                     : 99.257
+ New best estimate of DMC energy (au)     : -1508.18778311
+ Max no of attempts before accept move    : 8
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.72300399
+
+ Time taken in block    : : :      657.1992
+
+ =========================================================================
+ In block : 54
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.468
+ Number of config transfers               : 8970
+ Acceptance ratio (%)                     : 99.253
+ New best estimate of DMC energy (au)     : -1508.18753616
+ Max no of attempts before accept move    : 7
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 10.90526177
+
+ Time taken in block    : : :      650.8711
+
+ =========================================================================
+ In block : 55
+
+ Number of moves in block                 : 10000
+ Load-balancing efficiency (%)            : 98.385
+ Number of config transfers               : 8390
+ Acceptance ratio (%)                     : 99.255
+ New best estimate of DMC energy (au)     : -1508.18735725
+ Max no of attempts before accept move    : 9
+ New best estimate of effective time step : 0.00041956
+ Maximum distance from origin (au)        : 9.83767526
+
+ Time taken in block    : : :      605.1484
 
 
  Mixed estimators of the energies at the end of the run
@@ -1014,70 +1210,71 @@ Job started: Wed Sep 26 23:41:41 EDT 2018
  [All energies given in (au)]
  [All error bars obtained by reblocking]
 
- Total energy                 =    -1382.620271300030 +/-        0.001080776970
- Kinetic energy (TI)          =     1383.245446201761 +/-        0.321249732098
- Kinetic energy (KEI)         =     1383.001924700938 +/-        0.113777795916
- Kinetic energy (FISQ)        =     1383.488967702420 +/-        0.630160029734
- e-e interac. (Ewald/Coulomb) =      535.028143549423 +/-        0.072007879080
- e-i interaction (local)      =    -3300.650339550444 +/-        0.135074471183
+ Total energy                 =    -1508.187357246744 +/-        0.000980475771
+ Kinetic energy (TI)          =     1508.315401009660 +/-        0.190161126633
+ Kinetic energy (KEI)         =     1508.655657450488 +/-        0.106525824173
+ Kinetic energy (FISQ)        =     1507.975144568839 +/-        0.359962750109
+ e-e interac. (Ewald/Coulomb) =      589.632135070830 +/-        0.061777661859
+ e-i interaction (local)      =    -3606.475149768012 +/-        0.126705115728
 
  Dump of raw reblock data
  ------------------------
- Number of data points collected = 460000
+ Number of data points collected = 600000
  Dumping reblock data for energy:
-      mean:  -1382.620271300030 +/-       0.001080776970
-    stderr:      0.001080776970 +/-       0.000025510500
-    errfac:      2.836873639474 +/-       0.066961147512
-    N_corr:      8.047852046340 +/-       0.379920628494
+      mean:  -1508.187357246744 +/-       0.000980475771
+    stderr:      0.000980475771 +/-       0.000020261267
+    errfac:      2.751384437440 +/-       0.056856616562
+    N_corr:      7.570116322589 +/-       0.312868819947
    ------------------------------------------------------
     Block len      Std error   Err in error
-            1   3.809747E-04   3.971940E-07
-            2   4.446769E-04   6.556418E-07
-            4   5.180529E-04   1.080220E-06
-            8   5.999061E-04   1.769042E-06
-           16   6.859881E-04   2.860818E-06
-           32   7.755153E-04   4.573899E-06
-           64   8.655770E-04   7.219914E-06
-          128   9.484341E-04   1.118868E-05
-          256   1.024819E-03   1.709992E-05
-          512   1.080777E-03   2.551050E-05  *** BEST ***
-         1024   1.139833E-03   3.806984E-05
-         2048   1.226756E-03   5.800938E-05
-         4096   1.348389E-03   9.037400E-05
-         8192   1.428461E-03   1.360102E-04
-        16384   1.617735E-03   2.198359E-04
-        32768   1.955773E-03   3.829980E-04
-        65536   2.402961E-03   6.925768E-04
-       131072   2.800315E-03   1.249961E-03
+            1   3.563572E-04   3.253084E-07
+            2   4.155352E-04   5.364545E-07
+            4   4.838232E-04   8.833393E-07
+            8   5.590383E-04   1.443440E-06
+           16   6.377745E-04   2.328854E-06
+           32   7.190643E-04   3.713331E-06
+           64   8.008469E-04   5.848871E-06
+          128   8.706549E-04   8.993044E-06
+          256   9.312614E-04   1.360485E-05
+          512   9.804758E-04   2.026127E-05  *** BEST ***
+         1024   1.021655E-03   2.986996E-05
+         2048   1.051765E-03   4.352467E-05
+         4096   1.127279E-03   6.608582E-05
+         8192   1.128262E-03   9.386410E-05
+        16384   1.265250E-03   1.499021E-04
+        32768   1.536227E-03   2.610868E-04
+        65536   1.796614E-03   4.448571E-04
+       131072   1.852904E-03   6.926915E-04
+       262144   2.942666E-03   1.832863E-03
    ------------------------------------------------------
 
  Analysis of statistical efficiency -- see PRB 81, 035119 (2010).
  ------------------------------------------------------------------
- Int corr length (steps)      =        8.047852046340 +/-        0.379920628494
- DMC time step (au)           =        0.000457000000
- Int correlation time (au)    =        0.003677868385 +/-        0.000173623727
- Var of loc en (au / simcell) =       67.818564914497 +/-        0.012800985530
- Std dev of local energy      =        8.235202785269
- Number of steps of accum data=   460000.000000000000
- Effective number of steps    =   458939.431954982516
+ Int corr length (steps)      =        7.570116322589 +/-        0.312868819947
+ DMC time step (au)           =        0.000425000000
+ Int correlation time (au)    =        0.003217299437 +/-        0.000132969248
+ Var of loc en (au / simcell) =       76.836425247828 +/-        0.012316208544
+ Std dev of local energy      =        8.765638895587
+ Number of steps of accum data=   600000.000000000000
+ Effective number of steps    =   598357.643573088222
  Target weight                =     1024.000000000000
- Average population           =     1020.057826086956 +/-        0.072331112782
- Effective population         =      984.385008454462
- Stat inefficiency (est)      =        1.012156456889 +/-        0.000578506782
- Stat inefficiency (measured) =        1.038633339449
+ Average population           =     1011.672243333333 +/-        0.068452528793
+ Effective population         =      984.808857359109
+ Stat inefficiency (est)      =        1.011314373338 +/-        0.000471164324
+ Stat inefficiency (measured) =        1.030097411589
 
  =========================================================================
 
- Total CASINO CPU time  : : :    26197.2383
- Total CASINO real time : : :    26242.8066
+ Total CASINO CPU time  : : :    36656.9297
+ Total CASINO real time : : :    36718.6172
 
- Cumulative CPU time    : : :    36066.0586
+ Cumulative CPU time    : : :    47303.2695
  (summed over restarts)
 
 
  Subroutine timers deactivated (use TIMING_INFO input keyword)
 
  =========================================================================
- Ends 2018/09/27 06:59:04.647
+ Ends 2018/09/29 03:21:30.741
 
-Job finished: Thu Sep 27 06:59:04 EDT 2018
+Job finished: Sat Sep 29 03:21:30 EDT 2018

@@ -1,7 +1,7 @@
 CASINO v2.13.728 [Mike Towler] (13 September 2018)
 Running on Helium [linuxpc-gcc-parallel]
 Binary compiled in opt mode
-Job started: Wed Sep 26 08:42:24 EDT 2018
+Job started: Wed Sep 26 15:03:12 EDT 2018
  ------------------------------------------------------------------------------
 
                    #####
@@ -25,14 +25,14 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
                       Current contact: mdt26 at cam.ac.uk
 
  ------------------------------------------------------------------------------
- Started 2018/09/26 08:42:25.214
+ Started 2018/09/26 15:03:12.498
 
  Running in parallel using 32 MPI processes.
 
  General input parameters
  ========================
  NEU (num up spin electrons)              :  15
- NED (num down spin electrons)            :  12
+ NED (num down spin electrons)            :  13
  RUNTYPE (type of run)                    :  vmc_dmc
  PSI_S  (form for [anti]symmetrizing wfn) :  slater
  ATOM_BASIS_TYPE (atom-centred orb basis) :  gaussian
@@ -85,7 +85,7 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
  DMC_REWEIGHT_CONF (Update weights)       :  F
  DMC_SPACEWARPING (adjust e to new wfn)   :  F
  REDIST_GRP_SIZE (size of redist groups)  :  500
- DTDMC (DMC time step)                    :  1.14000E-04
+ DTDMC (DMC time step)                    :  1.06000E-04
  TPDMC (DMC T_p parameter)                :  0
  CEREFDMC (constant for EREF [DMC])       :  1.000
  LIMDMC (limit type for drift vel/energy) :  4
@@ -134,7 +134,7 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
  Generator                                 :  RANLUX
  RANLUX luxury level                       :  3
  p value                                   :  223
- Value of random seed on MPI process 0     :  769179336
+ Value of random seed on MPI process 0     :  792026620
 
  Initialized with seed derived from timer.
 
@@ -172,7 +172,7 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
  Periodicity                               :  0 (molecule)
  Spin restricted?                          :  No
 
- Total number of electrons                 :  27
+ Total number of electrons                 :  28
 
  Basis set information
 
@@ -186,89 +186,89 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
  ------------------------------------------------------------------
    Atom  x(au)  y(au)  z(au)    No. Type  Exponent    Coefficients
  ------------------------------------------------------------------
-   1 Co    0.000    0.000    0.000
+   1 Ni    0.000    0.000    0.000
                              1-   1  s
-                                         4.658E+06     6.484E-01
-                                         6.976E+05     1.214E+00
-                                         1.588E+05     2.102E+00
-                                         4.497E+04     3.442E+00
-                                         1.467E+04     5.380E+00
-                                         5.296E+03     8.036E+00
-                                         2.065E+03     1.132E+01
-                                         8.559E+02     1.452E+01
-                                         3.725E+02     1.577E+01
-                                         1.685E+02     1.252E+01
-                                         7.813E+01     5.451E+00
+                                         5.038E+06     6.838E-01
+                                         7.542E+05     1.280E+00
+                                         1.716E+05     2.217E+00
+                                         4.862E+04     3.630E+00
+                                         1.586E+04     5.674E+00
+                                         5.726E+03     8.475E+00
+                                         2.233E+03     1.194E+01
+                                         9.255E+02     1.534E+01
+                                         4.028E+02     1.668E+01
+                                         1.822E+02     1.327E+01
+                                         8.449E+01     5.805E+00
                              2-   2  s
-                                         1.535E+03     1.327E+00
-                                         4.755E+02     5.404E+00
-                                         1.825E+02     1.200E+01
-                                         7.892E+01     1.192E+01
+                                         1.678E+03     1.382E+00
+                                         5.192E+02     5.668E+00
+                                         1.990E+02     1.270E+01
+                                         8.590E+01     1.278E+01
                              3-   3  s
-                                         3.550E+01     1.037E+01
+                                         3.844E+01     1.100E+01
                              4-   4  s
-                                         1.679E+01     5.912E+00
+                                         1.825E+01     6.294E+00
                              5-   5  s
-                                         8.024E+00     3.398E+00
+                                         8.728E+00     3.619E+00
                              6-   6  s
-                                         3.457E+00     1.807E+00
+                                         3.762E+00     1.925E+00
                              7-   7  s
-                                         1.660E+00     1.042E+00
+                                         1.803E+00     1.109E+00
                              8-   8  s
-                                         7.338E-01     5.651E-01
+                                         7.951E-01     6.001E-01
                              9-   9  s
-                                         1.588E-01     1.793E-01
+                                         1.703E-01     1.890E-01
                             10-  10  s
-                                         7.454E-02     1.017E-01
+                                         7.897E-02     1.062E-01
                             11-  11  s
-                                         3.287E-02     5.502E-02
+                                         3.450E-02     5.706E-02
                             12-  14  p
-                                         8.425E+03     2.016E+01
-                                         1.996E+03     2.929E+01
-                                         6.478E+02     4.001E+01
-                                         2.469E+02     4.932E+01
-                                         1.040E+02     5.241E+01
-                                         4.683E+01     4.401E+01
-                                         2.193E+01     2.590E+01
-                                         1.054E+01     8.392E+00
-                                         4.982E+00     9.293E-01
+                                         9.157E+03     2.219E+01
+                                         2.169E+03     3.225E+01
+                                         7.040E+02     4.410E+01
+                                         2.684E+02     5.447E+01
+                                         1.131E+02     5.804E+01
+                                         5.096E+01     4.892E+01
+                                         2.390E+01     2.885E+01
+                                         1.150E+01     9.344E+00
+                                         5.441E+00     1.035E+00
                             15-  17  p
-                                         6.927E+01    -1.377E+00
-                                         2.458E+01    -1.829E+00
-                                         4.856E+00     2.369E+00
-                                         2.248E+00     1.880E+00
-                                         1.011E+00     5.606E-01
+                                         7.594E+01    -1.551E+00
+                                         2.704E+01    -2.083E+00
+                                         5.340E+00     2.681E+00
+                                         2.470E+00     2.117E+00
+                                         1.110E+00     6.273E-01
                             18-  20  p
-                                         4.192E-01     4.808E-01
+                                         4.590E-01     5.385E-01
                             21-  23  p
-                                         1.750E-01     1.613E-01
+                                         1.870E-01     1.753E-01
                             24-  26  p
-                                         7.300E-02     5.409E-02
+                                         7.620E-02     5.707E-02
                             27-  29  p
-                                         3.000E-02     1.780E-02
+                                         3.100E-02     1.854E-02
                             30-  34  d
-                                         2.376E+02     3.699E+01
-                                         7.109E+01     3.828E+01
-                                         2.712E+01     3.225E+01
-                                         1.145E+01     2.164E+01
-                                         5.139E+00     1.103E+01
-                                         2.332E+00     3.853E+00
+                                         2.581E+02     4.340E+01
+                                         7.725E+01     4.504E+01
+                                         2.950E+01     3.811E+01
+                                         1.248E+01     2.560E+01
+                                         5.607E+00     1.290E+01
+                                         2.543E+00     4.438E+00
                             35-  39  d
-                                         1.034E+00     1.745E+00
+                                         1.124E+00     2.019E+00
                             40-  44  d
-                                         4.379E-01     3.879E-01
+                                         4.736E-01     4.450E-01
                             45-  49  d
-                                         1.690E-01     7.328E-02
+                                         1.816E-01     8.316E-02
                             50-  54  d
-                                         6.600E-02     1.415E-02
+                                         7.100E-02     1.607E-02
                             55-  61  f
-                                         5.975E+00     8.217E+01
+                                         6.758E+00     1.084E+02
                             62-  68  f
-                                         1.903E+00     6.262E+00
+                                         2.174E+00     8.449E+00
                             69-  75  f
-                                         5.940E-01     4.560E-01
+                                         6.810E-01     6.202E-01
                             76-  84  g
-                                         2.500E+00     1.383E+01
+                                         2.872E+00     2.025E+01
  ------------------------------------------------------------------
  Single determinant :
 
@@ -278,7 +278,7 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
 
  Pseudopotentials
  ================
- No pseudopotential for Co - treating as all-electron.
+ No pseudopotential for Ni - treating as all-electron.
 
  Geometry derived from information in gwfn.data
  ==============================================
@@ -287,7 +287,7 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
 
  Atom Atno  Type              Position (Cartesian au)
  -------------------------------------------------------------
-    1  27   1         0.00000000     0.00000000     0.00000000
+    1  28   1         0.00000000     0.00000000     0.00000000
 
 
  Neighbour analysis of single atom not required.
@@ -323,29 +323,29 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
   Integer constants:
    C = 3
   Channel 1-1:
-   L (optimizable) =  2.54620595E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  2.69471234E+00 in [5.0000E-01, +Inf)
   Channel 1-2:
-   L (optimizable) =  2.39128350E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  2.23456414E+00 in [5.0000E-01, +Inf)
  Linear parameters:
   Number of linear parameters per channel: 8
   Channel 1-1:
    Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
-   c_2 (optimizable) =  8.25643479E-03
-   c_3 (optimizable) = -3.51840202E-03
-   c_4 (optimizable) = -1.80889899E-02
-   c_5 (optimizable) =  4.80325257E-02
-   c_6 (optimizable) = -4.90488671E-02
-   c_7 (optimizable) =  2.36855966E-02
-   c_8 (optimizable) = -4.26792352E-03
+   c_2 (optimizable) =  3.32411830E-03
+   c_3 (optimizable) = -4.81990386E-03
+   c_4 (optimizable) = -4.59352307E-03
+   c_5 (optimizable) =  1.45260791E-02
+   c_6 (optimizable) = -1.33443734E-02
+   c_7 (optimizable) =  5.75451453E-03
+   c_8 (optimizable) = -9.61518924E-04
   Channel 1-2:
    Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
-   c_2 (optimizable) = -1.78453786E-03
-   c_3 (optimizable) =  5.31193038E-02
-   c_4 (optimizable) = -1.24396603E-01
-   c_5 (optimizable) =  1.42319093E-01
-   c_6 (optimizable) = -7.24007287E-02
-   c_7 (optimizable) =  1.20899256E-02
-   c_8 (optimizable) =  1.45069771E-03
+   c_2 (optimizable) = -5.60189932E-03
+   c_3 (optimizable) =  7.36807824E-02
+   c_4 (optimizable) = -1.88102434E-01
+   c_5 (optimizable) =  2.37885285E-01
+   c_6 (optimizable) = -1.39346559E-01
+   c_7 (optimizable) =  3.15391051E-02
+   c_8 (optimizable) =  3.72235269E-04
 
  Term 2
  ------
@@ -359,18 +359,18 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
   Integer constants:
    C = 3
   Channel 1-n1:
-   L (optimizable) =  3.30796280E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  3.10882832E+00 in [5.0000E-01, +Inf)
  Linear parameters:
   Number of linear parameters per channel: 8
   Channel 1-n1:
    Constraints: 1 equation (0r+0s+0u+1c), 1 parameter determined
-   c_2 (optimizable) = -2.31979020E-01
-   c_3 (optimizable) = -1.79764485E-02
-   c_4 (optimizable) = -1.46084898E-01
-   c_5 (optimizable) =  1.97606054E-01
-   c_6 (optimizable) = -1.77268516E-01
-   c_7 (optimizable) =  7.79266627E-02
-   c_8 (optimizable) = -1.14775751E-02
+   c_2 (optimizable) = -3.44607531E-01
+   c_3 (optimizable) = -8.44677418E-02
+   c_4 (optimizable) = -1.93723764E-01
+   c_5 (optimizable) =  2.17862841E-01
+   c_6 (optimizable) = -2.24687411E-01
+   c_7 (optimizable) =  1.01248346E-01
+   c_8 (optimizable) = -1.61326965E-02
 
  Term 3
  ------
@@ -389,37 +389,37 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
   Integer constants:
    C = 3
   Channel 1-n1:
-   L (optimizable) =  3.32274506E+00 in [5.0000E-01, +Inf)
+   L (optimizable) =  3.41916918E+00 in [5.0000E-01, +Inf)
  Linear parameters:
   Number of linear parameters per channel: 64
   Channel 1-1-n1:
    Constraints: 45 equations (0r+24s+0u+21c), 38 parameters determined
-   c_1,2,2 (optimizable) = -9.14855351E-05
-   c_1,3,2 (optimizable) = -1.08578203E-03
-   c_1,3,3 (optimizable) =  1.88377538E-03
-   c_1,4,2 (optimizable) =  5.64357303E-04
-   c_1,4,3 (optimizable) = -8.55860979E-04
-   c_1,4,4 (optimizable) =  1.77949941E-04
-   c_2,3,1 (optimizable) = -2.67159340E-04
-   c_2,4,2 (optimizable) = -1.58452411E-05
-   c_3,1,1 (optimizable) = -6.00113440E-04
-   c_3,2,1 (optimizable) =  1.84110183E-04
-   c_3,2,2 (optimizable) =  7.42460953E-05
-   c_3,3,1 (optimizable) = -1.35661699E-04
-   c_3,3,2 (optimizable) = -2.29135503E-04
-   c_3,3,3 (optimizable) =  2.36295919E-04
-   c_3,4,2 (optimizable) = -2.15550111E-06
-   c_3,4,3 (optimizable) =  7.84968857E-05
-   c_3,4,4 (optimizable) = -6.60226827E-05
-   c_4,1,1 (optimizable) =  4.42833474E-04
-   c_4,2,1 (optimizable) = -2.18694708E-04
-   c_4,2,2 (optimizable) =  4.77844027E-05
-   c_4,3,1 (optimizable) =  6.05278579E-05
-   c_4,3,2 (optimizable) =  6.76970610E-05
-   c_4,3,3 (optimizable) = -1.05710516E-04
-   c_4,4,2 (optimizable) = -5.31154755E-06
-   c_4,4,3 (optimizable) = -2.81045440E-06
-   c_4,4,4 (optimizable) =  1.70366242E-05
+   c_1,2,2 (optimizable) = -1.12761969E-04
+   c_1,3,2 (optimizable) = -9.56445782E-04
+   c_1,3,3 (optimizable) =  1.75024371E-03
+   c_1,4,2 (optimizable) =  5.02640031E-04
+   c_1,4,3 (optimizable) = -8.88674372E-04
+   c_1,4,4 (optimizable) =  2.45534467E-04
+   c_2,3,1 (optimizable) = -2.06838704E-04
+   c_2,4,2 (optimizable) =  9.22440678E-06
+   c_3,1,1 (optimizable) = -4.79115714E-04
+   c_3,2,1 (optimizable) =  2.23933611E-04
+   c_3,2,2 (optimizable) =  3.46823597E-05
+   c_3,3,1 (optimizable) = -1.36801685E-04
+   c_3,3,2 (optimizable) = -2.40427543E-04
+   c_3,3,3 (optimizable) =  2.90956373E-04
+   c_3,4,2 (optimizable) =  2.69445069E-06
+   c_3,4,3 (optimizable) =  8.88804915E-05
+   c_3,4,4 (optimizable) = -9.13275359E-05
+   c_4,1,1 (optimizable) =  3.35251085E-04
+   c_4,2,1 (optimizable) = -1.80543406E-04
+   c_4,2,2 (optimizable) =  3.11598667E-05
+   c_4,3,1 (optimizable) =  5.24268040E-05
+   c_4,3,2 (optimizable) =  6.42820890E-05
+   c_4,3,3 (optimizable) = -8.93861195E-05
+   c_4,4,2 (optimizable) = -5.37369636E-06
+   c_4,4,3 (optimizable) = -1.55876269E-05
+   c_4,4,4 (optimizable) =  2.60298806E-05
 
 
  Finished General Jastrow setup.
@@ -439,12 +439,12 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
 
  Running VMC equilibration (5000 moves).
   Performing time-step optimization.
-  DTVMC #1:   3.5461E-02 (optimized)
-  DTVMC #2:   2.3872E-02 (optimized)
- Done. [total CPU time: 2s]
+  DTVMC #1:   3.2121E-02 (optimized)
+  DTVMC #2:   2.3826E-02 (optimized)
+ Done. [total CPU time: 3s]
 
  Finding optimal inner loop length (500 additional moves).
-  Optimized vmc_decorr_period: 7
+  Optimized vmc_decorr_period: 6
  Done. [total CPU time: 1s]
 
  Kinetic energy check performed.
@@ -457,75 +457,75 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
  =========================================================================
  In block : 1
 
- Acceptance ratio #1 <level 1>        (%)  =  51.1705
- Acceptance ratio #2 <level 1>        (%)  =  51.4398
- Acceptance ratio #1 <levels 1-2>     (%)  =  49.8605
- Acceptance ratio #2 <levels 1-2>     (%)  =  50.2032
- Diffusion constant #1           (Bohr^2)  = 1.3844E-03
- Diffusion constant #2           (Bohr^2)  = 9.1146E-04
- Correlation time                 (steps)  = 2.7823E+00 +- 3.8104E-01
- Efficiency                  (au^-2 s^-1)  = 4.1192E+01
+ Acceptance ratio #1 <level 1>        (%)  =  51.2031
+ Acceptance ratio #2 <level 1>        (%)  =  51.4936
+ Acceptance ratio #1 <levels 1-2>     (%)  =  49.9471
+ Acceptance ratio #2 <levels 1-2>     (%)  =  50.2573
+ Diffusion constant #1           (Bohr^2)  = 1.2097E-03
+ Diffusion constant #2           (Bohr^2)  = 8.9649E-04
+ Correlation time                 (steps)  = 2.7302E+00 +- 4.8038E-01
+ Efficiency                  (au^-2 s^-1)  = 3.5035E+01
  No. of VMC steps per MPI process          = 128
 
   Block average energies (au)
 
-  Total energy                       (au) =       -1382.673653288888
-  Standard error                        +/-           0.114247222447
+  Total energy                       (au) =       -1507.922320430753
+  Standard error                        +/-           0.124883550119
 
-  Kinetic energy KEI (used in Total) (au) =        1323.582500097825
-  Standard error                        +/-          10.480141360209
+  Kinetic energy KEI (used in Total) (au) =        1489.115244745634
+  Standard error                        +/-          11.192193798587
 
-  Kinetic energy TI                  (au) =        1331.073357163421
-  Standard error                        +/-          18.569376344853
+  Kinetic energy TI                  (au) =        1467.212984502781
+  Standard error                        +/-           9.785239408115
 
-  Kinetic energy FISQ                (au) =        1338.564214229018
-  Standard error                        +/-          37.032791141743
+  Kinetic energy FISQ                (au) =        1445.310724259929
+  Standard error                        +/-          16.465366984698
 
-  Potential energy                   (au) =       -2706.256153386712
-  Standard error                        +/-          10.484552207074
+  Potential energy                   (au) =       -2997.037565176387
+  Standard error                        +/-          11.190697889390
 
-  e-e interaction                    (au) =         534.879816723729
-  Standard error                        +/-           0.712076169797
+  e-e interaction                    (au) =         590.677835011912
+  Standard error                        +/-           0.777707414695
 
-  e-n interaction                    (au) =       -3241.135970110442
-  Standard error                        +/-          10.727119840549
+  e-n interaction                    (au) =       -3587.715400188298
+  Standard error                        +/-          11.406748375512
 
-  Variance of local energy           (au) =          51.795339474990
-  Standard error                        +/-           1.732235189062
+  Variance of local energy           (au) =          63.914020474545
+  Standard error                        +/-           3.104374904196
 
-  Maximum distance from origin       (au) =           9.862689835613
+  Maximum distance from origin       (au) =          10.972926750323
 
 
- Time taken in block    : : :        0.6900
+ Time taken in block    : : :        0.6700
 
  =========================================================================
  FINAL RESULT:
 
   VMC energy (au)    Standard error      Correction for serial correlation
 
- -1382.673653288888 +/- 0.114247222447      No correction
- -1382.673653288888 +/- 0.190568096552      Correlation time method
- -1382.673653288888 +/- 0.134261453498      On-the-fly reblocking method
+ -1507.922320430753 +/- 0.124883550119      No correction
+ -1507.922320430753 +/- 0.206348675109      Correlation time method
+ -1507.922320430753 +/- 0.162433720847      On-the-fly reblocking method
 
  Bad reblock convergence - probably not enough data samples.
 
  Dumping reblock data for energy:
-      mean:  -1382.673653288888 +/-       0.134261453498
-    stderr:      0.134261453498 +/-       0.024512675562
-    errfac:      1.175183523393 +/-       0.214558174990
-    N_corr:      1.381056313655 +/-       0.504290464116
+      mean:  -1507.922320430753 +/-       0.162433720847
+    stderr:      0.162433720847 +/-       0.043412237962
+    errfac:      1.300681479935 +/-       0.347621747660
+    N_corr:      1.691772312247 +/-       0.904290338408
    ------------------------------------------------------
     Block len      Std error   Err in error
-            1   1.142472E-01   7.168508E-03
-            2   1.293526E-01   1.152365E-02
-            4   1.217042E-01   1.545644E-02
-            8   1.342615E-01   2.451268E-02  *** BEST ***
-           16   1.245728E-01   3.329347E-02
-           32   1.870262E-01   7.635312E-02
-           64   5.884970E-02   4.161302E-02
+            1   1.248836E-01   7.835891E-03
+            2   1.366643E-01   1.217502E-02
+            4   1.566710E-01   1.989723E-02
+            8   1.765872E-01   3.224026E-02
+           16   1.624337E-01   4.341224E-02  *** BEST ***
+           32   8.819914E-02   3.600715E-02
+           64   6.790035E-02   4.801280E-02
    ------------------------------------------------------
 
-  Sample variance of E_L (au^2/sim.cell) : 51.795339474990
+  Sample variance of E_L (au^2/sim.cell) : 63.914020474545
 
  =========================================================================
 
@@ -542,21 +542,21 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
 
  Random number generator reset to state in config.in.
 
- EBEST = -1382.6736532888885 (au/prim cell inc. N-N)
- EREF  = -1382.6736532888885
+ EBEST = -1507.9223204307532 (au/prim cell inc. N-N)
+ EREF  = -1507.9223204307532
 
  =========================================================================
  In block : 1
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.608
- Number of config transfers               : 10115
- Acceptance ratio (%)                     : 99.847
- New best estimate of DMC energy (au)     : -1382.66341096
+ Load-balancing efficiency (%)            : 99.607
+ Number of config transfers               : 9993
+ Acceptance ratio (%)                     : 99.851
+ New best estimate of DMC energy (au)     : -1508.18567726
  Max no of attempts before accept move    : 6
- Maximum distance from origin (au)        : 10.13067964
+ Maximum distance from origin (au)        : 11.41333222
 
- Time taken in block    : : :     2496.6399
+ Time taken in block    : : :     2662.5601
 
 
  *     *     *     *     *     *     *     *     *     *     *     *
@@ -571,8 +571,8 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
 
  Random number generator reset to state in config.in.
 
- EBEST = -1382.6634109558831 (au/prim cell inc. N-N)
- EREF  = -1382.6083055387326
+ EBEST = -1508.1856772575265 (au/prim cell inc. N-N)
+ EREF  = -1508.1716238397598
 
  Number of previous DMC stats accumulation moves : 0
 
@@ -580,71 +580,71 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
  In block : 1
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.614
- Number of config transfers               : 9939
- Acceptance ratio (%)                     : 99.845
- New best estimate of DMC energy (au)     : -1382.61728390
+ Load-balancing efficiency (%)            : 99.629
+ Number of config transfers               : 10159
+ Acceptance ratio (%)                     : 99.849
+ New best estimate of DMC energy (au)     : -1508.20140933
  Max no of attempts before accept move    : 5
- New best estimate of effective time step : 0.00011370
- Maximum distance from origin (au)        : 9.92645653
+ New best estimate of effective time step : 0.00010573
+ Maximum distance from origin (au)        : 11.10497478
 
- Time taken in block    : : :     2437.0098
+ Time taken in block    : : :     2717.1401
 
  =========================================================================
  In block : 2
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.607
- Number of config transfers               : 10034
- Acceptance ratio (%)                     : 99.846
- New best estimate of DMC energy (au)     : -1382.62699080
+ Load-balancing efficiency (%)            : 99.606
+ Number of config transfers               : 10359
+ Acceptance ratio (%)                     : 99.851
+ New best estimate of DMC energy (au)     : -1508.19491446
  Max no of attempts before accept move    : 5
- New best estimate of effective time step : 0.00011370
- Maximum distance from origin (au)        : 10.32956082
+ New best estimate of effective time step : 0.00010573
+ Maximum distance from origin (au)        : 10.64472387
 
- Time taken in block    : : :     2491.5405
+ Time taken in block    : : :     2735.7397
 
  =========================================================================
  In block : 3
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.628
- Number of config transfers               : 10530
- Acceptance ratio (%)                     : 99.848
- New best estimate of DMC energy (au)     : -1382.62325994
- Max no of attempts before accept move    : 5
- New best estimate of effective time step : 0.00011370
- Maximum distance from origin (au)        : 9.89547796
+ Load-balancing efficiency (%)            : 99.627
+ Number of config transfers               : 9847
+ Acceptance ratio (%)                     : 99.851
+ New best estimate of DMC energy (au)     : -1508.19428014
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00010573
+ Maximum distance from origin (au)        : 10.04252775
 
- Time taken in block    : : :     2570.3496
+ Time taken in block    : : :     2633.7002
 
  =========================================================================
  In block : 4
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.621
- Number of config transfers               : 10390
- Acceptance ratio (%)                     : 99.848
- New best estimate of DMC energy (au)     : -1382.62213562
- Max no of attempts before accept move    : 5
- New best estimate of effective time step : 0.00011370
- Maximum distance from origin (au)        : 10.29458523
+ Load-balancing efficiency (%)            : 99.609
+ Number of config transfers               : 9943
+ Acceptance ratio (%)                     : 99.851
+ New best estimate of DMC energy (au)     : -1508.19193822
+ Max no of attempts before accept move    : 6
+ New best estimate of effective time step : 0.00010573
+ Maximum distance from origin (au)        : 9.57944223
 
- Time taken in block    : : :     2569.1699
+ Time taken in block    : : :     2626.0293
 
  =========================================================================
  In block : 5
 
  Number of moves in block                 : 10000
- Load-balancing efficiency (%)            : 99.632
- Number of config transfers               : 10295
- Acceptance ratio (%)                     : 99.846
- New best estimate of DMC energy (au)     : -1382.62150733
- Max no of attempts before accept move    : 6
- New best estimate of effective time step : 0.00011370
- Maximum distance from origin (au)        : 11.15410096
+ Load-balancing efficiency (%)            : 99.585
+ Number of config transfers               : 9768
+ Acceptance ratio (%)                     : 99.851
+ New best estimate of DMC energy (au)     : -1508.18969543
+ Max no of attempts before accept move    : 5
+ New best estimate of effective time step : 0.00010573
+ Maximum distance from origin (au)        : 10.32915783
 
- Time taken in block    : : :     2529.0811
+ Time taken in block    : : :     2618.5508
 
 
  Mixed estimators of the energies at the end of the run
@@ -652,64 +652,64 @@ Job started: Wed Sep 26 08:42:24 EDT 2018
  [All energies given in (au)]
  [All error bars obtained by reblocking]
 
- Total energy                 =    -1382.621507331731 +/-        0.002752214444
- Kinetic energy (TI)          =     1382.935814164499 +/-        0.446298022425
- Kinetic energy (KEI)         =     1383.101849533534 +/-        0.288608302331
- Kinetic energy (FISQ)        =     1382.769778795474 +/-        0.844146042212
- e-e interac. (Ewald/Coulomb) =      535.266637263440 +/-        0.147375174234
- e-i interaction (local)      =    -3300.989994128746 +/-        0.319922460736
+ Total energy                 =    -1508.189695432825 +/-        0.002890591878
+ Kinetic energy (TI)          =     1508.861322584171 +/-        0.494916945616
+ Kinetic energy (KEI)         =     1508.588719739012 +/-        0.318893986160
+ Kinetic energy (FISQ)        =     1509.133925429332 +/-        0.942989243789
+ e-e interac. (Ewald/Coulomb) =      589.534268463577 +/-        0.062988811758
+ e-i interaction (local)      =    -3606.312683635376 +/-        0.351629366401
 
  Dump of raw reblock data
  ------------------------
  Number of data points collected = 50000
  Dumping reblock data for energy:
-      mean:  -1382.621507331731 +/-       0.002752214444
-    stderr:      0.002752214444 +/-       0.000197948539
-    errfac:      4.757845500469 +/-       0.342200284754
-    N_corr:     22.637093806328 +/-       3.256272170150
+      mean:  -1508.189695432825 +/-       0.002890591878
+    stderr:      0.002890591878 +/-       0.000207901111
+    errfac:      4.690350916103 +/-       0.337345846755
+    N_corr:     21.999391716184 +/-       3.164540802743
    ------------------------------------------------------
     Block len      Std error   Err in error
-            1   5.784581E-04   1.829264E-06
-            2   7.205370E-04   3.222404E-06
-            4   9.085266E-04   5.746256E-06
-            8   1.141493E-03   1.021064E-05
-           16   1.403483E-03   1.775565E-05
-           32   1.714950E-03   3.068778E-05
-           64   1.980989E-03   5.014759E-05
-          128   2.354091E-03   8.433053E-05
-          256   2.532617E-03   1.284707E-04
-          512   2.752214E-03   1.979485E-04  *** BEST ***
-         1024   2.738285E-03   2.799767E-04
-         2048   3.020298E-03   4.413636E-04
-         4096   3.301316E-03   6.973116E-04
-         8192   4.002275E-03   1.252729E-03
-        16384   3.152018E-03   1.556004E-03
+            1   6.162848E-04   1.948883E-06
+            2   7.646834E-04   3.419836E-06
+            4   9.631039E-04   6.091447E-06
+            8   1.210143E-03   1.082471E-05
+           16   1.490397E-03   1.885521E-05
+           32   1.786792E-03   3.197334E-05
+           64   2.095687E-03   5.305111E-05
+          128   2.401988E-03   8.604633E-05
+          256   2.657853E-03   1.348235E-04
+          512   2.890592E-03   2.079011E-04  *** BEST ***
+         1024   2.888381E-03   2.953233E-04
+         2048   3.430627E-03   5.013258E-04
+         4096   3.429774E-03   7.244447E-04
+         8192   4.029393E-03   1.261217E-03
+        16384   4.362818E-03   2.153719E-03
    ------------------------------------------------------
 
  Analysis of statistical efficiency -- see PRB 81, 035119 (2010).
  ------------------------------------------------------------------
- Int corr length (steps)      =       22.637093806328 +/-        3.256272170150
- DMC time step (au)           =        0.000114000000
- Int correlation time (au)    =        0.002580628694 +/-        0.000371215027
- Var of loc en (au / simcell) =       67.394296146660 +/-        0.034299088770
- Std dev of local energy      =        8.209402910484
+ Int corr length (steps)      =       21.999391716184 +/-        3.164540802743
+ DMC time step (au)           =        0.000106000000
+ Int correlation time (au)    =        0.002331935522 +/-        0.000335441325
+ Var of loc en (au / simcell) =       76.809499865116 +/-        0.036416571158
+ Std dev of local energy      =        8.764102912741
  Number of steps of accum data=    50000.000000000000
- Effective number of steps    =    49968.965738969928
+ Effective number of steps    =    49973.738263738240
  Target weight                =     4096.000000000000
- Average population           =     4066.233800000000 +/-        0.453242460887
- Effective population         =     3498.094047785868
- Stat inefficiency (est)      =        1.008487577008 +/-        0.001228245918
- Stat inefficiency (measured) =        1.163136028686
+ Average population           =     4081.071540000000 +/-        0.418429349401
+ Effective population         =     3916.793271217596
+ Stat inefficiency (est)      =        1.008186640971 +/-        0.001184377535
+ Stat inefficiency (measured) =        1.042489583746
 
  =========================================================================
 
- Total CASINO CPU time  : : :    15097.8506
- Total CASINO real time : : :    15160.4219
+ Total CASINO CPU time  : : :    15997.9199
+ Total CASINO real time : : :    16050.7158
 
 
  Subroutine timers deactivated (use TIMING_INFO input keyword)
 
  =========================================================================
- Ends 2018/09/26 12:55:05.634
+ Ends 2018/09/26 19:30:43.212
 
-Job finished: Wed Sep 26 12:55:05 EDT 2018
+Job finished: Wed Sep 26 19:30:43 EDT 2018
