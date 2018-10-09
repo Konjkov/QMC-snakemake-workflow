@@ -610,24 +610,24 @@ rule VMC_OPT_BF_DATA_JASTROW:
         backflow = wildcards.backflow.split('_')
         mu_set = open('../backflow_mu_set.tmpl').read()
         phi_set = open('../backflow_phi_set.tmpl').read()
-        mu_sets = ''
-        phi_sets = ''
+        mu_sets = []
+        phi_sets = []
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         for nset, (_, labels) in enumerate(get_lebel_set(wildcards.molecule).items()):
-            mu_sets += mu_set.format(
+            mu_sets.append(mu_set.format(
                 number_of_atoms=len(labels),
                 spin_dep=0 if neu == ned else 1,
                 atom_labels=' '.join(map(str, labels)),
                 mu_term=backflow[1],
                 nset=nset + 1
-            )
+            ))
             if backflow[2] != '00':
-                phi_sets += phi_set.format(
+                phi_sets.append(phi_set.format(
                     number_of_atoms=len(labels),
                     atom_labels=' '.join(map(str, labels)),
                     phi_term_eN=backflow[2][0], phi_term_ee=backflow[2][1],
                     nset=nset + 1
-                )
+                ))
         ae_cutoffs = get_ae_cutoffs(wildcards.molecule)
         template = '../backflow_eta_mu.tmpl' if backflow[2] == '00' else '../backflow_eta_mu_phi.tmpl'
         with open(output[0], 'w') as f:
@@ -635,8 +635,8 @@ rule VMC_OPT_BF_DATA_JASTROW:
                 eta_term=backflow[0],
                 number_of_mu_sets=nset + 1,
                 number_of_phi_sets=nset + 1,
-                mu_sets=mu_sets,
-                phi_sets=phi_sets,
+                mu_sets='\n'.join(mu_sets),
+                phi_sets='\n'.join(phi_sets),
                 ae_cutoffs=ae_cutoffs
             ))
         source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'correlation.data')
