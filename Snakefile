@@ -87,7 +87,7 @@ def get_ae_cutoffs(molecule):
     """
     result = []
     for i, _ in enumerate(get_XYZ(molecule)):
-        result.append('{i}         {i}         0.5                          0'.format(i=i+1))
+        result.append('{i}         {i}         0.2                          0'.format(i=i+1))
     return '\n  '.join(result)
 
 def casino_time(*path):
