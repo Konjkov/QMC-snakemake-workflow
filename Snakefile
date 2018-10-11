@@ -610,17 +610,22 @@ rule VMC_OPT_BF_DATA_JASTROW:
         backflow = wildcards.backflow.split('_')
         mu_set = open('../backflow_mu_set.tmpl').read()
         phi_set = open('../backflow_phi_set.tmpl').read()
+        eta_term = open('../backflow_eta_term.tmpl').read()
+        mu_term = open('../backflow_mu_term.tmpl').read()
+        phi_term = open('../backflow_phi_term.tmpl').read()
         mu_sets = []
         phi_sets = []
+        terms = []
         neu, ned = get_up_down(wildcards.method, wildcards.basis, wildcards.molecule)
         for nset, (_, labels) in enumerate(get_lebel_set(wildcards.molecule).items()):
-            mu_sets.append(mu_set.format(
-                number_of_atoms=len(labels),
-                spin_dep=0 if neu == ned else 1,
-                atom_labels=' '.join(map(str, labels)),
-                mu_term=backflow[1],
-                nset=nset + 1
-            ))
+            if backflow[1] != '0':
+                mu_sets.append(mu_set.format(
+                    number_of_atoms=len(labels),
+                    spin_dep=0 if neu == ned else 1,
+                    atom_labels=' '.join(map(str, labels)),
+                    mu_term=backflow[1],
+                    nset=nset + 1
+                ))
             if backflow[2] != '00':
                 phi_sets.append(phi_set.format(
                     number_of_atoms=len(labels),
@@ -629,14 +634,15 @@ rule VMC_OPT_BF_DATA_JASTROW:
                     nset=nset + 1
                 ))
         ae_cutoffs = get_ae_cutoffs(wildcards.molecule)
-        template = '../backflow_eta_mu.tmpl' if backflow[2] == '00' else '../backflow_eta_mu_phi.tmpl'
+        if backflow[0] != '0':
+            terms.append(eta_term.format(eta_term=backflow[0]))
+        if backflow[1] != '0':
+            terms.append(mu_term.format(number_of_mu_sets=nset + 1, mu_sets='\n'.join(mu_sets)))
+        if backflow[2] != '00':
+            terms.append(phi_term.format(number_of_phi_sets=nset + 1, phi_sets='\n'.join(phi_sets)))
         with open(output[0], 'w') as f:
-            f.write(open(template).read().format(
-                eta_term=backflow[0],
-                number_of_mu_sets=nset + 1,
-                number_of_phi_sets=nset + 1,
-                mu_sets='\n'.join(mu_sets),
-                phi_sets='\n'.join(phi_sets),
+            f.write(open('../backflow.tmpl').read().format(
+                terms='\n'.join(terms),
                 ae_cutoffs=ae_cutoffs
             ))
         source_path = os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'correlation.data')
