@@ -604,7 +604,7 @@ rule VMC_OPT_BF_INPUT:
             ))
 
 rule VMC_OPT_BF_DATA_JASTROW:
-    input:      '{method}/{basis}/{molecule}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/gwfn.data'
+    input:      '{method}/{basis}/{molecule}/correlation.data'
     output:     '{method}/{basis}/{molecule}/VMC_OPT_BF/{opt_plan}/{jastrow}__{backflow}/correlation.data'
     run:
         backflow = wildcards.backflow.split('_')
