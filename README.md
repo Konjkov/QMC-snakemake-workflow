@@ -144,6 +144,11 @@ Test your configuration by performing a dry-run via
 
     snakemake <rule> -n
 
+If you took a files from previous calculations on another server or from this repository and want to continue the calculations,\
+you need to touch all files to prevent recalculations with the command
+
+    snakemake <rule> -t
+
 Execute the workflow locally via
 
     snakemake <rule>
