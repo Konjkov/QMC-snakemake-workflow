@@ -51,7 +51,7 @@ rule ALL_ORCA:
     input: '{method}/{basis}/{molecule}/mol.out'
 ```
 where:
-* __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, CASSCF(N.M) for multideterminant extension.
+* __method__ - method available in ORCA to calculate "trial" WFN like HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, OO-RI-SCS-MP2, CASSCF(N.M) for multideterminant extension.
 * __basis__ - any basis available in ORCA (i.e. cc-pVDZ, aug-cc-pVQZ, def2-SVP).
 * __molecule__ - molecular geometry file name in xyz-format (without extension) located in the `chem_database` directory.
 
@@ -63,7 +63,7 @@ rule ALL_QCHEM:
     input: '{method}/{basis}/{molecule}/mol.out'
 ```
 where:
-* __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), OO-RI-MP2, any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).
+* __method__ - method available in QCHEM to calculate "trial" WFN including HF, any DFT methods (i.e. B3LYP, CAM-BLYP, PBE0), any orbital optimized methods from the list (OD, OD(2), VOD, VOD(2), QCCD, QCCD(2), VQCCD).
 in case of OO-method T2-amplitudes subsequently used as determinant's weights but some type of active space truncation should be specified.\
 It should be done with two ways:
     - __OD__ all available T2-amplitudes were taken.
