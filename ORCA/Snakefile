@@ -216,13 +216,13 @@ rule ORCA_INPUT:
                     multiplicity=multiplicity,
                     procs='! PAL{}'.format(PROCS)
                 ))
-            elif wildcards.method == 'OO-RI-MP2':
+            elif wildcards.method in ('OO-RI-MP2', 'OO-RI-SCS-MP2'):
                 f.write(open('orca_oo_mp2.tmpl').read().format(
                     basis=wildcards.basis,
                     aux_basis=wildcards.basis + '/C',
                     extra_basis=extra_basis if wildcards.basis=='cc-pCVQZ' else '',
                     extra_params='! NoFrozenCore' if wildcards.basis=='cc-pCVQZ' else '',
-                    method='OO-RI-MP2',
+                    method=wildcards.method,
                     molecule=wildcards.molecule,
                     charge=charge,
                     multiplicity=multiplicity,
