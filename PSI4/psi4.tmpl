@@ -1,0 +1,10 @@
+memory 2 Gb
+
+geom = qcdb.Molecule.init_with_xyz('../../../../chem_database/{molecule}.xyz')
+lmol = geometry(geom.create_psi4_string_from_molecule())
+
+set reference uhf
+set basis {basis}
+
+hf_e, hf_wfn = energy('scf', return_wfn=True)
+molden(hf_wfn, 'molden.dat')

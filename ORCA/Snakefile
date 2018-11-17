@@ -141,7 +141,7 @@ rule MOLDEN:
                   ln -s mol.mdci.optorb mol.mdci.gbw &&
                   $(which orca_2mkl) mol.mdci -molden &&
                   ln -s mol.mdci.molden.input mol.molden.input""")
-        elif wildcards.method.startswith('CASSCF'):
+        elif 'CASSCF' in wildcards.method:
             shell("""
                   cd "$(dirname "{output}")"
                   $(which orca_2mkl) mol_job2 -molden &&
@@ -164,21 +164,66 @@ extra_basis = (
 end""")
 
 rule ORCA_INPUT:
-    input:      '../chem_database/{molecule}.xyz'
+    input:      INPUTS_DIR +'/{molecule}.xyz'
     output:     '{method}/{basis}/{molecule}/mol.inp'
     run:
         with open(input[0], 'r') as xyz:
             charge, multiplicity = xyz.readlines()[1].split()
         with open(output[0], 'w') as f:
             if wildcards.method.startswith('CASSCF'):
-                f.write(open('orca_casscf_mp2.tmpl').read().format(
+                offset = len('CASSCF') + 1
+                f.write(open('orca_casscf.tmpl').read().format(
                     basis=wildcards.basis,
                     method='HF',
                     molecule=wildcards.molecule,
                     charge=charge,
                     multiplicity=multiplicity,
-                    nel=wildcards.method[7:-1].split('.')[0],
-                    norb=wildcards.method[7:-1].split('.')[1]
+                    nel=wildcards.method[offset:-1].split('.')[0],
+                    norb=wildcards.method[offset:-1].split('.')[1]
+                ))
+            elif wildcards.method.startswith('MP2-CASSCF'):
+                offset = len('MP2-CASSCF') + 1
+                f.write(open('orca_casscf_mp2.tmpl').read().format(
+                    basis=wildcards.basis,
+                    method='MP2',
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    nel=wildcards.method[offset:-1].split('.')[0],
+                    norb=wildcards.method[offset:-1].split('.')[1]
+                ))
+            elif wildcards.method.startswith('OO-MP2-CASSCF'):
+                offset = len('OO-MP2-CASSCF') + 1
+                f.write(open('orca_casscf_mp2.tmpl').read().format(
+                    basis=wildcards.basis,
+                    method='OO-MP2',
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    nel=wildcards.method[offset:-1].split('.')[0],
+                    norb=wildcards.method[offset:-1].split('.')[1]
+                ))
+            elif wildcards.method.startswith('MRCI-CASSCF'):
+                offset = len('MRCI-CASSCF') + 1
+                f.write(open('orca_casscf_mrci.tmpl').read().format(
+                    basis=wildcards.basis,
+                    method='MRCI',
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    nel=wildcards.method[offset:-1].split('.')[0],
+                    norb=wildcards.method[offset:-1].split('.')[1]
+                ))
+            elif wildcards.method.startswith('B3LYP-CASSCF'):
+                offset = len('B3LYP-CASSCF') + 1
+                f.write(open('orca_casscf_dft.tmpl').read().format(
+                    basis=wildcards.basis,
+                    method='B3LYP',
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    nel=wildcards.method[offset:-1].split('.')[0],
+                    norb=wildcards.method[offset:-1].split('.')[1]
                 ))
             elif pp_basis(wildcards.basis):
                 external_basis = """GTOName = "../../../basis/{}.bas";""".format(wildcards.basis)

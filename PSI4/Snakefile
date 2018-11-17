@@ -1,0 +1,80 @@
+import re
+
+include: '../Snakefile'
+
+STD_ERR = config['STD_ERR']
+VMC_NCONFIG = config['VMC_NCONFIG']
+MOLECULES = config['MOLECULES']
+METHODS = config['METHODS']
+BASES = config['BASES']
+JASTROWS = config['JASTROWS']
+
+
+def get_up_down(*path):
+    """Get up and down electron numbers from PSI4 output file.
+      Nalpha       = 3
+      Nbeta        = 2
+    """
+    with open(os.path.join(*path, 'output.dat'), 'r') as psi4_out:
+        for line in psi4_out:
+            if line.startswith('  Nalpha'):
+                neu = line.split('=')[1]
+            if line.startswith('  Nbeta'):
+                ned = line.split('=')[1]
+    return neu, ned
+
+
+rule ALL:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+
+rule ALL_VMC_DMC:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+
+rule ALL_VMC_OPT_ENERGY:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+
+rule ALL_VMC_OPT:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+
+rule ALL_VMC:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, molecule=MOLECULES, basis=BASES),
+
+rule ALL_PSI4:
+    input:
+        expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, molecule=MOLECULES, basis=BASES),
+
+###################################################################################################################
+
+rule MDET:
+    input:      '{method}/{basis}/{molecule}/output.dat'
+    output:     '{method}/{basis}/{molecule}/correlation.data'
+    shell:      'cd "$(dirname "{output}")" && multideterminant.py 1 output.dat'
+
+rule GWFN:
+    input:      '{method}/{basis}/{molecule}/output.dat'
+    output:     '{method}/{basis}/{molecule}/gwfn.data'
+    shell:      'molden2qmc.py 1 "$(dirname "{output}")/molden.dat" "{output}"'
+
+rule PSI4_RUN:
+    input:      '{path}/input.dat'
+    output:     '{path}/output.dat'
+    shell:      'cd "{wildcards.path}" && psi4'
+
+rule PSI4_INPUT:
+    input:      INPUTS_DIR + '/{molecule}.xyz'
+    output:     '{method}/{basis}/{molecule}/input.dat'
+    run:
+        for file_name in output:
+            with open(file_name, 'w') as f:
+                f.write(open('psi4.tmpl').read().format(
+                    basis=wildcards.basis,
+                    method=wildcards.method,
+                    molecule=wildcards.molecule,
+                ))

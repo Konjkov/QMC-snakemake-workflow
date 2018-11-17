@@ -1,7 +1,7 @@
 # ================================================================
 # Orca input file
 # ================================================================
-! RI-MP2 {basis} def2-QZVPP/C VeryTightSCF
+! {method} {basis} def2-QZVPP/C KDIIS VeryTightSCF UseSym
 ! PAL4
 
 %mp2
@@ -11,7 +11,6 @@ end
 
 * xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
 
-
 $new_job
 ! {basis} VeryTightSCF
 ! MOREAD
@@ -19,6 +18,22 @@ $new_job
 %moinp "mol.mp2nat"
 
 %casscf
+  irrep 0
+  nel  {nel}
+  norb {norb}
+  CIStep ice
+end
+
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
+
+$new_job
+! {basis} VeryTightSCF
+! MOREAD NOITER
+
+%moinp "mol_job2.gbw"
+
+%casscf
+  irrep 0
   nel  {nel}
   norb {norb}
   PrintWF det
@@ -29,8 +44,12 @@ end
 
 $new_job
 ! {basis} VeryTightSCF
+! MOREAD NOITER
+
+%moinp "mol_job2.gbw"
 
 %casscf
+  irrep 0
   nel  {nel}
   norb {norb}
   PrintWF csf
