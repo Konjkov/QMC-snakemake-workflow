@@ -18,9 +18,9 @@ def get_up_down(*path):
     with open(os.path.join(*path, 'output.dat'), 'r') as psi4_out:
         for line in psi4_out:
             if line.startswith('  Nalpha'):
-                neu = line.split('=')[1]
+                neu = int(line.split('=')[1])
             if line.startswith('  Nbeta'):
-                ned = line.split('=')[1]
+                ned = int(line.split('=')[1])
     return neu, ned
 
 
@@ -71,10 +71,23 @@ rule PSI4_INPUT:
     input:      INPUTS_DIR + '/{molecule}.xyz'
     output:     '{method}/{basis}/{molecule}/input.dat'
     run:
-        for file_name in output:
-            with open(file_name, 'w') as f:
+        total_nel = get_XYZ_nel(wildcards.molecule)
+        with open(output[0], 'w') as f:
+            if wildcards.method.startswith('CASSCF'):
+                offset = len('CASSCF') + 1
+                nel, norb = map(int, wildcards.method[offset:-1].split('.'))
+                f.write(open('psi4_casscf.tmpl').read().format(
+                    basis=wildcards.basis,
+                    method='CASSCF',
+                    molecule=wildcards.molecule,
+                    docc=(total_nel - nel) // 2,
+                    norb=norb,
+                    reference='ROHF' if int(nel) > 1 else 'RHF'
+                ))
+            else:
                 f.write(open('psi4.tmpl').read().format(
                     basis=wildcards.basis,
                     method=wildcards.method,
                     molecule=wildcards.molecule,
+                    reference='UHF' if int(multiplicity) > 1 else 'RHF'
                 ))

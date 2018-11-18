@@ -2,10 +2,13 @@ memory 2 Gb
 
 geom = qcdb.Molecule.init_with_xyz('../../../../chem_database/{molecule}.xyz')
 lmol = geometry(geom.create_psi4_string_from_molecule())
+lmol.reset_point_group('c1')
 
 set {{
   reference {reference}
   basis {basis}
+  frozen_docc [ {docc} ]
+  active [ {norb} ]
 }}
 
 hf_e, hf_wfn = energy('{method}', return_wfn=True)

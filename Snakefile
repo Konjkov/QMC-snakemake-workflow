@@ -21,25 +21,48 @@ def atom_charge(symbol):
 
 def get_atomic_symbols(molecule):
     """Get atomic symbols set"""
-    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
-        natoms = int(input_geometry.readline())
-        charge, mult = map(int, input_geometry.readline().split())
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as xyz:
+        natoms = int(xyz.readline())
+        charge, mult = map(int, xyz.readline().split())
         atomic_symbols = set()
         for atom in range(natoms):
-            symbol, x, y, z = input_geometry.readline().split()
+            symbol, x, y, z = xyz.readline().split()
             atomic_symbols.add(symbol)
     return atomic_symbols
 
 def get_XYZ(molecule):
     """Load XYZ-geometry from file."""
-    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as input_geometry:
-        natoms = int(input_geometry.readline())
-        charge, mult = map(int, input_geometry.readline().split())
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as xyz:
+        natoms = int(xyz.readline())
+        charge, mult = map(int, xyz.readline().split())
         geometry = []
         for atom in range(natoms):
-            symbol, x, y, z = input_geometry.readline().split()
+            symbol, x, y, z = xyz.readline().split()
             geometry.append((atom_charge(symbol), map(float, (x, y, z))))
     return geometry
+
+def get_XYZ_charge_mul(molecule):
+    """Get charge and mutiplicity."""
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as xyz:
+        natoms = int(xyz.readline())
+        charge, mult = map(int, xyz.readline().split())
+        geometry = []
+        for atom in range(natoms):
+            symbol, x, y, z = xyz.readline().split()
+            geometry.append((atom_charge(symbol), map(float, (x, y, z))))
+    return charge, mult
+
+def get_XYZ_nel(molecule):
+    """Get number of electrons."""
+    with open(os.path.join('..', 'chem_database', molecule + '.xyz'), 'r') as xyz:
+        natoms = int(xyz.readline())
+        charge, mult = map(int, xyz.readline().split())
+        geometry = []
+        nel = 0
+        for atom in range(natoms):
+            symbol, x, y, z = xyz.readline().split()
+            nel += atom_charge(symbol)
+    return nel - charge
 
 def get_max_Z(molecule):
     """Get maximal Z for atoms in molecule."""
