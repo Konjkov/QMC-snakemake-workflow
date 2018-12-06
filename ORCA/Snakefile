@@ -62,11 +62,28 @@ def get_nelec(*path):
                 elec = int(m.group('elec'))
     return elec
 
+def get_irrep(*path):
+    """The symmetry of the initial guess is 1-Ag
+    """
+    table = {
+        'Ag': 0, 'B1g': 1, 'B2g': 2, 'B3g': 3, 'Au': 4, 'B1u': 5, 'B2u': 6, 'B3u': 7,
+        'A1': 0, 'A2': 1, 'B1': 2, 'B2': 3,
+    }
+    irrep = 0
+    regexp = re.compile('The symmetry of the initial guess is \d-(?P<symmetry>\w+)')
+    with open(os.path.join(*path, 'mol.out'), 'r') as orca_out:
+        for line in orca_out:
+            m = re.search(regexp, line)
+            if m:
+                symmetry = m.group('symmetry')
+                irrep = table[symmetry]
+    return irrep
+
 rule ALL:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
 
 rule ALL_VMC_DMC:
     input:
@@ -113,7 +130,11 @@ rule ALL_ORCA:
 rule MDET:
     input:      '{method}/{basis}/{molecule}/mol.out'
     output:     '{method}/{basis}/{molecule}/correlation.data'
-    shell:      'cd "$(dirname "{output}")" && multideterminant.py 3 mol.out'
+    run:
+        if 'CASSCF' in wildcards.method:
+            shell('cd "$(dirname "{output}")" && multideterminant.py 3 casscf.out')
+        else:
+            shell('cd "$(dirname "{output}")" && multideterminant.py 3 mol.out')
 
 rule GWFN:
     input:      '{method}/{basis}/{molecule}/mol.molden.input'
@@ -144,17 +165,41 @@ rule MOLDEN:
         elif 'CASSCF' in wildcards.method:
             shell("""
                   cd "$(dirname "{output}")"
-                  $(which orca_2mkl) mol_job2 -molden &&
-                  ln -s mol_job2.molden.input mol.molden.input""")
+                  $(which orca_2mkl) casscf -molden &&
+                  ln -s casscf.molden.input mol.molden.input""")
         else:
             shell("""
                   cd "$(dirname "{output}")"
                   $(which orca_2mkl) mol -molden""")
 
 rule ORCA_RUN:
-    input:      '{path}/mol.inp'
-    output:     '{path}/mol.out'
-    shell:      'cd "{wildcards.path}" && $(which orca) mol.inp > mol.out'
+    input:      '{method}/{basis}/{molecule}/mol.inp'
+    output:     '{method}/{basis}/{molecule}/mol.out'
+    run:
+        shell("""cd "$(dirname "{input}")" && $(which orca) mol.inp > mol.out""")
+        charge, multiplicity = get_XYZ_charge_mul(wildcards.molecule)
+        if 'CASSCF' in wildcards.method:
+            method = wildcards.method.split('-CASSCF')[0]
+            if method in ('MP2', 'OO-RI-MP2'):
+                moinp = 'mol.mp2nat'
+            else:
+                moinp = 'mol.qro'
+            irrep = get_irrep(os.path.join(wildcards.method, wildcards.basis, wildcards.molecule))
+            with open(os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'casscf.inp'), 'w') as f:
+                offset = wildcards.method.find('(') + 1
+                nel, norb = map(int, wildcards.method[offset:-1].split('.'))
+                f.write(open('orca_casscf.tmpl').read().format(
+                    basis=wildcards.basis,
+                    molecule=wildcards.molecule,
+                    moinp=moinp,
+                    irrep=irrep,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    nel=nel,
+                    norb=norb
+                ))
+
+            shell("""cd "$(dirname "{input}")" && $(which orca) casscf.inp > casscf.out""")
 
 extra_basis = (
 """%basis
@@ -169,65 +214,27 @@ rule ORCA_INPUT:
     run:
         charge, multiplicity = get_XYZ_charge_mul(wildcards.molecule)
         with open(output[0], 'w') as f:
-            if wildcards.method.startswith('CASSCF'):
+            if 'CASSCF' in wildcards.method:
                 offset = wildcards.method.find('(') + 1
                 nel, norb = map(int, wildcards.method[offset:-1].split('.'))
-                f.write(open('orca_casscf.tmpl').read().format(
+                method = wildcards.method.split('-CASSCF')[0]
+                if method == 'MP2':
+                    template = 'orca_mp2.tmpl'
+                elif method == 'OO-RI-MP2':
+                    template = 'orca_oo_mp2.tmpl'
+                else:
+                    template = 'orca.tmpl'
+                f.write(open(template).read().format(
                     basis=wildcards.basis,
-                    method='HF',
+                    extra_basis='',
+                    extra_params='',
+                    method=method,
                     molecule=wildcards.molecule,
                     charge=charge,
                     multiplicity=multiplicity,
                     nel=nel,
-                    norb=norb
-                ))
-            elif wildcards.method.startswith('MP2-CASSCF'):
-                offset = wildcards.method.find('(') + 1
-                nel, norb = map(int, wildcards.method[offset:-1].split('.'))
-                f.write(open('orca_casscf_mp2.tmpl').read().format(
-                    basis=wildcards.basis,
-                    method='MP2',
-                    molecule=wildcards.molecule,
-                    charge=charge,
-                    multiplicity=multiplicity,
-                    nel=nel,
-                    norb=norb
-                ))
-            elif wildcards.method.startswith('OO-MP2-CASSCF'):
-                offset = wildcards.method.find('(') + 1
-                nel, norb = map(int, wildcards.method[offset:-1].split('.'))
-                f.write(open('orca_casscf_mp2.tmpl').read().format(
-                    basis=wildcards.basis,
-                    method='OO-MP2',
-                    molecule=wildcards.molecule,
-                    charge=charge,
-                    multiplicity=multiplicity,
-                    nel=nel,
-                    norb=norb
-                ))
-            elif wildcards.method.startswith('MRCI-CASSCF'):
-                offset = wildcards.method.find('(') + 1
-                nel, norb = map(int, wildcards.method[offset:-1].split('.'))
-                f.write(open('orca_casscf_mrci.tmpl').read().format(
-                    basis=wildcards.basis,
-                    method='MRCI',
-                    molecule=wildcards.molecule,
-                    charge=charge,
-                    multiplicity=multiplicity,
-                    nel=nel,
-                    norb=norb
-                ))
-            elif wildcards.method.startswith('B3LYP-CASSCF'):
-                offset = wildcards.method.find('(') + 1
-                nel, norb = map(int, wildcards.method[offset:-1].split('.'))
-                f.write(open('orca_casscf_dft.tmpl').read().format(
-                    basis=wildcards.basis,
-                    method=wildcards.method.split('-')[0],
-                    molecule=wildcards.molecule,
-                    charge=charge,
-                    multiplicity=multiplicity,
-                    nel=nel,
-                    norb=norb
+                    norb=norb,
+                    procs='! PAL{}'.format(PROCS),
                 ))
             elif pp_basis(wildcards.basis):
                 external_basis = """GTOName = "../../../basis/{}.bas";""".format(wildcards.basis)
@@ -263,7 +270,7 @@ rule ORCA_INPUT:
                     molecule=wildcards.molecule,
                     charge=charge,
                     multiplicity=multiplicity,
-                    procs='! PAL{}'.format(PROCS)
+                    procs='! PAL{}'.format(PROCS),
                 ))
             elif wildcards.method in ('OO-RI-MP2', 'OO-RI-SCS-MP2'):
                 f.write(open('orca_oo_mp2.tmpl').read().format(
@@ -275,7 +282,7 @@ rule ORCA_INPUT:
                     molecule=wildcards.molecule,
                     charge=charge,
                     multiplicity=multiplicity,
-                    procs='! PAL{}'.format(PROCS)
+                    procs='! PAL{}'.format(PROCS),
                 ))
             elif wildcards.method == 'OOCCD':
                 f.write(open('orca_oo_ccd.tmpl').read().format(
@@ -287,7 +294,7 @@ rule ORCA_INPUT:
                     molecule=wildcards.molecule,
                     charge=charge,
                     multiplicity=multiplicity,
-                    procs='! PAL{}'.format(PROCS)
+                    procs='! PAL{}'.format(PROCS),
                 ))
             else:
                 f.write(open('orca.tmpl').read().format(
@@ -297,5 +304,6 @@ rule ORCA_INPUT:
                     method=wildcards.method,
                     molecule=wildcards.molecule,
                     charge=charge,
-                    multiplicity=multiplicity
+                    multiplicity=multiplicity,
+                    procs='! PAL{}'.format(PROCS),
                 ))

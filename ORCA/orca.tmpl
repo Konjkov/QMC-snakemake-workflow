@@ -1,14 +1,13 @@
 # ================================================================
 # Orca input file
 # ================================================================
-! {method} {basis} VeryTightSCF UseSym
+! UHF {method} {basis} VeryTightSCF UNO UseSym
 {extra_params}
-! PAL4
+{procs}
 
-#%scf
-#  STABPerform true
-#  STABRestartUHFifUnstable true
-#end
+%scf
+  STABPerform true
+end
 
 {extra_basis}
 
