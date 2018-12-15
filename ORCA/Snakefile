@@ -2,7 +2,7 @@ import os
 import multiprocessing
 from datetime import timedelta
 
-PROCS = multiprocessing.cpu_count()
+PROCS = min(16, multiprocessing.cpu_count())
 
 include: '../Snakefile'
 
@@ -81,9 +81,9 @@ def get_irrep(*path):
 
 rule ALL:
     input:
-        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_1/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
 
 rule ALL_VMC_DMC:
     input:

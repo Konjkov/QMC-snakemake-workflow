@@ -27,6 +27,7 @@ opt_method        : emin           #*! Opt method (varmin/madmin/emin/...)
 opt_jastrow       : T              #*! Optimize Jastrow factor (Boolean)
 opt_detcoeff      : T              #*! Optimize determinant coeffs (Boolean)
 opt_backflow      : {backflow}              #*! Optimize backflow parameters (Boolean)
+opt_orbitals      : F              #*! Optimize orbital parameters (Boolean)
 %block opt_plan                    #*! Multi-cycle optimization plan (Block)
 1 method=varmin backflow=F det_coeff=F fix_cutoffs=T
 2
@@ -38,3 +39,4 @@ opt_backflow      : {backflow}              #*! Optimize backflow parameters (Bo
 # GENERAL PARAMETERS
 use_gjastrow      : T              #*! Use a Jastrow function (Boolean)
 backflow          : {backflow}              #*! Use backflow corrections (Boolean)
+use_orbmods       : F              #*! Single particle orbital modifications (Boolean)
