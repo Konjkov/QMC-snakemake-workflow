@@ -1,0 +1,118 @@
+ START HEADER
+ No title given.
+ END HEADER
+
+ START VERSION
+   1
+ END VERSION
+
+ START BACKFLOW
+ Title
+ title
+ Truncation order
+   3
+ START ETA TERM
+ Expansion order
+   9
+ Spin dep (0->uu=dd=ud; 1->uu=dd/=ud; 2->uu/=dd/=ud)
+   1
+ Cut-off radii ;      Optimizable (0=NO; 1=YES; 2=YES BUT NO SPIN-DEP)
+   4.6547590520525164                2       ! L_1
+ Parameter ;          Optimizable (0=NO; 1=YES)
+  -5.0329552124658119E-003           1       ! c_0,1
+   1.5074367337789728E-002           1       ! c_2,1
+  -9.2033742446556120E-003           1       ! c_3,1
+   6.7044115585876559E-004           1       ! c_4,1
+   6.8905526346346442E-004           1       ! c_5,1
+   1.1066529411694327E-005           1       ! c_6,1
+  -4.3146384859576489E-005           1       ! c_7,1
+  -7.1497181336355067E-006           1       ! c_8,1
+   2.5451180285290752E-006           1       ! c_9,1
+   4.5808936574344246E-003           1       ! c_0,2
+  -9.9743817046221931E-003           1       ! c_1,2
+   9.6265559322833670E-003           1       ! c_2,2
+  -2.6670057566137765E-003           1       ! c_3,2
+   4.7248765044858557E-004           1       ! c_4,2
+   3.3404820466156374E-005           1       ! c_5,2
+  -8.4352218476973419E-005           1       ! c_6,2
+  -1.6321418452556060E-006           1       ! c_7,2
+   7.8954946162917901E-006           1       ! c_8,2
+  -5.2316529413763610E-007           1       ! c_9,2
+ END ETA TERM
+ START PHI TERM
+ Number of sets ; labelling (1->atom in s. cell; 2->atom in p. cell; 3->species)
+   1 1
+ START SET 1
+ Number of atoms in set
+   1
+ Label of the atom in this set
+    1
+ Type of e-N cusp conditions (0=PP; 1=AE)
+   1
+ Irrotational Phi term (0=NO; 1=YES)
+   0
+ Electron-nucleus expansion order N_eN
+   3
+ Electron-electron expansion order N_ee
+   1
+ Spin dep (0->uu=dd=ud; 1->uu=dd/=ud; 2->uu/=dd/=ud)
+   1
+ Cutoff (a.u.)     ;  Optimizable (0=NO; 1=YES)
+   5.7841573537041571                1
+ Parameter values  ;  Optimizable (0=NO; 1=YES)
+   5.4243763298918661E-002           1       ! phi_2,2,0,1
+  -1.9360826620645311E-002           1       ! phi_3,2,0,1
+  -1.9567609120580434E-002           1       ! phi_2,3,0,1
+   4.8040771365303906E-003           1       ! phi_3,3,0,1
+  -8.2778886404674852E-003           1       ! phi_1,2,1,1
+   1.6814646019527890E-003           1       ! phi_2,3,1,1
+  -2.4233169737984638E-002           1       ! theta_2,1,0,1
+   3.6399895058715659E-002           1       ! theta_3,1,0,1
+   1.0487514947810384E-002           1       ! theta_2,2,0,1
+   3.8882255792763005E-003           1       ! theta_3,2,0,1
+  -4.6760773616198840E-003           1       ! theta_2,3,0,1
+  -1.4059696874074842E-004           1       ! theta_3,3,0,1
+   3.0361155661742804E-002           1       ! theta_1,2,1,1
+   9.2744068386176406E-004           1       ! theta_2,3,1,1
+   8.5681646001060638E-002           1       ! phi_2,2,0,2
+  -1.8330545363617664E-002           1       ! phi_3,2,0,2
+  -2.9515477549717891E-002           1       ! phi_2,3,0,2
+   6.8048558655605844E-003           1       ! phi_3,3,0,2
+  -3.4253654601124950E-002           1       ! phi_1,1,1,2
+   3.0584673937820848E-002           1       ! phi_2,1,1,2
+   5.9827996048313946E-003           1       ! phi_1,2,1,2
+  -2.9428683496715513E-002           1       ! phi_2,2,1,2
+   4.1454664116325245E-003           1       ! phi_3,2,1,2
+   7.3670576804974134E-003           1       ! phi_2,3,1,2
+  -1.7144252296668336E-003           1       ! phi_3,3,1,2
+  -2.1111404254558101E-002           1       ! theta_2,1,0,2
+   2.5033510557505096E-002           1       ! theta_3,1,0,2
+  -1.2548663375043881E-002           1       ! theta_2,2,0,2
+   1.6838477301046303E-002           1       ! theta_3,2,0,2
+  -1.2271741521277104E-002           1       ! theta_2,3,0,2
+   6.7788890128553522E-004           1       ! theta_3,3,0,2
+   1.8512354437705051E-002           1       ! theta_1,2,1,2
+   4.4134152731496170E-003           1       ! theta_2,3,1,2
+ END SET 1
+ END PHI TERM
+ START AE CUTOFFS
+ Nucleus ; Set ; Cutoff length     ;  Optimizable (0=NO; 1=YES)
+  1         1     0.20000000000000001                0
+ END AE CUTOFFS
+ END BACKFLOW
+
+ START MDET
+ Title
+ multideterminant WFN generated from Orca output data
+ Multideterminant/excitation specification (see manual)
+ MD
+   3                                  ! Number of dets
+  0.97208700000000003        1   0      ! c_1 ; label ; opt-flag
+  -8.7576811968158516E-002   2   1      ! c_2 ; label ; opt-flag
+  -8.7576811968158516E-002   2   1      ! c_3 ; label ; opt-flag
+ DET 2 1 PR 2 1 4 1
+ DET 2 2 PR 2 1 4 1
+ DET 3 1 PR 2 1 5 1
+ DET 3 2 PR 2 1 5 1
+ END MDET
+
