@@ -196,7 +196,8 @@ rule ORCA_RUN:
                     charge=charge,
                     multiplicity=multiplicity,
                     nel=nel,
-                    norb=norb
+                    norb=norb,
+                    procs='! PAL{}'.format(PROCS),
                 ))
 
             shell("""cd "$(dirname "{input}")" && $(which orca) casscf.inp > casscf.out""")
