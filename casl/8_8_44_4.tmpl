@@ -28,3 +28,16 @@ JASTROW:
       Order: 4
     e-n cutoff:
       Type: polynomial
+  TERM 4:
+    Rank: [3, 0]
+    Rules: [1-1=2-2]
+    e-e basis:
+      Type: natural power
+      Order: 4
+    e-e cutoff:
+      Type: polynomial
+      Parameters:
+        Channel 1-1:
+          L: [ 1.5, limits: [ 1.0, 3.0 ]]
+        Channel 1-2:
+          L: [ 1.5, limits: [ 1.0, 3.0 ]]
