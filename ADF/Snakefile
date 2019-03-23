@@ -11,12 +11,12 @@ JASTROWS = config['JASTROWS']
 
 
 def get_up_down(*path):
-    """Get up and down electron numbers from PSI4 output file.
+    """Get up and down electron numbers from ADF output file.
       Nalpha       = 3
       Nbeta        = 2
     """
-    with open(os.path.join(*path, 'output.dat'), 'r') as psi4_out:
-        for line in psi4_out:
+    with open(os.path.join(*path, 'output.dat'), 'r') as adf_out:
+        for line in adf_out:
             if line.startswith('  Nalpha'):
                 neu = int(line.split('=')[1])
             if line.startswith('  Nbeta'):
@@ -48,7 +48,7 @@ rule ALL_VMC:
     input:
         expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, molecule=MOLECULES, basis=BASES),
 
-rule ALL_PSI4:
+rule ALL_ADF:
     input:
         expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, molecule=MOLECULES, basis=BASES),
 
@@ -64,32 +64,19 @@ rule GWFN:
     output:     '{method}/{basis}/{molecule}/gwfn.data'
     shell:      'molden2qmc.py 1 "$(dirname "{output}")/molden.dat" "{output}"'
 
-rule PSI4_RUN:
+rule ADF_RUN:
     input:      '{path}/input.dat'
     output:     '{path}/output.dat'
-    shell:      'cd "{wildcards.path}" && psi4'
+    shell:      'cd "{wildcards.path}" && adf < {input} > {output}'
 
-rule PSI4_INPUT:
+rule ADF_INPUT:
     input:      INPUTS_DIR + '/{molecule}.xyz'
     output:     '{method}/{basis}/{molecule}/input.dat'
     run:
         total_nel = get_XYZ_nel(wildcards.molecule)
         with open(output[0], 'w') as f:
-            if wildcards.method.startswith('CASSCF'):
-                offset = len('CASSCF') + 1
-                nel, norb = map(int, wildcards.method[offset:-1].split('.'))
-                f.write(open('psi4_casscf.tmpl').read().format(
-                    basis=wildcards.basis,
-                    method='CASSCF',
-                    molecule=wildcards.molecule,
-                    docc=(total_nel - nel) // 2,
-                    norb=norb,
-                    reference='ROHF' if int(nel) > 1 else 'RHF'
-                ))
-            else:
-                f.write(open('psi4.tmpl').read().format(
-                    basis=wildcards.basis,
-                    method=wildcards.method,
-                    molecule=wildcards.molecule,
-                    reference='UHF' if int(multiplicity) > 1 else 'RHF'
-                ))
+            f.write(open('adf.tmpl').read().format(
+                basis=wildcards.basis,
+                method=wildcards.method,
+                molecule=wildcards.molecule,
+            ))
