@@ -4,6 +4,8 @@ from datetime import timedelta
 
 PROCS = min(16, multiprocessing.cpu_count())
 
+WFN_FILE = 'gwfn.data'
+WFN_TYPE = 'gaussian'
 include: '../Snakefile'
 
 STD_ERR = config['STD_ERR']
@@ -137,7 +139,7 @@ rule MDET:
         else:
             shell('cd "$(dirname "{output}")" && multideterminant.py 3 mol.out')
 
-rule GWFN:
+rule WFN:
     input:      '{method}/{basis}/{molecule}/mol.molden.input'
     output:     '{method}/{basis}/{molecule}/gwfn.data'
     run:

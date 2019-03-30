@@ -1,5 +1,7 @@
 import re
 
+WFN_FILE = 'gwfn.data'
+WFN_TYPE = 'gaussian'
 include: '../Snakefile'
 
 STD_ERR = config['STD_ERR']
@@ -9,6 +11,7 @@ METHODS = config['METHODS']
 BASES = config['BASES']
 JASTROWS = config['JASTROWS']
 STABILITY_ANALYSIS = False
+
 
 def hf_energy(*path):
     """Get QCHEM output energy."""
@@ -101,7 +104,7 @@ rule MDET:
         else:
             shell('cd "$(dirname "{output}")" && multideterminant.py 7 mol.out')
 
-rule GWFN:
+rule WFN:
     input:      '{method}/{basis}/{molecule}/mol.molden'
     output:     '{method}/{basis}/{molecule}/gwfn.data'
     shell:      'molden2qmc.py 7 "{input}" "{output}"'

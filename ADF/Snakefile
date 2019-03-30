@@ -1,5 +1,7 @@
 import re
 
+WFN_FILE = 'stowfn.data'
+WFN_TYPE = 'slater-type'
 include: '../Snakefile'
 
 STD_ERR = config['STD_ERR']
@@ -10,17 +12,13 @@ BASES = config['BASES']
 JASTROWS = config['JASTROWS']
 
 
-def get_up_down(*path):
-    """Get up and down electron numbers from ADF output file.
-      Nalpha       = 3
-      Nbeta        = 2
+def get_up_down(method, basis, molecule):
+    """Get up and down electron numbers from XYZ output file.
     """
-    with open(os.path.join(*path, 'output.dat'), 'r') as adf_out:
-        for line in adf_out:
-            if line.startswith('  Nalpha'):
-                neu = int(line.split('=')[1])
-            if line.startswith('  Nbeta'):
-                ned = int(line.split('=')[1])
+    charge, mult = get_XYZ_charge_mul(molecule)
+    elec = get_XYZ_nel(molecule)
+    neu = (elec + mult - 1)//2
+    ned = (elec - mult + 1)//2
     return neu, ned
 
 
@@ -36,6 +34,12 @@ rule ALL_VMC_DMC:
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
         expand('{method}/{basis}/{molecule}/VMC_DMC/emin/{jastrow}/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
 
+rule ALL_VMC_DMC_BF:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+
 rule ALL_VMC_OPT_ENERGY:
     input:
         expand('{method}/{basis}/{molecule}/VMC_OPT_ENERGY/emin/{jastrow}/1000000/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
@@ -44,39 +48,65 @@ rule ALL_VMC_OPT:
     input:
         expand('{method}/{basis}/{molecule}/VMC_OPT/emin/{jastrow}/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
 
+rule ALL_VMC_OPT_BF:
+    input:
+        expand('{method}/{basis}/{molecule}/VMC_OPT_BF/emin_BF/{jastrow}__9_9_33/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+
 rule ALL_VMC:
     input:
         expand('{method}/{basis}/{molecule}/VMC/10000000/out', method=METHODS, molecule=MOLECULES, basis=BASES),
 
 rule ALL_ADF:
     input:
-        expand('{method}/{basis}/{molecule}/gwfn.data', method=METHODS, molecule=MOLECULES, basis=BASES),
+        expand('{method}/{basis}/{molecule}/stowfn.data', method=METHODS, molecule=MOLECULES, basis=BASES),
 
 ###################################################################################################################
 
 rule MDET:
     input:      '{method}/{basis}/{molecule}/output.dat'
     output:     '{method}/{basis}/{molecule}/correlation.data'
-    shell:      'cd "$(dirname "{output}")" && multideterminant.py 1 output.dat'
+    shell:      'cd "$(dirname "{output}")" && multideterminant.py 0 output.dat'
 
-rule GWFN:
+rule WFN:
+    input:      '{method}/{basis}/{molecule}/TAPE21.asc'
+    output:     '{method}/{basis}/{molecule}/stowfn.data'
+    shell:      'cd "$(dirname "{output}")" && adf2stowf.py'
+
+rule TAPE21:
     input:      '{method}/{basis}/{molecule}/output.dat'
-    output:     '{method}/{basis}/{molecule}/gwfn.data'
-    shell:      'molden2qmc.py 1 "$(dirname "{output}")/molden.dat" "{output}"'
+    output:     '{method}/{basis}/{molecule}/TAPE21.asc'
+    shell:      'dmpkf "$(dirname "{output}")/TAPE21" > "{output}"'
 
 rule ADF_RUN:
     input:      '{path}/input.dat'
     output:     '{path}/output.dat'
-    shell:      'cd "{wildcards.path}" && adf < {input} > {output}'
+    shell:      'cd "{wildcards.path}" && adf < input.dat > output.dat'
 
 rule ADF_INPUT:
     input:      INPUTS_DIR + '/{molecule}.xyz'
     output:     '{method}/{basis}/{molecule}/input.dat'
     run:
-        total_nel = get_XYZ_nel(wildcards.molecule)
+        charge, multiplicity = get_XYZ_charge_mul(wildcards.molecule)
+        with open(input[0], 'r') as f:
+            f.readline()                   # skip first line
+            f.readline()                   # skip second line
+            molecule_data = f.read()[:-1]  # skip last NL
         with open(output[0], 'w') as f:
+            basis = wildcards.basis.replace('ZORA_', 'ZORA/')
+            splited_basis = basis.split('_')
+            basis = splited_basis[0]
+            if len(splited_basis) == 2:
+                # None, Small, Medium, Large
+                core = splited_basis[1]
+            else:
+                core = 'None'
             f.write(open('adf.tmpl').read().format(
-                basis=wildcards.basis,
+                basis=basis,
+                core=core,
                 method=wildcards.method,
                 molecule=wildcards.molecule,
+                charge=charge,
+                a_minus_b=multiplicity-1,
+                unrestricted='UNRESTRICTED' if multiplicity>1 else '',
+                molecule_data=molecule_data,
             ))

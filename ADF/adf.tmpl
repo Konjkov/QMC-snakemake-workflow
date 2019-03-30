@@ -1,12 +1,16 @@
 Title {molecule}
 
 ATOMS
-  He       0.000000000000       0.000000000000       0.000000000000
+{molecule_data}
 END
+
+CHARGE {charge} {a_minus_b}
+
+{unrestricted}
 
 BASIS
   Type {basis}
-  Core None
+  Core {core}
 END
 
 XC

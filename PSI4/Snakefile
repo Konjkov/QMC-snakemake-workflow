@@ -1,5 +1,7 @@
 import re
 
+WFN_FILE = 'gwfn.data'
+WFN_TYPE = 'gaussian'
 include: '../Snakefile'
 
 STD_ERR = config['STD_ERR']
@@ -59,7 +61,7 @@ rule MDET:
     output:     '{method}/{basis}/{molecule}/correlation.data'
     shell:      'cd "$(dirname "{output}")" && multideterminant.py 1 output.dat'
 
-rule GWFN:
+rule WFN:
     input:      '{method}/{basis}/{molecule}/output.dat'
     output:     '{method}/{basis}/{molecule}/gwfn.data'
     shell:      'molden2qmc.py 1 "$(dirname "{output}")/molden.dat" "{output}"'
