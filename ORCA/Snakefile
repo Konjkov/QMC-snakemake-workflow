@@ -136,6 +136,8 @@ rule MDET:
     run:
         if 'CASSCF' in wildcards.method:
             shell('cd "$(dirname "{output}")" && multideterminant.py 3 casscf.out')
+        elif 'NEVPT2' in wildcards.method:
+            shell('cd "$(dirname "{output}")" && multideterminant.py 3 nevpt2.out')
         else:
             shell('cd "$(dirname "{output}")" && multideterminant.py 3 mol.out')
 
@@ -170,6 +172,12 @@ rule MOLDEN:
                   cd "$(dirname "{output}")"
                   $(which orca_2mkl) casscf -molden &&
                   ln -s casscf.molden.input mol.molden.input""")
+        elif 'NEVPT2' in wildcards.method:
+            shell("""
+                  cd "$(dirname "{output}")"
+                  ln -s nevpt2.PT2.*.nat nevpt2.nat.gbw &&
+                  $(which orca_2mkl) nevpt2.nat -molden &&
+                  ln -s nevpt2.nat.molden.input mol.molden.input""")
         else:
             shell("""
                   cd "$(dirname "{output}")"
@@ -204,6 +212,27 @@ rule ORCA_RUN:
                 ))
 
             shell("""cd "$(dirname "{input}")" && $(which orca) casscf.inp > casscf.out""")
+        elif 'NEVPT2' in wildcards.method:
+            method = wildcards.method.split('-NEVPT2')[0]
+            if method in ('MP2', 'OO-RI-MP2'):
+                moinp = 'mol.mp2nat'
+            irrep = get_irrep(os.path.join(wildcards.method, wildcards.basis, wildcards.molecule))
+            with open(os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'nevpt2.inp'), 'w') as f:
+                offset = wildcards.method.find('(') + 1
+                nel, norb = map(int, wildcards.method[offset:-1].split('.'))
+                f.write(open('orca_nevpt2.tmpl').read().format(
+                    basis=wildcards.basis,
+                    molecule=wildcards.molecule,
+                    moinp=moinp,
+                    irrep=irrep,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    nel=nel,
+                    norb=norb,
+                    procs='! PAL{}'.format(PROCS),
+                ))
+
+            shell("""cd "$(dirname "{input}")" && $(which orca) nevpt2.inp > nevpt2.out""")
 
 extra_basis = (
 """%basis
@@ -230,6 +259,24 @@ rule ORCA_INPUT:
                     template = 'orca_casscf_mrci.tmpl'
                 else:
                     template = 'orca.tmpl'
+                f.write(open(template).read().format(
+                    basis=wildcards.basis,
+                    extra_basis='',
+                    extra_params='',
+                    method=method,
+                    molecule=wildcards.molecule,
+                    charge=charge,
+                    multiplicity=multiplicity,
+                    nel=nel,
+                    norb=norb,
+                    procs='! PAL{}'.format(PROCS),
+                ))
+            elif 'NEVPT2' in wildcards.method:
+                offset = wildcards.method.find('(') + 1
+                nel, norb = map(int, wildcards.method[offset:-1].split('.'))
+                method = wildcards.method.split('-NEVPT2')[0]
+                if method == 'MP2':
+                    template = 'orca_mp2.tmpl'
                 f.write(open(template).read().format(
                     basis=wildcards.basis,
                     extra_basis='',
