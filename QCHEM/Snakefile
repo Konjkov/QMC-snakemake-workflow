@@ -131,10 +131,11 @@ rule QCHEM_RUN:
                 template = 'qchem_multideterminant.tmpl'
             else:
                 method = wildcards.method
-                if stability_analysis == 'true':
-                    template = 'qchem.tmpl'
-                else:
+                if stability_analysis:
                     template = 'qchem_unstable.tmpl'
+                else:
+                    template = 'qchem.tmpl'
+#                    template = 'qchem_geminals.tmpl'
             with open(input[0], 'r') as f:
                 f.readline()                   # skip first line
                 molecule_data = f.read()[:-1]  # skip last NL
@@ -183,6 +184,7 @@ rule QCHEM_RUN:
                         method=method,
                         molecule_data=molecule_data,
                         algorithm=algorithm,
+                        unrestricted='true',
                         stability_analysis=stability_analysis
                     ))
             shell('qchem -nt 4 "{qchem_input}" "{output}"')

@@ -1,0 +1,39 @@
+$comment
+qchem input for CASINO geminals
+$end
+
+$rem
+SYMMETRY              true
+BASIS                 {basis}
+METHOD                {method}
+MAX_SCF_CYCLES        100
+SCF_CONVERGENCE       8
+SCF_ALGORITHM         {algorithm}
+UNRESTRICTED          {unrestricted}
+MEM_STATIC            2000
+STABILITY_ANALYSIS    {stability_analysis}
+$end
+
+$molecule
+{molecule_data}
+$end
+
+@@@
+
+$rem
+SYMMETRY              true
+SSG                   1
+SSG_ARAI_OPT          0
+BASIS                 {basis}
+METHOD                {method}
+SCF_GUESS             read
+SCF_CONVERGENCE       8
+UNRESTRICTED          {unrestricted}
+MAX_SCF_CYCLES        200
+MOLDEN_FORMAT         true
+PRINT_ORBITALS        2000
+$end
+
+$molecule
+{molecule_data}
+$end

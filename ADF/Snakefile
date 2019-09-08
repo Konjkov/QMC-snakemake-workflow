@@ -37,8 +37,8 @@ rule ALL_VMC_DMC:
 rule ALL_VMC_DMC_BF:
     input:
         expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_1_1024_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
-#        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_2_2048_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
+        expand('{method}/{basis}/{molecule}/VMC_DMC_BF/emin_BF/{jastrow}__9_9_33/tmax_4_4096_2/out', method=METHODS, basis=BASES, molecule=MOLECULES, jastrow=JASTROWS),
 
 rule ALL_VMC_OPT_ENERGY:
     input:
@@ -68,14 +68,19 @@ rule MDET:
     shell:      'cd "$(dirname "{output}")" && multideterminant.py 0 output.dat'
 
 rule WFN:
-    input:      '{method}/{basis}/{molecule}/TAPE21.asc'
+    input:      '{method}/{basis}/{molecule}/output.dat'
     output:     '{method}/{basis}/{molecule}/stowfn.data'
     shell:      'cd "$(dirname "{output}")" && adf2stowf.py'
 
-rule TAPE21:
-    input:      '{method}/{basis}/{molecule}/output.dat'
-    output:     '{method}/{basis}/{molecule}/TAPE21.asc'
-    shell:      'dmpkf "$(dirname "{output}")/TAPE21" > "{output}"'
+#rule WFN:
+#    input:      '{method}/{basis}/{molecule}/TAPE21.asc'
+#    output:     '{method}/{basis}/{molecule}/stowfn.data'
+#    shell:      'cd "$(dirname "{output}")" && adf2stowf.py'
+
+#rule TAPE21:
+#    input:      '{method}/{basis}/{molecule}/output.dat'
+#    output:     '{method}/{basis}/{molecule}/TAPE21.asc'
+#    shell:      'dmpkf "$(dirname "{output}")/TAPE21" > "{output}"'
 
 rule ADF_RUN:
     input:      '{path}/input.dat'
@@ -103,7 +108,7 @@ rule ADF_INPUT:
             f.write(open('adf.tmpl').read().format(
                 basis=basis,
                 core=core,
-                method=wildcards.method,
+                method=wildcards.method.replace('_', ' '),
                 molecule=wildcards.molecule,
                 charge=charge,
                 a_minus_b=multiplicity-1,

@@ -175,9 +175,8 @@ rule MOLDEN:
         elif 'NEVPT2' in wildcards.method:
             shell("""
                   cd "$(dirname "{output}")"
-                  ln -s nevpt2.PT2.*.nat nevpt2.nat.gbw &&
-                  $(which orca_2mkl) nevpt2.nat -molden &&
-                  ln -s nevpt2.nat.molden.input mol.molden.input""")
+                  $(which orca_2mkl) nevpt2 -molden &&
+                  ln -s nevpt2.molden.input mol.molden.input""")
         else:
             shell("""
                   cd "$(dirname "{output}")"
@@ -216,6 +215,8 @@ rule ORCA_RUN:
             method = wildcards.method.split('-NEVPT2')[0]
             if method in ('MP2', 'OO-RI-MP2'):
                 moinp = 'mol.mp2nat'
+            else:
+                moinp = 'mol.qro'
             irrep = get_irrep(os.path.join(wildcards.method, wildcards.basis, wildcards.molecule))
             with open(os.path.join(wildcards.method, wildcards.basis, wildcards.molecule, 'nevpt2.inp'), 'w') as f:
                 offset = wildcards.method.find('(') + 1
