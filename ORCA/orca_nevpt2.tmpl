@@ -1,0 +1,70 @@
+# ================================================================
+# Orca input file
+# ================================================================
+! UHF {basis} def2-QZVPP/C KDIIS VeryTightSCF UseSym
+{procs}
+! MOREAD
+
+%moinp "{moinp}"
+
+%casscf
+  irrep {irrep}
+  nel  {nel}
+  norb {norb}
+#  CIStep ice
+  TrafoStep RI
+  PTMethod FIC_NEVPT2
+  PTSettings
+    F12 false
+  end
+end
+
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
+
+$new_job
+! {basis} def2-QZVPP/C VeryTightSCF
+! MOREAD NOITER
+
+%moinp "nevpt2.gbw"
+
+%casscf
+  irrep {irrep}
+  nel  {nel}
+  norb {norb}
+#  CIStep ice
+  TrafoStep RI
+  PTMethod FIC_NEVPT2
+  PTSettings
+    F12 false
+  end
+  PrintWF det
+  ci
+    TPrintWF 0.00003
+  end
+end
+
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
+
+$new_job
+! {basis} def2-QZVPP/C VeryTightSCF
+! MOREAD NOITER
+
+%moinp "nevpt2.gbw"
+
+%casscf
+  irrep {irrep}
+  nel  {nel}
+  norb {norb}
+#  CIStep ice
+  TrafoStep RI
+  PTMethod FIC_NEVPT2
+  PTSettings
+    F12 false
+  end
+  PrintWF csf
+  ci
+    TPrintWF 0.00003
+  end
+end
+
+* xyzfile {charge} {multiplicity} ../../../../chem_database/{molecule}.xyz
